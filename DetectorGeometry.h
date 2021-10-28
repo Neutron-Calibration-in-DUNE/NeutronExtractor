@@ -4,6 +4,7 @@
  * @ingroup GeometryExtractor
  * @author  Nicholas Carrara (nmcarrara@ucdavis.edu),
 **/
+#pragma once
 
 // art includes
 #include "art/Framework/Core/ModuleMacros.h"
@@ -52,163 +53,166 @@
 #include <vector>
 #include <memory>
 
-// list of materials in the detector
-enum MaterialList {
-
-};
-// list of effective atomic numbers for the materials
-
-enum VolumeType {
-    World,
-    Cryostat,
-    TPC,
-};
-///////////////////////////////////////////////////////////////////////////////////////
-// struct for detector volume information
-///////////////////////////////////////////////////////////////////////////////////////
-struct DetectorVolume
+namespace neutron 
 {
-    VolumeType volume_type;
-    std::string volume_name;
-    std::string material_name;
-    double material;
-    DetectorVolume() {}
-    DetectorVolume(VolumeType volumeType, std::string volumeName, 
-        std::string materialName, double material)
-    : volume_type(volumeType)
-    , volume_name(volumeName)
-    , material_name(materialName)
-    , material(material)
-    {}
-};
-///////////////////////////////////////////////////////////////////////////////////////
-// struct for bounding boxes
-///////////////////////////////////////////////////////////////////////////////////////
-struct BoundingBox
-{
-    double x_min = 0; double x_max = 0;
-    double y_min = 0; double y_max = 0;
-    double z_min = 0; double z_max = 0;
+    // list of materials in the detector
+    enum MaterialList {
 
-    double width()  { return x_max - x_min; }
-    double height() { return y_max - y_min; }
-    double length() { return z_max - z_min; }
+    };
+    // list of effective atomic numbers for the materials
 
-    void setBox(geo::BoxBoundedGeo const& Box) {
-        x_min = Box.MinX(); x_max = Box.MaxX();
-        y_min = Box.MinY(); y_max = Box.MaxY();
-        z_min = Box.MinZ(); z_max = Box.MaxZ();
-    }
-    void setBox(double x_min, double x_max,
-                double y_min, double y_max,
-                double z_min, double z_max)
+    enum VolumeType {
+        World,
+        Cryostat,
+        TPC,
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // struct for detector volume information
+    ///////////////////////////////////////////////////////////////////////////////////////
+    struct DetectorVolume
     {
-        x_min = x_min; x_max = x_max;
-        y_min = y_min; y_max = y_max;
-        z_min = z_min; z_max = z_max;
-    }
-    BoundingBox() {}
-    BoundingBox(double xs[2], double ys[2], double zs[2])
+        VolumeType volume_type;
+        std::string volume_name;
+        std::string material_name;
+        double material;
+        DetectorVolume() {}
+        DetectorVolume(VolumeType volumeType, std::string volumeName, 
+            std::string materialName, double material)
+        : volume_type(volumeType)
+        , volume_name(volumeName)
+        , material_name(materialName)
+        , material(material)
+        {}
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // struct for bounding boxes
+    ///////////////////////////////////////////////////////////////////////////////////////
+    struct BoundingBox
     {
-        x_min = xs[0]; x_max = xs[1];
-        y_min = ys[0]; y_max = ys[1];
-        z_min = zs[0]; z_max = zs[1];
-    }
-    BoundingBox(double vals[6])
-    {
-        x_min = vals[0]; x_max = vals[1];
-        y_min = vals[2]; y_max = vals[3];
-        z_min = vals[4]; z_max = vals[4];
-    }
-    BoundingBox(double xmin, double xmax,
-                double ymin, double ymax,
-                double zmin, double zmax)
-    {
-        x_min = xmin; x_max = xmax;
-        y_min = ymin; y_max = ymax;
-        z_min = zmin; z_max = zmax;
-    }
-    BoundingBox(geo::BoxBoundedGeo const& Box) {
-        x_min = Box.MinX(); x_max = Box.MaxX();
-        y_min = Box.MinY(); y_max = Box.MaxY();
-        z_min = Box.MinZ(); z_max = Box.MaxZ();
-    }
-};
-///////////////////////////////////////////////////////////////////////////////////////
-// class for storting geometry information
-///////////////////////////////////////////////////////////////////////////////////////
-class DetectorGeometry
-{
-public:
-    DetectorGeometry();
-    ~DetectorGeometry();
+        double x_min = 0; double x_max = 0;
+        double y_min = 0; double y_max = 0;
+        double z_min = 0; double z_max = 0;
 
-    // getters
-    std::string GetWorldName();
-    BoundingBox GetWorldBox();
-    std::string GetDetectorName();
-    BoundingBox GetDetectorBox();
-    std::string GetCryostatName();
-    BoundingBox GetCryostatBox();
-    int GetNumberOfTPCs();
-    std::vector<std::string> GetTPCNames();
-    std::string GetTPCName(const size_t i);
-    BoundingBox GetTPCBox(const size_t i);
-    BoundingBox GetActiveTPCBox(const size_t i);
-    std::vector<double> GetTPCMasses();
-    double GetTPCMass(const size_t i);
-    std::vector<double> GetTPCDriftDistances();
-    double GetTPCDriftDistance(const size_t i);
-    BoundingBox GetTotalTPCBox();
-    BoundingBox GetTotalActiveTPCBox();
-    double GetTotalTPCMass();
-    // get volume information for a point
-    DetectorVolume getVolume(std::vector<double> position);
-    // function for finding total tpc volumes
-    void findTotalTPCBoxes();
-    // fill the geometry ttree
-    void FillTTree();
-    
-private:
-    ////////////////////////////////////////////////
-    // Information which is automatically stored
-    // meta variables
-    art::ServiceHandle<geo::Geometry> fGeometryService;
-    geo::GeometryCore const* fGeometryCore;
-    // ROOT 
-    art::ServiceHandle<art::TFileService> fTFileService;
-    TTree *fGeometryTree;
-    size_t fTriggerOffset;
-    // map from volume names to volume type
-    std::map<std::string,VolumeType> fVolumeTypeMap;
-    // world volume
-    std::string fWorldName;
-    BoundingBox fWorldBox;
-    // detector volume
-    std::string fDetectorName;
-    BoundingBox fDetectorBox;
-    // cryostat volume
-    std::string fCryostatName;
-    BoundingBox fCryostatBox;
-    // tpc volumes
-    int fNumberOfTPCs;
-    std::vector<std::string> fTPCNames;
-    std::vector<BoundingBox> fTPCBoxes;
-    std::vector<BoundingBox> fActiveTPCBoxes;
-    std::vector<double> fTPCMasses;
-    std::vector<double> fTPCDriftDistances;
-    // full tpc volume
-    BoundingBox fTotalTPCBox;
-    BoundingBox fTotalActiveTPCBox;
-    double fTotalTPCMass;
-    ////////////////////////////////////////////////
-    // detector material variables
-    ////////////////////////////////////////////////
-    // we will need to ask Geant4 about material 
-    // properties for the detector volume
-    // at each point of interest.  This requires holding 
-    // this information in a
-    // TGeoMaterial object, which is part of ROOT.
-    const TGeoMaterial *fMaterial;
-    geo::Point_t fMaterialPOI;
-};
+        double width()  { return x_max - x_min; }
+        double height() { return y_max - y_min; }
+        double length() { return z_max - z_min; }
+
+        void setBox(geo::BoxBoundedGeo const& Box) {
+            x_min = Box.MinX(); x_max = Box.MaxX();
+            y_min = Box.MinY(); y_max = Box.MaxY();
+            z_min = Box.MinZ(); z_max = Box.MaxZ();
+        }
+        void setBox(double x_min, double x_max,
+                    double y_min, double y_max,
+                    double z_min, double z_max)
+        {
+            x_min = x_min; x_max = x_max;
+            y_min = y_min; y_max = y_max;
+            z_min = z_min; z_max = z_max;
+        }
+        BoundingBox() {}
+        BoundingBox(double xs[2], double ys[2], double zs[2])
+        {
+            x_min = xs[0]; x_max = xs[1];
+            y_min = ys[0]; y_max = ys[1];
+            z_min = zs[0]; z_max = zs[1];
+        }
+        BoundingBox(double vals[6])
+        {
+            x_min = vals[0]; x_max = vals[1];
+            y_min = vals[2]; y_max = vals[3];
+            z_min = vals[4]; z_max = vals[4];
+        }
+        BoundingBox(double xmin, double xmax,
+                    double ymin, double ymax,
+                    double zmin, double zmax)
+        {
+            x_min = xmin; x_max = xmax;
+            y_min = ymin; y_max = ymax;
+            z_min = zmin; z_max = zmax;
+        }
+        BoundingBox(geo::BoxBoundedGeo const& Box) {
+            x_min = Box.MinX(); x_max = Box.MaxX();
+            y_min = Box.MinY(); y_max = Box.MaxY();
+            z_min = Box.MinZ(); z_max = Box.MaxZ();
+        }
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // class for storting geometry information
+    ///////////////////////////////////////////////////////////////////////////////////////
+    class DetectorGeometry
+    {
+    public:
+        DetectorGeometry();
+        ~DetectorGeometry();
+
+        // getters
+        std::string GetWorldName();
+        BoundingBox GetWorldBox();
+        std::string GetDetectorName();
+        BoundingBox GetDetectorBox();
+        std::string GetCryostatName();
+        BoundingBox GetCryostatBox();
+        int GetNumberOfTPCs();
+        std::vector<std::string> GetTPCNames();
+        std::string GetTPCName(const size_t i);
+        BoundingBox GetTPCBox(const size_t i);
+        BoundingBox GetActiveTPCBox(const size_t i);
+        std::vector<double> GetTPCMasses();
+        double GetTPCMass(const size_t i);
+        std::vector<double> GetTPCDriftDistances();
+        double GetTPCDriftDistance(const size_t i);
+        BoundingBox GetTotalTPCBox();
+        BoundingBox GetTotalActiveTPCBox();
+        double GetTotalTPCMass();
+        // get volume information for a point
+        DetectorVolume getVolume(std::vector<double> position);
+        // function for finding total tpc volumes
+        void findTotalTPCBoxes();
+        // fill the geometry ttree
+        void FillTTree();
+        
+    private:
+        ////////////////////////////////////////////////
+        // Information which is automatically stored
+        // meta variables
+        art::ServiceHandle<geo::Geometry> fGeometryService;
+        geo::GeometryCore const* fGeometryCore;
+        // ROOT 
+        art::ServiceHandle<art::TFileService> fTFileService;
+        TTree *fGeometryTree;
+        size_t fTriggerOffset;
+        // map from volume names to volume type
+        std::map<std::string,VolumeType> fVolumeTypeMap;
+        // world volume
+        std::string fWorldName;
+        BoundingBox fWorldBox;
+        // detector volume
+        std::string fDetectorName;
+        BoundingBox fDetectorBox;
+        // cryostat volume
+        std::string fCryostatName;
+        BoundingBox fCryostatBox;
+        // tpc volumes
+        int fNumberOfTPCs;
+        std::vector<std::string> fTPCNames;
+        std::vector<BoundingBox> fTPCBoxes;
+        std::vector<BoundingBox> fActiveTPCBoxes;
+        std::vector<double> fTPCMasses;
+        std::vector<double> fTPCDriftDistances;
+        // full tpc volume
+        BoundingBox fTotalTPCBox;
+        BoundingBox fTotalActiveTPCBox;
+        double fTotalTPCMass;
+        ////////////////////////////////////////////////
+        // detector material variables
+        ////////////////////////////////////////////////
+        // we will need to ask Geant4 about material 
+        // properties for the detector volume
+        // at each point of interest.  This requires holding 
+        // this information in a
+        // TGeoMaterial object, which is part of ROOT.
+        const TGeoMaterial *fMaterial;
+        geo::Point_t fMaterialPOI;
+    };
+}
