@@ -62,6 +62,9 @@
 // local includes
 #include "DetectorGeometry.h"
 
+namespace neutron {
+    class NeutronExtractor;
+}
 
 namespace neutron
 {

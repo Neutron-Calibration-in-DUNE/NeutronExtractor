@@ -21,7 +21,7 @@ art_make(LIB_LIBRARIES
             ${FHICLCPP}
             cetlib cetlib_except
             ${ROOT_BASIC_LIB_LIST}
-         MODULE_LIBRARIES
+        MODULE_LIBRARIES
             larana_OpticalDetector_OpDigiProperties_service
             larana_OpticalDetector_OpHitFinder
             larana_OpticalDetector
@@ -58,7 +58,7 @@ art_make(LIB_LIBRARIES
             ${FHICLCPP}
             cetlib cetlib_except
             ${ROOT_BASIC_LIB_LIST}
-            SERVICE_LIBRARIES
+        SERVICE_LIBRARIES
             larcorealg_Geometry
             larcore_Geometry_Geometry_service
             ${ART_FRAMEWORK_CORE}
