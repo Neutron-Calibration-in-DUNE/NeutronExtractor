@@ -2,8 +2,6 @@
 
 namespace geometry
 {
-    DetectorGeometry::DetectorGeometry()
-    {}
     DetectorGeometry::~DetectorGeometry()
     {}
 

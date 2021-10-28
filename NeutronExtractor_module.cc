@@ -110,8 +110,8 @@ namespace neutron
     // constructor
     NeutronExtractor::NeutronExtractor(Parameters const& config)
     : EDAnalyzer(config)
-    , fSimulationProducerLabel(config().SimulationLabel)
-    , fOutputFileArt(config().OutputFile)
+    , fSimulationProducerLabel(config().SimulationLabel())
+    , fOutputFileArt(config().OutputFile())
     {
         consumes<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
     }
