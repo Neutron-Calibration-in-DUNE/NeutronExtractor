@@ -59,6 +59,105 @@
 // C includes
 #include <cmath>
 
+// local includes
+#include "GeometryExtractor.cc"
 
 
-DEFINE_ART_MODULE(lar::NeutronExtractor)
+namespace neutron
+{
+    class NeutronExtractor : public art::EDAnalyzer
+    {
+    public:
+        struct Config
+        {
+            fhicl::Atom<art::InputTag> SimulationLabel
+            {
+                fhicl::Name("SimulationLabel"),
+                fhicl::Comment("tag of the input data product with the detector simulation")
+            };
+            fhicl::Atom<art::InputTag> OutputFile
+            {
+                fhicl::Name("OutputFile"),
+                fhicl::Comment("name of the file to output the neutron statistics to")
+            };
+        };
+    public:
+        using Parameters = art::EDAnalyzer::Table<Config>;
+        explicit NeutronExtractor(Parameters const& config);
+        NeutronExtractor(NeutronExtractor const&) = delete;
+        NeutronExtractor(NeutronExtractor&&) = delete;
+        NeutronExtractor& operator=(NeutronExtractor const&) = delete;
+        NeutronExtractor& operator=(NeutronExtractor&&) = delete;
+
+        // required EDAnalyzer functions
+        void analyze(art::Event const& event) override;
+        void beginJob() override;
+        void endJob() override;
+
+    private:
+        art::InputTag fSimulationProducerLabel;
+        art::InputTag fOutputFileArt;
+        // geometry information
+        DetectorGeometry geometry::fGeometry;
+        // ROOT
+        art::ServiceHandle<art::TFileService> fTFileService;
+        // event variables
+        int fRun;
+        int fSubRun;
+        int fEvent;
+    };
+
+    // constructor
+    NeutronExtractor::NeutronExtractor(Parameters const& config)
+    : EDAnalyzer(config)
+    , fSimulationProducerLabel(config().SimulationLabel)
+    , fOutputFileArt(config().OutputFile)
+    {
+        consumes<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
+    }
+
+    // analyze function
+    void NeutronExtractor::analyze(art::Event const& event)
+    {
+        if (event.isRealData())
+        {
+            // If we are looking at real data, then we need to stop the analysis
+            // and back out.
+            throw cet::exception("MCParticleExtractor")
+                << " Event contains real data - "
+                << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
+        }
+        // define a "handle" to point to a vector of the objects
+        art::Handle<std::vector<simb::MCParticle>> particleHandle;
+        if (!event.getByLabel(fSimulationProducerLabel, particleHandle))
+        {
+            // if there are no particles for the event truth, then
+            // we are in big trouble haha.  throw an exception
+            throw cet::exception("MCParticleExtractor")
+                << " No simb::MCParticle objects in this event - "
+                << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
+        }
+        // get the event meta data 
+        fRun    = event.run();
+        fSubRun = event.subRun();
+        fEvent  = event.id().event();
+
+        // get the list of MC particles from Geant4
+        auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
+        if (mcParticles.isValid())
+        {
+        }
+    }
+    // begin job
+    void NeutronExtractor::beginJob()
+    {
+        fGeometry.FillTTree();
+    }
+    // end job
+    void NeutronExtractor::endJob()
+    {
+    }
+}
+
+
+DEFINE_ART_MODULE(neutron::NeutronExtractor)
