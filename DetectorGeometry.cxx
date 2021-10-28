@@ -1,4 +1,4 @@
-#include "GeometryExtractor.h"
+#include "DetectorGeometry.h"
 
 namespace geometry
 {
