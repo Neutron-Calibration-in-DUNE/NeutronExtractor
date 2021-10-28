@@ -22,7 +22,7 @@ art_make(LIB_LIBRARIES
             cetlib cetlib_except
             ${ROOT_BASIC_LIB_LIST}
         MODULE_LIBRARIES
-            dunetpc_dune_NeutronExtractor
+            dune_NeutronExtractor
             larana_OpticalDetector_OpDigiProperties_service
             larana_OpticalDetector_OpHitFinder
             larana_OpticalDetector
