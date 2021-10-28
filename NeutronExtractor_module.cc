@@ -123,7 +123,7 @@ namespace neutron
         {
             // If we are looking at real data, then we need to stop the analysis
             // and back out.
-            throw cet::exception("MCParticleExtractor")
+            throw cet::exception("NeutronExtractor")
                 << " Event contains real data - "
                 << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
         }
@@ -133,7 +133,7 @@ namespace neutron
         {
             // if there are no particles for the event truth, then
             // we are in big trouble haha.  throw an exception
-            throw cet::exception("MCParticleExtractor")
+            throw cet::exception("NeutronExtractor")
                 << " No simb::MCParticle objects in this event - "
                 << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
         }
