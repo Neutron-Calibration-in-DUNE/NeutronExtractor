@@ -6,7 +6,9 @@ art_make(LIB_LIBRARIES
            fhiclcpp::fhiclcpp
            cetlib_except::cetlib_except
            ROOT::Core
+           art_root_io::TFileService_service
            ${ART_UTILITIES}
+           ${ART_ROOT_IO_TFILE_SUPPORT}
          MODULE_LIBRARIES
            larreco_HitFinder
            larsim_MCCheater_BackTrackerService_service
@@ -23,7 +25,6 @@ art_make(LIB_LIBRARIES
            ROOT::Hist
            ROOT::MathCore
            ROOT::Physics
-           ${TBB}
          )
 
 # art_make(LIB_LIBRARIES 
