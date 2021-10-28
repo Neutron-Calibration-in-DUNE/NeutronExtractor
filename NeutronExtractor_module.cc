@@ -60,7 +60,7 @@
 #include <cmath>
 
 // local includes
-#include "GeometryExtractor.h"
+#include "DetectorGeometry.h"
 
 
 namespace neutron
