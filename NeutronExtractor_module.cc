@@ -98,7 +98,7 @@ namespace neutron
         art::InputTag fSimulationProducerLabel;
         art::InputTag fOutputFileArt;
         // geometry information
-        DetectorGeometry geometry::fGeometry;
+        geometry::DetectorGeometry fGeometry;
         // ROOT
         art::ServiceHandle<art::TFileService> fTFileService;
         // event variables
