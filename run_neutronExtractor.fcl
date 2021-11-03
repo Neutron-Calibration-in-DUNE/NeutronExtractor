@@ -18,7 +18,6 @@ services:
     TimeTracker:    {}
     RandomNumberGenerator:  {}
     MemoryTracker:          {}
-    @table::services
     @table::dunefdvd_1x6x6_3view_simulation_services
     FileCatalogMetadata:    @local::art_file_catalog_mc
     Geometry:       @local::dunevd10kt_1x6x6_3view_geo
