@@ -61,6 +61,7 @@
 
 // local includes
 #include "DetectorGeometry.h"
+#include "Neutron.h"
 
 namespace neutron {
     class NeutronExtractor;
@@ -97,6 +98,9 @@ namespace neutron
         void beginJob() override;
         void endJob() override;
 
+        // special functions
+        void FillTTree();
+
     private:
         art::InputTag fSimulationProducerLabel;
         art::InputTag fOutputFileArt;
@@ -108,6 +112,11 @@ namespace neutron
         int fRun;
         int fSubRun;
         int fEvent;
+
+        // captured neutrons
+        std::vector<CapturedNeutron> fCapturedNeutrons;
+        TTree *fCapturedNeutronTree;
+
     };
 
     // constructor
@@ -116,6 +125,7 @@ namespace neutron
     , fSimulationProducerLabel(config().SimulationLabel())
     , fOutputFileArt(config().OutputFile())
     {
+        fCapturedNeutronTree = fTFileService->make<TTree>("CapturedNeutron", "CapturedNeutron");
         consumes<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
     }
 
@@ -149,6 +159,20 @@ namespace neutron
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
         if (mcParticles.isValid())
         {
+            for (auto particle : *mcParticles)
+            {
+                // check if the particle is a neutron
+                if (particle.PdgCode() == 2112)
+                {
+                    // check if the neutron is a primary
+                    if (particle.Mother() == 0)
+                    {
+                        // create a new neutron entry
+                        CapturedNeutron capturedNeutron(fEvent, particle);
+                        fCapturedNeutrons.emplace_back(capturedNeutron);
+                    }
+                }
+            }
         }
     }
     // begin job
@@ -159,6 +183,17 @@ namespace neutron
     // end job
     void NeutronExtractor::endJob()
     {
+        FillTTree();
+    }
+    // fill the neutron ttree
+    void NeutronExtractor::FillTTree()
+    {
+        fCapturedNeutronTree->Branch("captured_neutron", &EmptyCapturedNeutron);
+        for (int i = 0; i < fCapturedNeutrons.size(); i++)
+        {
+            EmptyCapturedNeutron = fCapturedNeutrons[i];
+            fCapturedNeutronTree->Fill();
+        }
     }
 }
 
