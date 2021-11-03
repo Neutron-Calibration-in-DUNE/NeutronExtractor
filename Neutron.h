@@ -104,19 +104,18 @@ namespace neutron
         , particle_id(particle.TrackId())
         {
             // collect trajectory information
-            for(int i = 0; i < particle.NumberTrajectoryPoints(); i++)
+            for(size_t i = 0; i < particle.NumberTrajectoryPoints(); i++)
             {
                 t.emplace_back(particle.T(i));
-                x.emplace_back(particle.X(i));
-                y.emplace_back(particle.Y(i));
-                z.emplace_back(particle.Z(i));
+                x.emplace_back(particle.Vx(i));
+                y.emplace_back(particle.Vy(i));
+                z.emplace_back(particle.Vz(i));
                 E.emplace_back(particle.E(i));
-                px.emplace_back(particle.px(i));
-                py.emplace_back(particle.py(i));
-                pz.emplace_back(particle.pz(i));
+                px.emplace_back(particle.Px(i));
+                py.emplace_back(particle.Py(i));
+                pz.emplace_back(particle.Pz(i));
             }
         }
     };
 
-    CapturedNeutron EmptyCapturedNeutron;
 }

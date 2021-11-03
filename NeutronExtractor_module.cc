@@ -188,8 +188,9 @@ namespace neutron
     // fill the neutron ttree
     void NeutronExtractor::FillTTree()
     {
-        fCapturedNeutronTree->Branch("captured_neutron", &EmptyCapturedNeutron);
-        for (int i = 0; i < fCapturedNeutrons.size(); i++)
+        CapturedNeutron EmptyCapturedNeutron;
+        fCapturedNeutronTree->Branch("captured_neutron", &EmptyCapturedNeutron, "event:particle_id:t:x:y:z;E:px:py:pz");
+        for (size_t i = 0; i < fCapturedNeutrons.size(); i++)
         {
             EmptyCapturedNeutron = fCapturedNeutrons[i];
             fCapturedNeutronTree->Fill();

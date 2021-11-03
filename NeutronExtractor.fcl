@@ -1,0 +1,10 @@
+BEGIN_PROLOG
+
+NeutronExtractor:
+{
+    module_type:        "NeutronExtractor"
+    SimulationLabel:    "largeant"
+    OutputFile:         "output.root"
+}
+
+END_PROLOG

@@ -1,11 +1,11 @@
-#include "analysisConfig.fcl"
+#include "NeutronExtractor.fcl"
 #include "simulationservices_dune.fcl"
 #include "services_dune.fcl"
 #include "geometry_dune.fcl"
 #include "singles_dune.fcl"
 #include "detsim_dune10kt_wirecell_refactored.fcl"
 
-process_name:   ExtractNeutrons
+process_name:   NeutronExtractor
 
 source:
 {
@@ -14,26 +14,25 @@ source:
 }
 services:
 {
-    #@table::dunefd_simulation_services
-    TFileService:   { fileName: ".root" }
+    TFileService:   { fileName: "output.root" }
     TimeTracker:    {}
     RandomNumberGenerator:  {}
     MemoryTracker:          {}
-    #@table::dunefdvd_1x6x6_simulation_services
+    @table::services
+    @table::dunefdvd_1x6x6_3view_simulation_services
     FileCatalogMetadata:    @local::art_file_catalog_mc
-    #Geometry:       @local::dune10kt_1x2x6_v4_refactored_geo
+    Geometry:       @local::dunevd10kt_1x6x6_3view_geo
 }
 
 physics:
 {
     analyzers:
     {
-        ana: @local::extractNeutrons
+        ana: @local::NeutronExtractor
     }
-    path0:  [ ana ]
-    end_paths: [ path0 ]
+    analysis:  [ ana ]
+    end_paths: [ analysis ]
 }
 
-source.fileNames:                       [".root"]
+source.fileNames:                       ["/dune/data/users/ncarrara/NeutronCalibrationFDSP/fcl/VerticalDrift/g4_output/center_3view/FDVD_1x6x6_center_3view_500_1_1.root"]
 source.maxEvents:                       10
-

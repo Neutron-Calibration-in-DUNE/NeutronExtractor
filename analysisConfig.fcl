@@ -1,8 +1,0 @@
-BEGIN_PROLOG
-
-extractNeutrons:
-{
-    module_type:        "NeutronExtractor"
-}
-
-END_PROLOG
