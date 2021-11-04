@@ -55,7 +55,7 @@ namespace neutron
         fNeutronEndProcess.emplace_back(particle.EndProcess());
         // see if neutron is a primary or not and then store its lineage
         std::vector<Int_t> lineage = {particle.TrackId()};
-        if (particle.EndProcess() == "nCapture")
+        if (particle.EndProcess() == "nCapture" && particle.Mother() != 0)
         {
             fNeutronInelastic.emplace_back(lineage);
             Int_t index = getNeutronIndex(eventId, particle.Mother());
