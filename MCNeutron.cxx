@@ -12,9 +12,10 @@ namespace neutron
 
     void MCNeutron::addNeutron(Int_t eventId, simb::MCParticle particle)
     {
-        std::cout << eventId << "," << particle.TrackId() << std::endl;
+        fNumberOfNeutrons++;
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
+        
     }
 
     void MCNeutron::FillTTree()
@@ -37,12 +38,14 @@ namespace neutron
         fMCNeutronTree->Branch("event_id", &mc_neutron.event_id);
         fMCNeutronTree->Branch("track_id", &mc_neutron.track_id);
 
+        std::cout << "here" << std::endl;
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
             mc_neutron.event_id = fEventId[i];
             mc_neutron.track_id = fNeutronTrackId[i];
             fMCNeutronTree->Fill();
         }
+        std::cout << "here" << std::endl;
     }
 
 }
