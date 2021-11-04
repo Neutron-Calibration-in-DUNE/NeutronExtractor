@@ -95,6 +95,8 @@ namespace neutron
         std::vector<std::vector<Double_t>> fNeutronPz;
         std::vector<std::string> fNeutronProcess;
         std::vector<std::string> fNeutronEndProcess;
+        // list of inelastics tied to a given neutron
+        std::vector<std::vector<Int_t>> fNeutronInelastic;
         // map from (event_id,track_id) -> index
         std::map<std::pair<Int_t,Int_t>, Int_t> fNeutronMap;
     };

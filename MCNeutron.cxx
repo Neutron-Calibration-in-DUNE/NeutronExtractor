@@ -14,6 +14,7 @@ namespace neutron
 
     void MCNeutron::addNeutron(Int_t eventId, simb::MCParticle particle)
     {
+        fNeutronMap[std::make_pair(eventId,particle.TrackId())] = fNumberOfNeutrons;
         fNumberOfNeutrons++;
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
@@ -52,6 +53,21 @@ namespace neutron
         // store other information
         fNeutronProcess.emplace_back(particle.Process());
         fNeutronEndProcess.emplace_back(particle.EndProcess());
+        // see if neutron is a primary or not and then store its lineage
+        std::vector<Int_t> lineage = {particle.TrackId()};
+        if (particle.Mother() != 0)
+        {
+            lineage.emplace_back(particle.Mother());
+            Int_t index = getNeutronIndex(eventId, particle.Mother());
+            Int_t mother = fNeutronParentId[index];
+            while (mother != 0)
+            {
+                lineage.emplace_back(fNeutronTrackId[index]);
+                index = getNeutronIndex(eventId, particle.Mother());
+                mother = fNeutronParentId[index];
+            }
+        }
+        fNeutronInelastic.emplace_back(lineage);
     }
 
     void MCNeutron::FillTTree()
@@ -75,6 +91,7 @@ namespace neutron
             std::vector<Double_t> pz;
             std::string process;
             std::string end_process;
+            std::vector<Int_t> inelastic;
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
@@ -95,6 +112,7 @@ namespace neutron
         fMCNeutronTree->Branch("pz", &mc_neutron.pz);
         fMCNeutronTree->Branch("process", &mc_neutron.process);
         fMCNeutronTree->Branch("end_process", &mc_neutron.end_process);
+        fMCNeutronTree->Branch("inelastic", &mc_neutron.inelastic);
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
@@ -115,6 +133,7 @@ namespace neutron
             mc_neutron.pz = fNeutronPz[i];
             mc_neutron.process = fNeutronProcess[i];
             mc_neutron.end_process = fNeutronEndProcess[i];
+            mc_neutron.inelastic = fNeutronInelastic[i];
             fMCNeutronTree->Fill();
         }
     }
