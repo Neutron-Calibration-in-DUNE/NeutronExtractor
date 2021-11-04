@@ -64,10 +64,10 @@ namespace neutron
             Int_t mother = fNeutronParentId[index];
             while (mother != 0)
             {
-                Int_t index = getNeutronIndex(eventId, particle.Mother());
+                index = getNeutronIndex(eventId, particle.Mother());
                 lineage.emplace_back(fNeutronTrackId[index]);
                 fNeutronInelastic[index] = lineage;
-                Int_t mother = fNeutronParentId[index];
+                mother = fNeutronParentId[index];
             }
         }
         else
