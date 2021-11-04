@@ -21,7 +21,7 @@ namespace neutron
         fNeutronNumberOfTrajectoryPoints.emplace_back(particle.NumberTrajectoryPoints());
         std::vector<Double_t> T; std::vector<Double_t> X; std::vector<Double_t> Y; std::vector<Double_t> Z;
         std::vector<Double_t> E; std::vector<Double_t> Px; std::vector<Double_t> Py; std::vector<Double_t> Pz;
-        for (Int_t i = 0; i < particle.NumberTrajectoryPoints(); i++)
+        for (size_t i = 0; i < particle.NumberTrajectoryPoints(); i++)
         {
             T.emplace_back(particle.T(i));
             X.emplace_back(particle.Vx(i));
