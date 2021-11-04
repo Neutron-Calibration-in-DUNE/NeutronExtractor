@@ -21,7 +21,7 @@ namespace neutron
         fNeutronStatusCode.emplace_back(particle.StatusCode());
         fNeutronNumberOfDaughters.emplace_back(particle.NumberDaughters());
         std::vector<Int_t> daughters = {};
-        for (size_t i = 0; i < particle.NumberDaughters(); i++)
+        for (Int_t i = 0; i < particle.NumberDaughters(); i++)
         {
             daughters.emplace_back(particle.Daughter(i));
         }
