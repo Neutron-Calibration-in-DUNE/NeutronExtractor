@@ -12,6 +12,7 @@ namespace neutron
 
     void MCNeutron::addNeutron(Int_t eventId, simb::MCParticle particle)
     {
+        std::cout << eventId << "," << particle.TrackId() << std::endl;
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
     }
