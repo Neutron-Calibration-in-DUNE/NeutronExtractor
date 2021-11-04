@@ -61,7 +61,7 @@
 
 // local includes
 #include "DetectorGeometry.h"
-#include "Neutron.h"
+#include "MCNeutron.h"
 
 namespace neutron {
     class NeutronExtractor;
@@ -113,9 +113,8 @@ namespace neutron
         int fSubRun;
         int fEvent;
 
-        // captured neutrons
-        std::vector<CapturedNeutron> fCapturedNeutrons;
-        TTree *fCapturedNeutronTree;
+        // mc neutrons
+        MCNeutron fMCNeutrons;
 
     };
 
@@ -125,7 +124,6 @@ namespace neutron
     , fSimulationProducerLabel(config().SimulationLabel())
     , fOutputFileArt(config().OutputFile())
     {
-        fCapturedNeutronTree = fTFileService->make<TTree>("CapturedNeutron", "CapturedNeutron");
         consumes<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
     }
 
@@ -167,9 +165,7 @@ namespace neutron
                     // check if the neutron is a primary
                     if (particle.Mother() == 0)
                     {
-                        // create a new neutron entry
-                        CapturedNeutron capturedNeutron(fEvent, particle);
-                        fCapturedNeutrons.emplace_back(capturedNeutron);
+                        fMCNeutrons.addNeutron(fEvent, particle);
                     }
                 }
             }
@@ -183,20 +179,8 @@ namespace neutron
     // end job
     void NeutronExtractor::endJob()
     {
-        FillTTree();
-    }
-    // fill the neutron ttree
-    void NeutronExtractor::FillTTree()
-    {
-        CapturedNeutron EmptyCapturedNeutron;
-        fCapturedNeutronTree->Branch("captured_neutron", &EmptyCapturedNeutron, "event:particle_id:t:x:y:z;E:px:py:pz");
-        for (size_t i = 0; i < fCapturedNeutrons.size(); i++)
-        {
-            EmptyCapturedNeutron = fCapturedNeutrons[i];
-            fCapturedNeutronTree->Fill();
-        }
+        fMCNeutrons.FillTTree();
     }
 }
-
 
 DEFINE_ART_MODULE(neutron::NeutronExtractor)
