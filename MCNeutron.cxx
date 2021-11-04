@@ -29,8 +29,11 @@ namespace neutron
         fNeutronDaughters.emplace_back(daughters);
         fNeutronNumberOfTrajectoryPoints.emplace_back(particle.NumberTrajectoryPoints());
         // store trajectory information
-        std::vector<Double_t> T; std::vector<Double_t> X; std::vector<Double_t> Y; std::vector<Double_t> Z;
-        std::vector<Double_t> E; std::vector<Double_t> Px; std::vector<Double_t> Py; std::vector<Double_t> Pz;
+        std::vector<Double_t> T; std::vector<Double_t> X; std::vector<Double_t> Y; 
+        std::vector<Double_t> Z; std::vector<Double_t> E; std::vector<Double_t> Px; 
+        std::vector<Double_t> Py; std::vector<Double_t> Pz;
+        Double_t totalDistance = 0;
+        std::vector<Double_t> distances = {0};
         for (size_t i = 0; i < particle.NumberTrajectoryPoints(); i++)
         {
             T.emplace_back(particle.T(i));
@@ -41,6 +44,10 @@ namespace neutron
             Px.emplace_back(particle.Px(i));
             Py.emplace_back(particle.Py(i));
             Pz.emplace_back(particle.Pz(i));
+            if (i != 0) {
+                distance.emplace_back(EuclideanDistance(X[i],Y[i],Z[i],X[i-1],Y[i-1],Z[i-1]));
+                totalDistance += distance[i];
+            }
         }
         fNeutronT.emplace_back(T);
         fNeutronX.emplace_back(X);
@@ -50,6 +57,11 @@ namespace neutron
         fNeutronPx.emplace_back(Px);
         fNeutronPy.emplace_back(Py);
         fNeutronPz.emplace_back(Pz);
+        fNeutronTotalDistance.emplace_back(totalDistance);
+        fNeutronDistances.emplace_back(distances);
+        fNeutronTotalDisplacement.emplace_back(EuclideanDistance(X[0],Y[0],Z[0],particle.EndX(),
+            particle.EndY(),particle.EndZ())
+        );
         // store other information
         fNeutronProcess.emplace_back(particle.Process());
         fNeutronEndProcess.emplace_back(particle.EndProcess());
@@ -117,6 +129,9 @@ namespace neutron
             std::string material_name_end;
             Double_t material_begin;
             Double_t material_end;
+            std::vector<Double_t> distances;
+            Double_t total_distance;
+            Double_t total_displacement;
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
@@ -146,6 +161,9 @@ namespace neutron
         fMCNeutronTree->Branch("material_name_end", &mc_neutron.material_name_end);
         fMCNeutronTree->Branch("material_begin", &mc_neutron.material_begin);
         fMCNeutronTree->Branch("material_end", &mc_neutron.material_end);
+        fMCNeutronTree->Branch("distances", &mc_neutron.distances);
+        fMCNeutronTree->Branch("total_distance", &mc_neutron.total_distance);
+        fMCNeutronTree->Branch("total_displacement", &mc_neutron.total_displacement);
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
@@ -175,6 +193,9 @@ namespace neutron
             mc_neutron.material_name_end = fNeutronMaterialNameEnd[i];
             mc_neutron.material_begin = fNeutronMaterialBegin[i];
             mc_neutron.material_end = fNeutronMaterialEnd[i];
+            mc_neutron.distances = fNeutronDistances[i];
+            mc_neutron.total_distance = fNeutronTotalDistance[i];
+            mc_neutron.total_displacement = fNeutronTotalDisplacement[i];
             fMCNeutronTree->Fill();
         }
     }

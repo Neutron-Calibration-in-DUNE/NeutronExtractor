@@ -55,6 +55,7 @@
 
 // local includes
 #include "DetectorGeometry.h"
+#include "Utilities.h"
 
 namespace neutron 
 {
