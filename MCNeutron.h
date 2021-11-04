@@ -81,6 +81,9 @@ namespace neutron
         std::vector<Int_t> fEventId;
         std::vector<Int_t> fNeutronTrackId;
         std::vector<Int_t> fNeutronParentId;
+        std::vector<Int_t> fNeutronStatusCode;
+        std::vector<Int_t> fNeutronNumberOfDaughters;
+        std::vector<std::vector<Int_t>> fNeutronDaughters;
         std::vector<Int_t> fNeutronNumberOfTrajectoryPoints;
         std::vector<std::vector<Double_t>> fNeutronT;
         std::vector<std::vector<Double_t>> fNeutronX;

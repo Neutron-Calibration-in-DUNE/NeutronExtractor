@@ -18,7 +18,16 @@ namespace neutron
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
         fNeutronParentId.emplace_back(particle.Mother());
+        fNeutronStatusCode.emplace_back(particle.StatusCode());
+        fNeutronNumberOfDaughters.emplace_back(particle.NumDaughters());
+        std::vector<Int_t> daughters = {};
+        for (size_t i = 0; i < particle.NumDaughters(); i++)
+        {
+            daughters.emplace_back(particle.Daughter(i));
+        }
+        fNeutronDaughters.emplace_back(daughters);
         fNeutronNumberOfTrajectoryPoints.emplace_back(particle.NumberTrajectoryPoints());
+        // store trajectory information
         std::vector<Double_t> T; std::vector<Double_t> X; std::vector<Double_t> Y; std::vector<Double_t> Z;
         std::vector<Double_t> E; std::vector<Double_t> Px; std::vector<Double_t> Py; std::vector<Double_t> Pz;
         for (size_t i = 0; i < particle.NumberTrajectoryPoints(); i++)
@@ -40,6 +49,9 @@ namespace neutron
         fNeutronPx.emplace_back(Px);
         fNeutronPy.emplace_back(Py);
         fNeutronPz.emplace_back(Pz);
+        // store other information
+        fNeutronProcess.emplace_back(particle.Process());
+        fNeutronEndProcess.emplace_back(particle.EndProcess());
     }
 
     void MCNeutron::FillTTree()
@@ -49,6 +61,9 @@ namespace neutron
             Int_t event_id;
             Int_t track_id;
             Int_t parent_id;
+            Int_t status_code;
+            Int_t number_of_daughters;
+            std::vector<Int_t> daughters;
             Int_t number_of_trajectory_points;
             std::vector<Double_t> t;
             std::vector<Double_t> x;
@@ -58,12 +73,17 @@ namespace neutron
             std::vector<Double_t> px;
             std::vector<Double_t> py;
             std::vector<Double_t> pz;
+            std::string process;
+            std::string end_process;
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
         fMCNeutronTree->Branch("event_id", &mc_neutron.event_id);
         fMCNeutronTree->Branch("track_id", &mc_neutron.track_id);
         fMCNeutronTree->Branch("parent_id", &mc_neutron.parent_id);
+        fMCNeutronTree->Branch("status_code", &mc_neutron.status_code);
+        fMCNeutronTree->Branch("number_of_daughters", &mc_neutron.number_of_daughters);
+        fMCNeutronTree->Branch("daughters", &mc_neutron.daughters);
         fMCNeutronTree->Branch("number_of_trajectory_points", &mc_neutron.number_of_trajectory_points);
         fMCNeutronTree->Branch("t", &mc_neutron.t);
         fMCNeutronTree->Branch("x", &mc_neutron.x);
@@ -73,12 +93,17 @@ namespace neutron
         fMCNeutronTree->Branch("px", &mc_neutron.px);
         fMCNeutronTree->Branch("py", &mc_neutron.py);
         fMCNeutronTree->Branch("pz", &mc_neutron.pz);
+        fMCNeutronTree->Branch("process", &mc_neutron.process);
+        fMCNeutronTree->Branch("end_process", &mc_neutron.end_process);
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
             mc_neutron.event_id = fEventId[i];
             mc_neutron.track_id = fNeutronTrackId[i];
             mc_neutron.parent_id = fNeutronParentId[i];
+            mc_neutron.status_code = fNeutronStatusCode[i];
+            mc_neutron.number_of_daughters = fNeutronNumberOfDaughters[i];
+            mc_neutron.daughters = fNeutronDaughters[i];
             mc_neutron.number_of_trajectory_points = fNeutronNumberOfTrajectoryPoints[i];
             mc_neutron.t = fNeutronT[i];
             mc_neutron.x = fNeutronX[i];
@@ -88,6 +113,8 @@ namespace neutron
             mc_neutron.px = fNeutronPx[i];
             mc_neutron.py = fNeutronPy[i];
             mc_neutron.pz = fNeutronPz[i];
+            mc_neutron.process = fNeutronProcess[i];
+            mc_neutron.end_process = fNeutronEndProcess[i];
             fMCNeutronTree->Fill();
         }
     }
