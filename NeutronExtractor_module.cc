@@ -162,11 +162,7 @@ namespace neutron
                 // check if the particle is a neutron
                 if (particle.PdgCode() == 2112)
                 {
-                    // check if the neutron is a primary
-                    if (particle.Mother() == 0)
-                    {
-                        fMCNeutrons.addNeutron(fEvent, particle);
-                    }
+                    fMCNeutrons.addNeutron(fEvent, particle);
                 }
             }
         }
