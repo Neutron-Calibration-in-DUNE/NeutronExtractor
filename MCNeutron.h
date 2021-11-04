@@ -53,6 +53,9 @@
 #include <vector>
 #include <memory>
 
+// local includes
+#include "DetectorGeometry.h"
+
 namespace neutron 
 {
     class MCNeutron
@@ -72,6 +75,8 @@ namespace neutron
         void FillTTree();
     
     private:
+        // geometry information
+        DetectorGeometry fGeometry;
         // ROOT 
         art::ServiceHandle<art::TFileService> fTFileService;
         TTree *fMCNeutronTree;
@@ -97,6 +102,15 @@ namespace neutron
         std::vector<std::string> fNeutronEndProcess;
         // list of inelastics tied to a given neutron
         std::vector<std::vector<Int_t>> fNeutronInelastic;
+        // beginning and ending volumes
+        std::vector<Int_t> fNeutronVolumeTypeBegin;
+        std::vector<Int_t> fNeutronVolumeTypeEnd;
+        std::vector<std::string> fNeutronVolumeNameBegin;
+        std::vector<std::string> fNeutronVolumeNameEnd;
+        std::vector<std::string> fNeutronMaterialNameBegin;
+        std::vector<std::string> fNeutronMaterialNameEnd;
+        std::vector<Double_t> fNeutronMaterialBegin;
+        std::vector<Double_t> fNeutronMaterialEnd;
         // map from (event_id,track_id) -> index
         std::map<std::pair<Int_t,Int_t>, Int_t> fNeutronMap;
     };

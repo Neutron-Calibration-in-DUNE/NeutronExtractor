@@ -74,6 +74,17 @@ namespace neutron
         {
             fNeutronInelastic.emplace_back(lineage);
         }
+        // get volume information
+        DetectorVolume beginVolume = fGeometry.getVolume(particle.Vx(0), particle.Vy(0), particle.Vz(0));
+        DetectorVolume endVolume = fGeometry.getVolume(particle.EndX(), particle.EndY(), particle.EndZ());
+        fNeutronVolumeTypeBegin.emplace_back(beginVolume.volume_type);
+        fNeutronVolumeTypeEnd.emplace_back(endVolume.volume_type);
+        fNeutronVolumeNameBegin.emplace_back(beginVolume.volume_name);
+        fNeutronVolumeNameEnd.emplace_back(endVolume.volume_name);
+        fNeutronMaterialNameBegin.emplace_back(beginVolume.material_name);
+        fNeutronMaterialNameEnd.emplace_back(endVolume.material_name);
+        fNeutronMaterialBegin.emplace_back(beginVolume.material);
+        fNeutronMaterialEnd.emplace_back(endVolume.material);
     }
 
     void MCNeutron::FillTTree()
@@ -98,6 +109,14 @@ namespace neutron
             std::string process;
             std::string end_process;
             std::vector<Int_t> inelastic;
+            Int_t volume_type_begin;
+            Int_t volume_type_end;
+            std::string volume_name_begin;
+            std::string volume_name_end;
+            std::string material_name_begin;
+            std::string material_name_end;
+            Double_t material_begin;
+            Double_t material_end;
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
@@ -119,6 +138,14 @@ namespace neutron
         fMCNeutronTree->Branch("process", &mc_neutron.process);
         fMCNeutronTree->Branch("end_process", &mc_neutron.end_process);
         fMCNeutronTree->Branch("inelastic", &mc_neutron.inelastic);
+        fMCNeutronTree->Branch("volume_type_begin", &mc_neutron.volume_type_begin);
+        fMCNeutronTree->Branch("volume_type_end", &mc_neutron.volume_type_end);
+        fMCNeutronTree->Branch("volume_name_begin", &mc_neutron.volume_name_begin);
+        fMCNeutronTree->Branch("volume_name_end", &mc_neutron.volume_name_end);
+        fMCNeutronTree->Branch("material_name_begin", &mc_neutron.material_name_begin);
+        fMCNeutronTree->Branch("material_name_end", &mc_neutron.material_name_end);
+        fMCNeutronTree->Branch("material_begin", &mc_neutron.material_begin);
+        fMCNeutronTree->Branch("material_end", &mc_neutron.material_end);
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
@@ -140,6 +167,14 @@ namespace neutron
             mc_neutron.process = fNeutronProcess[i];
             mc_neutron.end_process = fNeutronEndProcess[i];
             mc_neutron.inelastic = fNeutronInelastic[i];
+            mc_neutron.volume_type_begin = fNeutronVolumeTypeBegin[i];
+            mc_neutron.volume_type_end = fNeutronVolumeTypeEnd[i];
+            mc_neutron.volume_name_begin = fNeutronVolumeNameBegin[i];
+            mc_neutron.volume_name_end = fNeutronVolumeNameEnd[i];
+            mc_neutron.material_name_begin = fNeutronMaterialNameBegin[i];
+            mc_neutron.material_name_end = fNeutronMaterialNameEnd[i];
+            mc_neutron.material_begin = fNeutronMaterialBegin[i];
+            mc_neutron.material_end = fNeutronMaterialEnd[i];
             fMCNeutronTree->Fill();
         }
     }
