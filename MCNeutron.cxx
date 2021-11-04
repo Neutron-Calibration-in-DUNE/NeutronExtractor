@@ -6,6 +6,8 @@ namespace neutron
     {
         // initialize TTrees
         fMCNeutronTree = fTFileService->make<TTree>("MCNeutron", "MCNeutron");
+        // initialize number of neutrons
+        fNumberOfNeutrons = 0;
     }
     MCNeutron::~MCNeutron()
     {}
@@ -38,14 +40,12 @@ namespace neutron
         fMCNeutronTree->Branch("event_id", &mc_neutron.event_id);
         fMCNeutronTree->Branch("track_id", &mc_neutron.track_id);
 
-        std::cout << "here" << std::endl;
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
             mc_neutron.event_id = fEventId[i];
             mc_neutron.track_id = fNeutronTrackId[i];
             fMCNeutronTree->Fill();
         }
-        std::cout << "here" << std::endl;
     }
 
 }
