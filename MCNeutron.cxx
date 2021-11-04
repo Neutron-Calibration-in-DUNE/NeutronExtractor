@@ -72,22 +72,8 @@ namespace neutron
         }
         else
         {
-            fNeutronInelastic.emplace_back(std::vector<Int_t>());
+            fNeutronInelastic.emplace_back(lineage);
         }
-
-        // if (particle.Mother() != 0)
-        // {
-        //     lineage.emplace_back(particle.Mother());
-        //     Int_t index = getNeutronIndex(eventId, particle.Mother());
-        //     Int_t mother = fNeutronParentId[index];
-        //     while (mother != 0)
-        //     {
-        //         lineage.emplace_back(fNeutronTrackId[index]);
-        //         index = getNeutronIndex(eventId, particle.Mother());
-        //         mother = fNeutronParentId[index];
-        //     }
-        // }
-        // fNeutronInelastic.emplace_back(lineage);
     }
 
     void MCNeutron::FillTTree()
