@@ -55,19 +55,39 @@ namespace neutron
         fNeutronEndProcess.emplace_back(particle.EndProcess());
         // see if neutron is a primary or not and then store its lineage
         std::vector<Int_t> lineage = {particle.TrackId()};
-        if (particle.Mother() != 0)
+        if (particle.EndProcess() == "nCapture")
         {
-            lineage.emplace_back(particle.Mother());
+            fNeutronInelastic.emplace_back(lineage);
             Int_t index = getNeutronIndex(eventId, particle.Mother());
+            lineage.emplace_back(fNeutronTrackId[index]);
+            fNeutronInelastic[index] = lineage;
             Int_t mother = fNeutronParentId[index];
             while (mother != 0)
             {
+                Int_t index = getNeutronIndex(eventId, particle.Mother());
                 lineage.emplace_back(fNeutronTrackId[index]);
-                index = getNeutronIndex(eventId, particle.Mother());
-                mother = fNeutronParentId[index];
+                fNeutronInelastic[index] = lineage;
+                Int_t mother = fNeutronParentId[index];
             }
         }
-        fNeutronInelastic.emplace_back(lineage);
+        else
+        {
+            fNeutronInelastic.emplace_back({});
+        }
+
+        // if (particle.Mother() != 0)
+        // {
+        //     lineage.emplace_back(particle.Mother());
+        //     Int_t index = getNeutronIndex(eventId, particle.Mother());
+        //     Int_t mother = fNeutronParentId[index];
+        //     while (mother != 0)
+        //     {
+        //         lineage.emplace_back(fNeutronTrackId[index]);
+        //         index = getNeutronIndex(eventId, particle.Mother());
+        //         mother = fNeutronParentId[index];
+        //     }
+        // }
+        // fNeutronInelastic.emplace_back(lineage);
     }
 
     void MCNeutron::FillTTree()
