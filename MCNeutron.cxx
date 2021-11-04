@@ -72,7 +72,7 @@ namespace neutron
         }
         else
         {
-            fNeutronInelastic.emplace_back({});
+            fNeutronInelastic.emplace_back(std::vector<Int_t>());
         }
 
         // if (particle.Mother() != 0)
