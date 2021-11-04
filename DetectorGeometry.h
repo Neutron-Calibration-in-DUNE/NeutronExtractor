@@ -109,7 +109,10 @@ namespace neutron
             x_min = x_min; x_max = x_max;
             y_min = y_min; y_max = y_max;
             z_min = z_min; z_max = z_max;
-        }position[0],position[1],position[2]
+        }
+        BoundingBox() {}
+        BoundingBox(double xs[2], double ys[2], double zs[2])
+        {
             x_min = xs[0]; x_max = xs[1];
             y_min = ys[0]; y_max = ys[1];
             z_min = zs[0]; z_max = zs[1];

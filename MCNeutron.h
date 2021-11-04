@@ -111,6 +111,13 @@ namespace neutron
         std::vector<std::string> fNeutronMaterialNameEnd;
         std::vector<Double_t> fNeutronMaterialBegin;
         std::vector<Double_t> fNeutronMaterialEnd;
+        // distances and displacements
+        std::vector<Double_t> fNeutronTotalDistance;
+        std::vector<std::vector<Double_t>> fNeutronDistances;
+        std::vector<Double_t> fNeutronTotalDisplacement;
+        // various time stamps for entering/exiting active volume
+        std::vector<Int_t> fNeutronEnteredActiveVolumeTime;
+        std::vector<Int_t> fNeutronExitActiveVolumeTime;
         // map from (event_id,track_id) -> index
         std::map<std::pair<Int_t,Int_t>, Int_t> fNeutronMap;
     };
