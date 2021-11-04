@@ -45,8 +45,8 @@ namespace neutron
             Py.emplace_back(particle.Py(i));
             Pz.emplace_back(particle.Pz(i));
             if (i != 0) {
-                distance.emplace_back(EuclideanDistance(X[i],Y[i],Z[i],X[i-1],Y[i-1],Z[i-1]));
-                totalDistance += distance[i];
+                distances.emplace_back(EuclideanDistance(X[i],Y[i],Z[i],X[i-1],Y[i-1],Z[i-1]));
+                totalDistance += distances[i];
             }
         }
         fNeutronT.emplace_back(T);
