@@ -181,6 +181,9 @@ namespace neutron
     void NeutronExtractor::endJob()
     {
         fMCNeutrons.FillTTree();
+        // global neutron info
+        fMetaTree->Branch("number_of_events", &fMCNeutrons.getNumberOfEvents());
+        fMetaTree->Branch("number_of_neutrons_per_event", &fMCNeutrons.getNumberOfNeutronsPerEvent());
         fMetaTree->Fill();
     }
 }

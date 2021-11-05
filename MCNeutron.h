@@ -70,6 +70,10 @@ namespace neutron
             return fNeutronMap[std::pair(eventId,trackId)];
         }
 
+        // getters
+        Int_t getNumberOfEvents();
+        std::vector<Int_t> getNumberOfNeutronsPerEvent();
+
         // set number of events
         void setNumberOfEvents(Int_t numberOfEvents);
         void initializeNewEvent();

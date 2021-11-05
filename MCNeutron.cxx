@@ -13,6 +13,16 @@ namespace neutron
     MCNeutron::~MCNeutron()
     {}
 
+    // getters
+    Int_t MCNeutron::getNumberOfEvents()
+    {
+        return fNumberOfEvents;
+    }
+    std::vector<Int_t> MCNeutron::getNumberOfNeutronsPerEvent()
+    {
+        return fNumberOfNeutronsPerEvent;
+    }
+
     void MCNeutron::setNumberOfEvents(Int_t numberOfEvents)
     {
         fNumberOfEvents = numberOfEvents;
@@ -119,10 +129,6 @@ namespace neutron
 
     void MCNeutron::FillTTree()
     {
-        // global neutron info
-        fMCNeutronTree->Branch("number_of_events", &fNumberOfEvents);
-        fMCNeutronTree->Branch("number_of_neutrons_per_event", &fNumberOfNeutronsPerEvent);
-        fMCNeutronTree->Fill();
         // fill each neutron
         // temporary container for individual neutron info
         typedef struct {
