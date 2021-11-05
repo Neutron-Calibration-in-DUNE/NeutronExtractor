@@ -102,13 +102,13 @@ namespace neutron
             y_min = Box.MinY(); y_max = Box.MaxY();
             z_min = Box.MinZ(); z_max = Box.MaxZ();
         }
-        void setBox(double x_min, double x_max,
-                    double y_min, double y_max,
-                    double z_min, double z_max)
+        void setBox(double xmin, double xmax,
+                    double ymin, double ymax,
+                    double zmin, double zmax)
         {
-            x_min = x_min; x_max = x_max;
-            y_min = y_min; y_max = y_max;
-            z_min = z_min; z_max = z_max;
+            x_min = xmin; x_max = xmax;
+            y_min = ymin; y_max = ymax;
+            z_min = zmin; z_max = zmax;
         }
         BoundingBox() {}
         BoundingBox(double xs[2], double ys[2], double zs[2])
