@@ -285,7 +285,7 @@ namespace neutron
             }
         }
         // get the energy depositions from IonAndScint for the event
-        auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fSimulationIonAndScintLabel);
+        auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fIonAndScintProducerLabel);
         if (mcEnergyDeposit.isValid())
         {
 
