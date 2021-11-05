@@ -70,8 +70,13 @@ namespace neutron
             return fNeutronMap[std::pair(eventId,trackId)];
         }
 
+        // set number of events
+        void setNumberOfEvents(Int_t numberOfEvents);
+        void initializeNewEvent();
         // add a new neutron
         void addNeutron(Int_t eventId, simb::MCParticle particle);
+        // add a gamma
+        void addGamma(Int_t eventId, simb::MCParticle gamma);
         // fill the mc neutron ttree
         void FillTTree();
     
@@ -81,6 +86,12 @@ namespace neutron
         // ROOT 
         art::ServiceHandle<art::TFileService> fTFileService;
         TTree *fMCNeutronTree;
+        // number of events
+        Int_t fNumberOfEvents;
+        // number of neutrons per event
+        std::vector<Int_t> fNumberOfNeutronsPerEvent;
+    // MCParticle information for neutrons
+    private:
         // number of neutrons
         size_t fNumberOfNeutrons;
         // low level information for neutrons
@@ -122,6 +133,22 @@ namespace neutron
         // map from (event_id,track_id) -> index
         std::map<std::pair<Int_t,Int_t>, Int_t> fNeutronMap;
         std::vector<std::vector<Int_t>> fNeutronMapKeys;
+    // MCParticle information for gammas that come from captures
+    private:
+        std::vector<Int_t> fNumberOfCaptureGammas;
+        std::vector<std::vector<Double_t>> fCaptureGammaInitialEnergy;
+        // initial and final position of the captured gammas
+        std::vector<std::vector<Double_t>> fCaptureGammaInitialX;
+        std::vector<std::vector<Double_t>> fCaptureGammaFinalX;
+        std::vector<std::vector<Double_t>> fCaptureGammaInitialY;
+        std::vector<std::vector<Double_t>> fCaptureGammaFinalY;
+        std::vector<std::vector<Double_t>> fCaptureGammaInitialZ;
+        std::vector<std::vector<Double_t>> fCaptureGammaFinalZ;
+        // initial momentum of the captured gammas
+        std::vector<std::vector<Double_t>> fCaptureGammaInitialPx;
+        std::vector<std::vector<Double_t>> fCaptureGammaInitialPy;
+        std::vector<std::vector<Double_t>> fCaptureGammaInitialPz;
+
     };
 
 }

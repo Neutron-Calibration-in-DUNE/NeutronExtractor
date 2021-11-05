@@ -8,15 +8,32 @@ namespace neutron
         fMCNeutronTree = fTFileService->make<TTree>("MCNeutron", "MCNeutron");
         // initialize number of neutrons
         fNumberOfNeutrons = 0;
+        fNumberOfEvents = 0;
     }
     MCNeutron::~MCNeutron()
     {}
 
+    void MCNeutron::setNumberOfEvents(Int_t numberOfEvents)
+    {
+        fNumberOfEvents = numberOfEvents;
+        fNumberOfNeutronsPerEvent.resize(fNumberOfEvents, 0);
+    }
+
+    void MCNeutron::initializeNewEvent()
+    {
+        fNumberOfEvents++;
+        fNumberOfNeutronsPerEvent.emplace_back(0);
+    }
+
     void MCNeutron::addNeutron(Int_t eventId, simb::MCParticle particle)
     {
+        // add new key to the event/particle map
         fNeutronMap[std::make_pair(eventId,particle.TrackId())] = fNumberOfNeutrons;
         fNeutronMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
+        // increase number of neutrons
         fNumberOfNeutrons++;
+        fNumberOfNeutronsPerEvent[i-1]++;
+        // add MCParticle values
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
         fNeutronParentId.emplace_back(particle.Mother());
@@ -102,6 +119,11 @@ namespace neutron
 
     void MCNeutron::FillTTree()
     {
+        // global neutron info
+        fMCNeutronTree->Branch("number_of_events", &fNumberOfEvents);
+        fMCNeutronTree->Branch("number_of_neutrons_per_event", &fNumberOfNeutronsPerEvent);
+        fMCNeutronTree->Fill();
+        // fill each neutron
         // temporary container for individual neutron info
         typedef struct {
             std::vector<Int_t> map_keys;

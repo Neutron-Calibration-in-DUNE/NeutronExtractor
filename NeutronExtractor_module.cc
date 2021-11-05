@@ -155,6 +155,9 @@ namespace neutron
         fSubRun = event.subRun();
         fEvent  = event.id().event();
 
+        // tell MCNeutrons that you have a new event
+        fMCNeutrons.initializeNewEvent();
+
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
         if (mcParticles.isValid())
