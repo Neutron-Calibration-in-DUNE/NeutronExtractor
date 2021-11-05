@@ -65,7 +65,7 @@ namespace neutron
                 }
             }
             else {
-                if (enteredActiveVolume == true && exitActiveVolume = false) {
+                if (enteredActiveVolume == true && exitActiveVolume == false) {
                     exitActiveVolume = true;
                     exitActiveVolumeTime = i;
                 }
