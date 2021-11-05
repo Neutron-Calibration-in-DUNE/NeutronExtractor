@@ -201,7 +201,7 @@ namespace neutron
                     if (checkListOfNeutrons(fEvent, particle.Mother()))
                     {
                         // check if the gamma comes from a capture
-                        if (particle.Process() == 'nCapture') {
+                        if (particle.Process() == "nCapture") {
                             fMCNeutrons.addGamma(fEvent, particle);
                         }
                     }
