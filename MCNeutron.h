@@ -121,6 +121,8 @@ namespace neutron
         std::vector<std::vector<Double_t>> fNeutronDistances;
         std::vector<Double_t> fNeutronTotalDisplacement;
         // various time stamps for entering/exiting active volume
+        std::vector<bool> fNeutronEnteredActiveVolume;
+        std::vector<bool> fNeutronExitActiveVolume;
         std::vector<Int_t> fNeutronEnteredActiveVolumeTime;
         std::vector<Int_t> fNeutronExitActiveVolumeTime;
         // map from (event_id,track_id) -> index

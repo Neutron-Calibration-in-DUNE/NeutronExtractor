@@ -37,6 +37,10 @@ namespace neutron
         std::vector<Double_t> Py; std::vector<Double_t> Pz;
         Double_t totalDistance = 0;
         std::vector<Double_t> distances = {0};
+        bool enteredActiveVolume = false;
+        bool exitActiveVolume = false;
+        Int_t enteredActiveVolumeTime = -1;
+        Int_t exitActiveVolumeTime = -1;
         for (size_t i = 0; i < particle.NumberTrajectoryPoints(); i++)
         {
             T.emplace_back(particle.T(i));
@@ -51,7 +55,26 @@ namespace neutron
                 distances.emplace_back(EuclideanDistance(X[i],Y[i],Z[i],X[i-1],Y[i-1],Z[i-1]));
                 totalDistance += distances[i];
             }
+            DetectorVolume currentVolume = fGeometry.getVolume(
+                particle.Vx(i), particle.Vy(i), particle.Vz(i)
+            )
+            if (currentVolume.volume_type == 2) {
+                if (enteredActiveVolume == false) {
+                    enteredActiveVolume = true;
+                    enteredActiveVolumeTime = i;
+                }
+            }
+            else {
+                if (enteredActiveVolume == true && exitActiveVolume = false) {
+                    exitActiveVolume = true;
+                    exitActiveVolumeTime = i;
+                }
+            }
         }
+        fNeutronEnteredActiveVolume.emplace_back(enteredActiveVolume);
+        fNeutronEnteredActiveVolumeTime.emplace_back(enteredActiveVolumeTime);
+        fNeutronExitActiveVolume.emplace_back(exitActiveVolume);
+        fNeutronExitActiveVolumeTime.emplace_back(exitActiveVolumeTime);
         fNeutronT.emplace_back(T);
         fNeutronX.emplace_back(X);
         fNeutronY.emplace_back(Y);
@@ -137,6 +160,10 @@ namespace neutron
             std::vector<Double_t> distances;
             Double_t total_distance;
             Double_t total_displacement;
+            Bool_t entered_active_volume;
+            Bool_t exit_active_volume;
+            Int_t entered_active_volume_time;
+            Int_t exit_active_volume_time;
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
@@ -170,6 +197,10 @@ namespace neutron
         fMCNeutronTree->Branch("distances", &mc_neutron.distances);
         fMCNeutronTree->Branch("total_distance", &mc_neutron.total_distance);
         fMCNeutronTree->Branch("total_displacement", &mc_neutron.total_displacement);
+        fMCNeutronTree->Branch("entered_active_volume", &mc_neutron.entered_active_volume);
+        fMCNeutronTree->Branch("entered_active_volume_time", &mc_neutron.entered_active_volume_time);
+        fMCNeutronTree->Branch("exit_active_volume", &mc_neutron.exit_active_volume);
+        fMCNeutronTree->Branch("exit_active_volume_time", &mc_neutron.exit_active_volume_time);
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
@@ -203,6 +234,10 @@ namespace neutron
             mc_neutron.distances = fNeutronDistances[i];
             mc_neutron.total_distance = fNeutronTotalDistance[i];
             mc_neutron.total_displacement = fNeutronTotalDisplacement[i];
+            mc_neutron.entered_active_volume = fNeutronEnteredActiveVolume[i];
+            mc_neutron.entered_active_volume_time = fNeutronEnteredActiveVolumeTime[i];
+            mc_neutron.exit_active_volume = fNeutronExitActiveVolume[i];
+            mc_neutron.exit_active_volume_time = fNeutronExitActiveVolumeTime[i];
             fMCNeutronTree->Fill();
         }
     }
