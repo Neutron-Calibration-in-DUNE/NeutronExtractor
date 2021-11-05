@@ -8,7 +8,6 @@ namespace neutron
         fMCNeutronTree = fTFileService->make<TTree>("MCNeutron", "MCNeutron");
         // initialize number of neutrons
         fNumberOfNeutrons = 0;
-        fNumberOfEvents = 0;
     }
     MCNeutron::~MCNeutron()
     {}
