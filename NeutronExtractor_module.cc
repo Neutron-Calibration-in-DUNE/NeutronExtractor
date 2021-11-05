@@ -285,6 +285,19 @@ namespace neutron
             }
         }
         // get the energy depositions from IonAndScint for the event
+        auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fLArGeantProducerLabel);
+        if (mcEnergyDeposit.isValid())
+        {
+            for (auto energyDeposit : *mcEnergyDeposit)
+            {
+                std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
+
+                // check if the deposit has a parent in the list of electrons
+                if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
+                {
+                }
+            }
+        }
         auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fIonAndScintProducerLabel);
         if (mcEnergyDeposit.isValid())
         {
