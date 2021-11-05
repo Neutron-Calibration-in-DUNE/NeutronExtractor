@@ -116,10 +116,11 @@ namespace neutron
         int fSubRun;
         int fEvent;
 
-        // mc neutrons
-        MCNeutron fMCNeutrons;
         // number of events
         Int_t fNumberOfEvents;
+
+        // mc neutrons
+        MCNeutron fMCNeutrons;
         // number of neutrons per event
         std::vector<Int_t> fNumberOfNeutronsPerEvent;
         // list of neutrons for each event
@@ -127,6 +128,13 @@ namespace neutron
 
         // mc gammas
         MCGamma fMCGammas;
+        // list of gammas for each event
+        std::vector<std::vector<Int_t>> fListOfGammas;
+
+        // mc electrons
+        MCElectron fMCElectrons;
+        // list of electrons for each event
+        std::vector<std::vector<Int_t>> fListOfElectrons;
     };
 
     // constructor
@@ -148,6 +156,38 @@ namespace neutron
         else {
             for (size_t i = 0; i < fListOfNeutrons[eventId-1].size(); i++) {
                 if (fListOfNeutrons[eventId-1][i] == trackId) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // check list of gammas
+    bool NeutronExtractor::checkListOfGammas(Int_t eventId, Int_t trackId)
+    {
+        if (eventId-1 >= fNumberOfEvents) { 
+            return false; 
+        }
+        else {
+            for (size_t i = 0; i < fListOfGammas[eventId-1].size(); i++) {
+                if (fListOfGammas[eventId-1][i] == trackId) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // check list of electrons
+    bool NeutronExtractor::checkListOfElectrons(Int_t eventId, Int_t trackId)
+    {
+        if (eventId-1 >= fNumberOfEvents) { 
+            return false; 
+        }
+        else {
+            for (size_t i = 0; i < fListOfElectrons[eventId-1].size(); i++) {
+                if (fListOfElectrons[eventId-1][i] == trackId) {
                     return true;
                 }
             }
@@ -184,6 +224,8 @@ namespace neutron
         fNumberOfEvents++;
         fNumberOfNeutronsPerEvent.emplace_back(0);
         fListOfNeutrons.emplace_back(std::vector<Int_t>());
+        fListOfGammas.emplace_back(std::vector<Int_t>());
+        fListOfElectrons.emplace_back(std::vector<Int_t>());
 
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
@@ -208,7 +250,23 @@ namespace neutron
                         if (particle.Process() == "nCapture") {
                             fMCNeutrons.addGamma(fEvent, particle);
                             fMCGammas.addGamma(fEvent, particle);
+                            // add gamma to the list
+                            fListOfGammas[fEvent-1].emplace_back(particle.TrackId());
                         }
+                    }
+                }
+                // check if the particle is an electron
+                if (particle.PdgCode() == 11)
+                {
+                    // check that the electron has a parent which is a gamma 
+                    // or another electron in the list
+                    if (checkListOfGammas(fEvent, particle.Mother()) || 
+                        checkListOfElectrons(fEvent, particle.Mother())
+                    )
+                    {
+                        fMCElectrons.addElectron(fEvent, particle);
+                        // add electron to the list
+                        fListOfElectrons[fEvent-1].emplace_back(particle.TrackId());
                     }
                 }
             }
@@ -226,6 +284,7 @@ namespace neutron
     {
         fMCNeutrons.FillTTree();
         fMCGammas.FillTTree();
+        fMCElectrons.FillTTree();
         // global neutron info
         fMetaTree->Branch("number_of_events", &fNumberOfEvents);
         fMetaTree->Branch("number_of_neutrons_per_event", &fNumberOfNeutronsPerEvent);
