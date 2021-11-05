@@ -2,9 +2,18 @@
 
 namespace neutron 
 {
+    DetectorGeometry* DetectorGeometry::sInstance{nullptr};
+    std::mutex DetectorGeometry::sMutex;
 
-    DetectorGeometry::~DetectorGeometry()
-    {}
+    DetectorGeometry *DetectorGeometry::getInstance(const std::string& name)
+    {
+        std::lock_guard<std::mutex> lock(sMutex);
+        if (sInstance == nullptr)
+        {
+            sInstance = new DetectorGeometry(name);
+        }
+        return sInstance;
+    }
 
     std::string DetectorGeometry::GetWorldName()          
     { 
@@ -84,7 +93,8 @@ namespace neutron
         return fTotalTPCMass; 
     }
     ///////////////////////////////////////////////////////////////////////////////////////
-    DetectorGeometry::DetectorGeometry()
+    DetectorGeometry::DetectorGeometry(const std::string name)
+    : sName(name)
     {
         // set up the geometry interface
         fGeometryCore = lar::providerFrom<geo::Geometry>();

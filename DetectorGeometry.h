@@ -142,9 +142,26 @@ namespace neutron
     ///////////////////////////////////////////////////////////////////////////////////////
     class DetectorGeometry
     {
+    private:
+        static DetectorGeometry * sInstance;
+        static std::mutex sMutex;
+    protected:
+        DetectorGeometry(const std::string name);
+        ~DetectorGeometry() {}
+        std::string sName;
     public:
-        DetectorGeometry();
-        ~DetectorGeometry();
+        // this singleton cannot be cloned
+        DetectorGeometry(DetectorGeometry &other) = delete;
+        // singleton should also not be assignable
+        void operator=(const DetectorGeometry &) = delete;
+
+        // static method that controls access to the singleton
+        // instance
+        static DetectorGeometry *getInstance(const std::string& name);
+
+        std::string Name() const {
+            return sName;
+        }
 
         // getters
         std::string GetWorldName();

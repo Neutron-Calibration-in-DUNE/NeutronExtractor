@@ -79,7 +79,7 @@ namespace neutron
     
     private:
         // geometry information
-        DetectorGeometry fGeometry;
+        DetectorGeometry* fGeometry = DetectorGeometry::getInstance("MCNeutron");
         // ROOT 
         art::ServiceHandle<art::TFileService> fTFileService;
         TTree *fMCNeutronTree;

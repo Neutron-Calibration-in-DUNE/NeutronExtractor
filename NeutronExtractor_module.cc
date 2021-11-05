@@ -106,7 +106,7 @@ namespace neutron
         art::InputTag fSimulationProducerLabel;
         art::InputTag fOutputFileArt;
         // geometry information
-        DetectorGeometry fGeometry;
+        DetectorGeometry* fGeometry = DetectorGeometry::getInstance("NeutronExtractor");
         // ROOT
         art::ServiceHandle<art::TFileService> fTFileService;
         TTree *fMetaTree;
@@ -212,7 +212,7 @@ namespace neutron
     // begin job
     void NeutronExtractor::beginJob()
     {
-        fGeometry.FillTTree();
+        fGeometry->FillTTree();
         fNumberOfEvents = 0;
         fNumberOfNeutronsPerEvent.clear();
     }

@@ -67,7 +67,7 @@ namespace neutron
                 distances.emplace_back(EuclideanDistance(X[i],Y[i],Z[i],X[i-1],Y[i-1],Z[i-1]));
                 totalDistance += distances[i];
             }
-            DetectorVolume currentVolume = fGeometry.getVolume(
+            DetectorVolume currentVolume = fGeometry->getVolume(
                 particle.Vx(i), particle.Vy(i), particle.Vz(i)
             );
             if (currentVolume.volume_type == 2) {
@@ -125,8 +125,8 @@ namespace neutron
             fNeutronInelastic.emplace_back(lineage);
         }
         // get volume information
-        DetectorVolume beginVolume = fGeometry.getVolume(particle.Vx(0), particle.Vy(0), particle.Vz(0));
-        DetectorVolume endVolume = fGeometry.getVolume(particle.EndX(), particle.EndY(), particle.EndZ());
+        DetectorVolume beginVolume = fGeometry->getVolume(particle.Vx(0), particle.Vy(0), particle.Vz(0));
+        DetectorVolume endVolume = fGeometry->getVolume(particle.EndX(), particle.EndY(), particle.EndZ());
         fNeutronVolumeTypeBegin.emplace_back(beginVolume.volume_type);
         fNeutronVolumeTypeEnd.emplace_back(endVolume.volume_type);
         fNeutronVolumeNameBegin.emplace_back(beginVolume.volume_name);
