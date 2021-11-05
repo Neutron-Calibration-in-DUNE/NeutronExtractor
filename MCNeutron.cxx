@@ -57,7 +57,7 @@ namespace neutron
             }
             DetectorVolume currentVolume = fGeometry.getVolume(
                 particle.Vx(i), particle.Vy(i), particle.Vz(i)
-            )
+            );
             if (currentVolume.volume_type == 2) {
                 if (enteredActiveVolume == false) {
                     enteredActiveVolume = true;
