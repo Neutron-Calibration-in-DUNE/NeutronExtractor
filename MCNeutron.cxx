@@ -125,6 +125,11 @@ namespace neutron
         fNeutronMaterialEnd.emplace_back(endVolume.material);
     }
 
+    void MCNeutron::addGamma(Int_t eventId, simb::MCParticle gamma)
+    {
+        std::cout << "here: " << eventId << "," << gamma.Mother() << "," << gamma.TrackId() << std::endl;
+    }
+
     void MCNeutron::FillTTree()
     {
         // fill each neutron

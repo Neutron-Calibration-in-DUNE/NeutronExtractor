@@ -100,6 +100,7 @@ namespace neutron
 
         // special functions
         void FillTTree();
+        bool checkListOfNeutrons(Int_t eventId, Int_t trackId);
 
     private:
         art::InputTag fSimulationProducerLabel;
@@ -120,6 +121,8 @@ namespace neutron
         Int_t fNumberOfEvents;
         // number of neutrons per event
         std::vector<Int_t> fNumberOfNeutronsPerEvent;
+        // list of neutrons for each event
+        std::vector<std::vector<Int_t>> fListOfNeutrons;
     };
 
     // constructor
@@ -130,6 +133,22 @@ namespace neutron
     {
         fMetaTree = fTFileService->make<TTree>("meta", "meta");
         consumes<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
+    }
+
+    // check list of neutrons
+    bool NeutronExtractor::checkListOfNeutrons(Int_t eventId, Int_t trackId)
+    {
+        if (eventId-1 >= fNumberOfEvents) { 
+            return false; 
+        }
+        else {
+            for (size_t i = 0; i < fListOfNeutrons[eventId-1].size(); i++) {
+                if (fListOfNeutrons[eventId-1][i] == trackId) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // analyze function
@@ -160,6 +179,7 @@ namespace neutron
 
         fNumberOfEvents++;
         fNumberOfNeutronsPerEvent.emplace_back(0);
+        fListOfNeutrons.emplace_back(std::vector<Int_t>());
 
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
@@ -172,6 +192,19 @@ namespace neutron
                 {
                     fMCNeutrons.addNeutron(fEvent, particle);
                     fNumberOfNeutronsPerEvent[fEvent-1]++;
+                    fListOfNeutrons[fEvent-1].emplace_back(particle.TrackId());
+                }
+                // check if the particle is a gamma
+                if (particle.PdgCode() == 22)
+                {
+                    // check that the gamma has a parent which is a neutron in the list
+                    if (checkListOfNeutrons(fEvent, particle.Mother()))
+                    {
+                        // check if the gamma comes from a capture
+                        if (particle.Process() == 'nCapture') {
+                            fMCNeutrons.addGamma(fEvent, particle);
+                        }
+                    }
                 }
             }
         }
