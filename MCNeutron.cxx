@@ -15,7 +15,7 @@ namespace neutron
     void MCNeutron::addNeutron(Int_t eventId, simb::MCParticle particle)
     {
         fNeutronMap[std::make_pair(eventId,particle.TrackId())] = fNumberOfNeutrons;
-        fNeutromMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
+        fNeutronMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
         fNumberOfNeutrons++;
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
