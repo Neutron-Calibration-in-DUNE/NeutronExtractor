@@ -18,6 +18,18 @@ namespace neutron
         fNeutronMap[std::make_pair(eventId,particle.TrackId())] = fNumberOfNeutrons;
         fNeutronMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
         fNumberOfNeutrons++;
+        // add new gamma entry
+        fNumberOfCaptureGammas.emplace_back(0);
+        fCaptureGammaInitialEnergy.emplace_back(std::vector<Double_t>());
+        fCaptureGammaInitialX.emplace_back(std::vector<Double_t>());
+        fCaptureGammaFinalX.emplace_back(std::vector<Double_t>());
+        fCaptureGammaInitialY.emplace_back(std::vector<Double_t>());
+        fCaptureGammaFinalY.emplace_back(std::vector<Double_t>());
+        fCaptureGammaInitialZ.emplace_back(std::vector<Double_t>());
+        fCaptureGammaFinalZ.emplace_back(std::vector<Double_t>());
+        fCaptureGammaInitialPx.emplace_back(std::vector<Double_t>());
+        fCaptureGammaInitialPy.emplace_back(std::vector<Double_t>());
+        fCaptureGammaInitialPz.emplace_back(std::vector<Double_t>());
         // add MCParticle values
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
@@ -127,7 +139,21 @@ namespace neutron
 
     void MCNeutron::addGamma(Int_t eventId, simb::MCParticle gamma)
     {
-        std::cout << "here: " << eventId << "," << gamma.Mother() << "," << gamma.TrackId() << std::endl;
+        // get neutron index
+        Int_t neutronIndex = fNeutronMap[std::make_pair(eventId,gamma.Mother())]
+        // update number of capture gamms
+        fNumberOfCaptureGammas[neutronIndex]++;
+        // add gamma info
+        fCaptureGammaInitialEnergy[neutronIndex].emplace_back(gamma.E(0));
+        fCaptureGammaInitialX[neutronIndex].emplace_back(gamma.Vx(0));
+        fCaptureGammaFinalX[neutronIndex].emplace_back(gamma.EndX());
+        fCaptureGammaInitialY[neutronIndex].emplace_back(gamma.Vy(0));
+        fCaptureGammaFinalY[neutronIndex].emplace_back(gamma.EndY());
+        fCaptureGammaInitialZ[neutronIndex].emplace_back(gamma.Vz(0));
+        fCaptureGammaFinalZ[neutronIndex].emplace_back(gamma.EndZ());
+        fCaptureGammaInitialPx[neutronIndex].emplace_back(gamma.Px(0));
+        fCaptureGammaInitialPy[neutronIndex].emplace_back(gamma.Py(0));
+        fCaptureGammaInitialPz[neutronIndex].emplace_back(gamma.Pz(0));
     }
 
     void MCNeutron::FillTTree()
@@ -169,6 +195,17 @@ namespace neutron
             Bool_t exit_active_volume;
             Int_t entered_active_volume_time;
             Int_t exit_active_volume_time;
+            Int_t number_of_capture_gammas;
+            std::vector<Double_t> capture_gamma_initial_energy;
+            std::vector<Double_t> capture_gamma_initial_x;
+            std::vector<Double_t> capture_gamma_final_x;
+            std::vector<Double_t> capture_gamma_initial_y;
+            std::vector<Double_t> capture_gamma_final_y;
+            std::vector<Double_t> capture_gamma_initial_z;
+            std::vector<Double_t> capture_gamma_final_z;
+            std::vector<Double_t> capture_gamma_initial_px;
+            std::vector<Double_t> capture_gamma_initial_py;
+            std::vector<Double_t> capture_gamma_initial_pz;
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
@@ -206,6 +243,17 @@ namespace neutron
         fMCNeutronTree->Branch("entered_active_volume_time", &mc_neutron.entered_active_volume_time);
         fMCNeutronTree->Branch("exit_active_volume", &mc_neutron.exit_active_volume);
         fMCNeutronTree->Branch("exit_active_volume_time", &mc_neutron.exit_active_volume_time);
+        fMCNeutronTree->Branch("number_of_capture_gammas", &mc_neutron.number_of_capture_gammas);
+        fMCNeutronTree->Branch("capture_gamma_initial_energy", &mc_neutron.capture_gamma_initial_energy);
+        fMCNeutronTree->Branch("capture_gamma_initial_x", &mc_neutron.capture_gamma_initial_x);
+        fMCNeutronTree->Branch("capture_gamma_final_x", &mc_neutron.capture_gamma_final_x);
+        fMCNeutronTree->Branch("capture_gamma_initial_y", &mc_neutron.capture_gamma_initial_y);
+        fMCNeutronTree->Branch("capture_gamma_final_y", &mc_neutron.capture_gamma_final_y);
+        fMCNeutronTree->Branch("capture_gamma_initial_z", &mc_neutron.capture_gamma_initial_z);
+        fMCNeutronTree->Branch("capture_gamma_final_z", &mc_neutron.capture_gamma_final_z);
+        fMCNeutronTree->Branch("capture_gamma_initial_px", &mc_neutron.capture_gamma_initial_px);
+        fMCNeutronTree->Branch("capture_gamma_initial_py", &mc_neutron.capture_gamma_initial_py);
+        fMCNeutronTree->Branch("capture_gamma_initial_pz", &mc_neutron.capture_gamma_initial_pz;
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
@@ -243,6 +291,17 @@ namespace neutron
             mc_neutron.entered_active_volume_time = fNeutronEnteredActiveVolumeTime[i];
             mc_neutron.exit_active_volume = fNeutronExitActiveVolume[i];
             mc_neutron.exit_active_volume_time = fNeutronExitActiveVolumeTime[i];
+            mc_neutron.number_of_capture_gammas = fNumberOfCaptureGammas[i];
+            mc_neutron.capture_gamma_initial_energy = fCaptureGammaInitialEnergy[i];
+            mc_neutron.capture_gamma_initial_x = fCaptureGammaInitialX[i];
+            mc_neutron.capture_gamma_final_x = fCaptureGammaFinalX[i];
+            mc_neutron.capture_gamma_initial_y = fCaptureGammaInitialY[i];
+            mc_neutron.capture_gamma_final_y = fCaptureGammaFinalY[i];
+            mc_neutron.capture_gamma_initial_z = fCaptureGammaInitialZ[i];
+            mc_neutron.capture_gamma_final_z = fCaptureGammaFinalZ[i];
+            mc_neutron.capture_gamma_initial_px = fCaptureGammaInitialPx[i];
+            mc_neutron.capture_gamma_initial_py = fCaptureGammaInitialPy[i];
+            mc_neutron.capture_gamma_initial_pz = fCaptureGammaInitialPz[i];
             fMCNeutronTree->Fill();
         }
     }
