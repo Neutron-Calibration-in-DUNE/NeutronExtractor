@@ -290,10 +290,11 @@ namespace neutron
         {
             for (auto energyDeposit : *mcEnergyDeposit)
             {
+                std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
+
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
                 {
-                    std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
                 }
             }
         }
