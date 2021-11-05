@@ -140,7 +140,7 @@ namespace neutron
     void MCNeutron::addGamma(Int_t eventId, simb::MCParticle gamma)
     {
         // get neutron index
-        Int_t neutronIndex = fNeutronMap[std::make_pair(eventId,gamma.Mother())]
+        Int_t neutronIndex = fNeutronMap[std::make_pair(eventId,gamma.Mother())];
         // update number of capture gamms
         fNumberOfCaptureGammas[neutronIndex]++;
         // add gamma info
@@ -253,7 +253,7 @@ namespace neutron
         fMCNeutronTree->Branch("capture_gamma_final_z", &mc_neutron.capture_gamma_final_z);
         fMCNeutronTree->Branch("capture_gamma_initial_px", &mc_neutron.capture_gamma_initial_px);
         fMCNeutronTree->Branch("capture_gamma_initial_py", &mc_neutron.capture_gamma_initial_py);
-        fMCNeutronTree->Branch("capture_gamma_initial_pz", &mc_neutron.capture_gamma_initial_pz;
+        fMCNeutronTree->Branch("capture_gamma_initial_pz", &mc_neutron.capture_gamma_initial_pz);
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
