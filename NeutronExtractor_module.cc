@@ -76,10 +76,15 @@ namespace neutron
     public:
         struct Config
         {
-            fhicl::Atom<art::InputTag> SimulationLabel
+            fhicl::Atom<art::InputTag> LArGeantProducerLabel
             {
-                fhicl::Name("SimulationLabel"),
-                fhicl::Comment("tag of the input data product with the detector simulation")
+                fhicl::Name("LArGeantProducerLabel"),
+                fhicl::Comment("tag of the input data product with the largeant side of the simulation")
+            };
+            fhicl::Atom<art::InputTag> IonAndScintProducerLabel
+            {
+                fhicl::Name("IonAndScintProducerLabel"),
+                fhicl::Comment("tag of the input data product with the ionization and scintillation simulation")
             };
             fhicl::Atom<art::InputTag> OutputFile
             {
@@ -107,7 +112,8 @@ namespace neutron
         bool checkListOfElectrons(Int_t eventId, Int_t trackId);
 
     private:
-        art::InputTag fSimulationProducerLabel;
+        art::InputTag fLArGeantProducerLabel;
+        art::InputTag fIonAndScintProducerLabel;
         art::InputTag fOutputFileArt;
         // geometry information
         DetectorGeometry* fGeometry = DetectorGeometry::getInstance("NeutronExtractor");
@@ -143,11 +149,12 @@ namespace neutron
     // constructor
     NeutronExtractor::NeutronExtractor(Parameters const& config)
     : EDAnalyzer(config)
-    , fSimulationProducerLabel(config().SimulationLabel())
+    , fLArGeantProducerLabel(config().LArGeantProducerLabel())
+    , fIonAndScintProducerLabel(config().IonAndScintProducerLabel())
     , fOutputFileArt(config().OutputFile())
     {
         fMetaTree = fTFileService->make<TTree>("meta", "meta");
-        consumes<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
+        consumes<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
     }
 
     // check list of neutrons
@@ -211,7 +218,7 @@ namespace neutron
         }
         // define a "handle" to point to a vector of the objects
         art::Handle<std::vector<simb::MCParticle>> particleHandle;
-        if (!event.getByLabel(fSimulationProducerLabel, particleHandle))
+        if (!event.getByLabel(fLArGeantProducerLabel, particleHandle))
         {
             // if there are no particles for the event truth, then
             // we are in big trouble haha.  throw an exception
@@ -231,7 +238,10 @@ namespace neutron
         fListOfElectrons.emplace_back(std::vector<Int_t>());
 
         // get the list of MC particles from Geant4
-        auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
+        auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
+        // iterate over all MC particles and grab all neutrons, all gammas
+        // which come from neutron captures regardless of where they happen and
+        // all electrons generated from the gammas.
         if (mcParticles.isValid())
         {
             for (auto particle : *mcParticles)
@@ -273,6 +283,12 @@ namespace neutron
                     }
                 }
             }
+        }
+        // get the energy depositions from IonAndScint for the event
+        auto mcEnergyDeposit = event.getValidHandle<std::vector<simb::SimEnergyDeposit>>(fSimulationIonAndScintLabel);
+        if (mcEnergyDeposit.isValid())
+        {
+            
         }
     }
     // begin job
