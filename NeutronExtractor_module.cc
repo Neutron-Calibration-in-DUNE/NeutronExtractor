@@ -108,6 +108,7 @@ namespace neutron
         DetectorGeometry fGeometry;
         // ROOT
         art::ServiceHandle<art::TFileService> fTFileService;
+        TTree *fMetaTree;
         // event variables
         int fRun;
         int fSubRun;
@@ -124,6 +125,7 @@ namespace neutron
     , fSimulationProducerLabel(config().SimulationLabel())
     , fOutputFileArt(config().OutputFile())
     {
+        fMetaTree = fTFileService->make<TTree>("meta", "meta");
         consumes<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
     }
 
@@ -176,6 +178,7 @@ namespace neutron
     void NeutronExtractor::endJob()
     {
         fMCNeutrons.FillTTree();
+        fMetaTree->Fill();
     }
 }
 

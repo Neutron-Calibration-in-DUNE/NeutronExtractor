@@ -15,6 +15,7 @@ namespace neutron
     void MCNeutron::addNeutron(Int_t eventId, simb::MCParticle particle)
     {
         fNeutronMap[std::make_pair(eventId,particle.TrackId())] = fNumberOfNeutrons;
+        fNeutromMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
         fNumberOfNeutrons++;
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
@@ -103,6 +104,7 @@ namespace neutron
     {
         // temporary container for individual neutron info
         typedef struct {
+            std::vector<Int_t> map_keys;
             Int_t event_id;
             Int_t track_id;
             Int_t parent_id;
@@ -135,6 +137,7 @@ namespace neutron
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
+        fMCNeutronTree->Branch("map_keys", &mc_neutron.map_keys);
         fMCNeutronTree->Branch("event_id", &mc_neutron.event_id);
         fMCNeutronTree->Branch("track_id", &mc_neutron.track_id);
         fMCNeutronTree->Branch("parent_id", &mc_neutron.parent_id);
@@ -167,6 +170,7 @@ namespace neutron
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
+            mc_neutron.map_keys = fNeutronMapKeys[i];
             mc_neutron.event_id = fEventId[i];
             mc_neutron.track_id = fNeutronTrackId[i];
             mc_neutron.parent_id = fNeutronParentId[i];

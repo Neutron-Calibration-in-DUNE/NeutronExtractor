@@ -121,6 +121,7 @@ namespace neutron
         std::vector<Int_t> fNeutronExitActiveVolumeTime;
         // map from (event_id,track_id) -> index
         std::map<std::pair<Int_t,Int_t>, Int_t> fNeutronMap;
+        std::vector<std::vector<Int_t>> fNeutronMapKeys;
     };
 
 }
