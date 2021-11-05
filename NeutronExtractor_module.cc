@@ -62,6 +62,7 @@
 // local includes
 #include "DetectorGeometry.h"
 #include "MCNeutron.h"
+#include "MCGamma.h"
 
 namespace neutron {
     class NeutronExtractor;
@@ -123,6 +124,9 @@ namespace neutron
         std::vector<Int_t> fNumberOfNeutronsPerEvent;
         // list of neutrons for each event
         std::vector<std::vector<Int_t>> fListOfNeutrons;
+
+        // mc gammas
+        MCGamma fMCGammas;
     };
 
     // constructor
@@ -203,6 +207,7 @@ namespace neutron
                         // check if the gamma comes from a capture
                         if (particle.Process() == "nCapture") {
                             fMCNeutrons.addGamma(fEvent, particle);
+                            fMCGammas.addGamma(fEvent, particle);
                         }
                     }
                 }
@@ -220,6 +225,7 @@ namespace neutron
     void NeutronExtractor::endJob()
     {
         fMCNeutrons.FillTTree();
+        fMCGammas.FillTTree();
         // global neutron info
         fMetaTree->Branch("number_of_events", &fNumberOfEvents);
         fMetaTree->Branch("number_of_neutrons_per_event", &fNumberOfNeutronsPerEvent);
