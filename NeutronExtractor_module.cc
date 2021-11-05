@@ -63,6 +63,7 @@
 #include "DetectorGeometry.h"
 #include "MCNeutron.h"
 #include "MCGamma.h"
+#include "MCElectron.h"
 
 namespace neutron {
     class NeutronExtractor;
