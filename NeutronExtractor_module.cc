@@ -103,6 +103,8 @@ namespace neutron
         // special functions
         void FillTTree();
         bool checkListOfNeutrons(Int_t eventId, Int_t trackId);
+        bool checkListOfGammas(Int_t eventId, Int_t trackId);
+        bool checkListOfElectrons(Int_t eventId, Int_t trackId);
 
     private:
         art::InputTag fSimulationProducerLabel;
