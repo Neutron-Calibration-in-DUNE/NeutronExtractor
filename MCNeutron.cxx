@@ -32,7 +32,7 @@ namespace neutron
         fNeutronMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
         // increase number of neutrons
         fNumberOfNeutrons++;
-        fNumberOfNeutronsPerEvent[i-1]++;
+        fNumberOfNeutronsPerEvent[eventId-1]++;
         // add MCParticle values
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
