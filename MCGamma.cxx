@@ -18,18 +18,6 @@ namespace neutron
         fGammaMap[std::make_pair(eventId,particle.TrackId())] = fNumberOfGammas;
         fGammaMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
         fNumberOfGammas++;
-        // add new gamma entry
-        fNumberOfCaptureGammas.emplace_back(0);
-        fCaptureGammaInitialEnergy.emplace_back(std::vector<Double_t>());
-        fCaptureGammaInitialX.emplace_back(std::vector<Double_t>());
-        fCaptureGammaFinalX.emplace_back(std::vector<Double_t>());
-        fCaptureGammaInitialY.emplace_back(std::vector<Double_t>());
-        fCaptureGammaFinalY.emplace_back(std::vector<Double_t>());
-        fCaptureGammaInitialZ.emplace_back(std::vector<Double_t>());
-        fCaptureGammaFinalZ.emplace_back(std::vector<Double_t>());
-        fCaptureGammaInitialPx.emplace_back(std::vector<Double_t>());
-        fCaptureGammaInitialPy.emplace_back(std::vector<Double_t>());
-        fCaptureGammaInitialPz.emplace_back(std::vector<Double_t>());
         // add MCParticle values
         fEventId.emplace_back(eventId);
         fGammaTrackId.emplace_back(particle.TrackId());
