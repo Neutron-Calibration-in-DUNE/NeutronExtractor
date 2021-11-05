@@ -13,36 +13,11 @@ namespace neutron
     MCNeutron::~MCNeutron()
     {}
 
-    // getters
-    Int_t MCNeutron::getNumberOfEvents()
-    {
-        return fNumberOfEvents;
-    }
-    std::vector<Int_t> MCNeutron::getNumberOfNeutronsPerEvent()
-    {
-        return fNumberOfNeutronsPerEvent;
-    }
-
-    void MCNeutron::setNumberOfEvents(Int_t numberOfEvents)
-    {
-        fNumberOfEvents = numberOfEvents;
-        fNumberOfNeutronsPerEvent.resize(fNumberOfEvents, 0);
-    }
-
-    void MCNeutron::initializeNewEvent()
-    {
-        fNumberOfEvents++;
-        fNumberOfNeutronsPerEvent.emplace_back(0);
-    }
-
     void MCNeutron::addNeutron(Int_t eventId, simb::MCParticle particle)
     {
         // add new key to the event/particle map
         fNeutronMap[std::make_pair(eventId,particle.TrackId())] = fNumberOfNeutrons;
         fNeutronMapKeys.emplace_back(std::vector<Int_t>({eventId,particle.TrackId()}));
-        // increase number of neutrons
-        fNumberOfNeutrons++;
-        fNumberOfNeutronsPerEvent[eventId-1]++;
         // add MCParticle values
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());

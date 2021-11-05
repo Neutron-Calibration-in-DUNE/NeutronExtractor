@@ -70,13 +70,6 @@ namespace neutron
             return fNeutronMap[std::pair(eventId,trackId)];
         }
 
-        // getters
-        Int_t getNumberOfEvents();
-        std::vector<Int_t> getNumberOfNeutronsPerEvent();
-
-        // set number of events
-        void setNumberOfEvents(Int_t numberOfEvents);
-        void initializeNewEvent();
         // add a new neutron
         void addNeutron(Int_t eventId, simb::MCParticle particle);
         // add a gamma
@@ -90,10 +83,6 @@ namespace neutron
         // ROOT 
         art::ServiceHandle<art::TFileService> fTFileService;
         TTree *fMCNeutronTree;
-        // number of events
-        Int_t fNumberOfEvents;
-        // number of neutrons per event
-        std::vector<Int_t> fNumberOfNeutronsPerEvent;
     // MCParticle information for neutrons
     private:
         // number of neutrons

@@ -116,7 +116,10 @@ namespace neutron
 
         // mc neutrons
         MCNeutron fMCNeutrons;
-
+        // number of events
+        Int_t fNumberOfEvents;
+        // number of neutrons per event
+        std::vector<Int_t> fNumberOfNeutronsPerEvent;
     };
 
     // constructor
@@ -155,8 +158,8 @@ namespace neutron
         fSubRun = event.subRun();
         fEvent  = event.id().event();
 
-        // tell MCNeutrons that you have a new event
-        fMCNeutrons.initializeNewEvent();
+        fNumberOfEvents++;
+        fNumberOfNeutronsPerEvent.emplace_back(0);
 
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fSimulationProducerLabel);
@@ -168,6 +171,7 @@ namespace neutron
                 if (particle.PdgCode() == 2112)
                 {
                     fMCNeutrons.addNeutron(fEvent, particle);
+                    fNumberOfNeutronsPerEvent[fEvent-1]++;
                 }
             }
         }
@@ -176,14 +180,16 @@ namespace neutron
     void NeutronExtractor::beginJob()
     {
         fGeometry.FillTTree();
+        fNumberOfEvents = 0;
+        fNumberOfNeutronsPerEvent.clear();
     }
     // end job
     void NeutronExtractor::endJob()
     {
         fMCNeutrons.FillTTree();
         // global neutron info
-        fMetaTree->Branch("number_of_events", &fMCNeutrons.getNumberOfEvents());
-        fMetaTree->Branch("number_of_neutrons_per_event", &fMCNeutrons.getNumberOfNeutronsPerEvent());
+        fMetaTree->Branch("number_of_events", &fNumberOfEvents);
+        fMetaTree->Branch("number_of_neutrons_per_event", &fNumberOfNeutronsPerEvent);
         fMetaTree->Fill();
     }
 }
