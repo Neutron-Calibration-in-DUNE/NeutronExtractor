@@ -81,6 +81,11 @@ namespace neutron
                 fhicl::Name("LArGeantProducerLabel"),
                 fhicl::Comment("tag of the input data product with the largeant side of the simulation")
             };
+            fhicl::Atom<art::InputTag> LArGeantEnergyDepositProducerLabel
+            {
+                fhicl::Name("LArGeantEnergyDepositProducerLabel"),
+                fhicl::Comment("tag of the input data product with the largeant side of the simulation")
+            };
             fhicl::Atom<art::InputTag> IonAndScintProducerLabel
             {
                 fhicl::Name("IonAndScintProducerLabel"),
@@ -113,6 +118,7 @@ namespace neutron
 
     private:
         art::InputTag fLArGeantProducerLabel;
+        art::InputTag fLArGeantEnergyDepositProducerLabel;
         art::InputTag fIonAndScintProducerLabel;
         art::InputTag fOutputFileArt;
         // geometry information
@@ -150,6 +156,7 @@ namespace neutron
     NeutronExtractor::NeutronExtractor(Parameters const& config)
     : EDAnalyzer(config)
     , fLArGeantProducerLabel(config().LArGeantProducerLabel())
+    , fLArGeantEnergyDepositProducerLabel(config().LArGeantEnergyDepositProducerLabel())
     , fIonAndScintProducerLabel(config().IonAndScintProducerLabel())
     , fOutputFileArt(config().OutputFile())
     {
@@ -285,15 +292,15 @@ namespace neutron
             }
         }
         // get the energy depositions from IonAndScint for the event
-        auto mcEnergyDeposit2 = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fLArGeantProducerLabel);
-        if (mcEnergyDeposit2.isValid())
+        auto mcGeantEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fLArGeantEnergyDepositProducerLabel);
+        if (mcGeantEnergyDeposit.isValid())
         {
-            for (auto energyDeposit2 : *mcEnergyDeposit2)
+            for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
             {
-                std::cout << fEvent << "," << energyDeposit2.TrackID() << "," << energyDeposit2.NumElectrons() << std::endl;
+                std::cout << fEvent << "," << GeantEnergyDeposit.TrackID() << "," << GeantEnergyDeposit.NumElectrons() << std::endl;
 
                 // check if the deposit has a parent in the list of electrons
-                if (checkListOfElectrons(fEvent, energyDeposit2.TrackID()))
+                if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
                 {
                 }
             }

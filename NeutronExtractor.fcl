@@ -2,10 +2,11 @@ BEGIN_PROLOG
 
 NeutronExtractor:
 {
-    module_type:                "NeutronExtractor"
-    LArGeantProducerLabel:      "largeant"
-    IonAndScintProducerLabel:   "IonAndScint"
-    OutputFile:                 "output.root"
+    module_type:                        "NeutronExtractor"
+    LArGeantProducerLabel:              "largeant"
+    LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActive"
+    IonAndScintProducerLabel:           "IonAndScint"
+    OutputFile:                         "output.root"
 }
 
 END_PROLOG
