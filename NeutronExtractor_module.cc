@@ -310,6 +310,16 @@ namespace neutron
                         std::cout << ",(" << particle.Vx() << "," << particle.Vy() << "," << particle.Vz();
                         std::cout << "),(" << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ();
                         std::cout << "),(" << particle.T() << "," << particle.EndT() << ")" << std::endl;
+                        for (auto parent : *mcParticles)
+                        {
+                            if (parent.TrackId() == particle.Mother())
+                            {
+                                std::cout << "\t\t" << parent.TrackId() << ',' << parent.PdgCode() << "," << parent.Mother();
+                                std::cout << ",(" << parent.Vx() << "," << parent.Vy() << "," << parent.Vz();
+                                std::cout << "),(" << parent.EndX() << "," << parent.EndY() << "," << parent.EndZ();
+                                std::cout << "),(" << parent.T() << "," << parent.EndT() << ")" << std::endl;
+                            }
+                        }
                     }
                 }
 
