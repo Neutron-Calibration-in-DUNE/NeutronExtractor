@@ -25,8 +25,10 @@ namespace neutron
         fElectronStatusCode.emplace_back(particle.StatusCode());
         fElectronNumberOfDaughters.emplace_back(particle.NumberDaughters());
         std::vector<Int_t> daughters = {};
+        std::cout << "Electron: " << eventId << "," << particle.TrackId() << std::endl;
         for (Int_t i = 0; i < particle.NumberDaughters(); i++)
         {
+            std::cout << "  daughter " << i << ": " << particle.Daughter(i) << std::endl;
             daughters.emplace_back(particle.Daughter(i));
         }
         fElectronDaughters.emplace_back(daughters);
