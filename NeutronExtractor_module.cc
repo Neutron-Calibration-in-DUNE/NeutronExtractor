@@ -308,7 +308,7 @@ namespace neutron
                     {
                         std::cout << "\t" << particle.TrackId() << ',' << particle.PdgCode();
                         std::cout << ",(" << particle.Vx() << "," << particle.Vy() << "," << particle.Vz();
-                        std::cout << "),(" << particle.EndX() << "," << particle.Eny() << "," << particle.EndZ();
+                        std::cout << "),(" << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ();
                         std::cout << "),(" << particle.T() << "," << particle.EndT() << ")" << std::endl;
                     }
                 }
