@@ -295,9 +295,23 @@ namespace neutron
         auto mcGeantEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fLArGeantEnergyDepositProducerLabel);
         if (mcGeantEnergyDeposit.isValid())
         {
+
             for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
             {
-                std::cout << fEvent << "," << GeantEnergyDeposit.TrackID() << "," << GeantEnergyDeposit.NumElectrons() << std::endl;
+                std::cout << fEvent << "," << GeantEnergyDeposit.TrackID();
+                std::cout << "," << GeantEnergyDeposit.NumElectrons();
+                std::cout << ",(" << GeantEnergyDeposit.StartX() << "," << GeantEnergyDeposit.StartY() << "," << GeantEnergyDeposit.StartZ();
+                std::cout << "),(" << GeantEnergyDeposit.T0() << "," << GeantEnergyDeposit.T1() << ")"  << std::endl;
+                for (auto particle : *mcParticles)
+                {   
+                    if (particle.TrackId() == GeantEnergyDeposit.TrackID())
+                    {
+                        std::cout << "\t" << particle.TrackId() << ',' << particle.PdgCode();
+                        std::cout << ",(" << particle.Vx() << "," << particle.Vy() << "," << particle.Vz();
+                        std::cout << "),(" << particle.EndX() << "," << particle.Eny() << "," << particle.EndZ();
+                        std::cout << "),(" << particle.T() << "," << particle.EndT() << ")" << std::endl;
+                    }
+                }
 
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
