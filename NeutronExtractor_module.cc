@@ -306,7 +306,7 @@ namespace neutron
                 {   
                     if (particle.TrackId() == GeantEnergyDeposit.TrackID())
                     {
-                        std::cout << "\t" << particle.TrackId() << ',' << particle.PdgCode();
+                        std::cout << "\t" << particle.TrackId() << ',' << particle.PdgCode() << "," << particle.Mother();
                         std::cout << ",(" << particle.Vx() << "," << particle.Vy() << "," << particle.Vz();
                         std::cout << "),(" << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ();
                         std::cout << "),(" << particle.T() << "," << particle.EndT() << ")" << std::endl;
@@ -324,7 +324,7 @@ namespace neutron
         {
             for (auto energyDeposit : *mcEnergyDeposit)
             {
-                std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
+                //std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
 
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
