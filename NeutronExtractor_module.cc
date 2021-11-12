@@ -289,7 +289,7 @@ namespace neutron
                         fMCElectrons.addElectron(fEvent, particle);
                         // add electron to the list
                         fListOfElectrons[fEvent-1].emplace_back(particle.TrackId());
-                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() << "(" << particle.T() << "," << particle.Vx() << "," << particle.Vy() << "," << particle.Vz() << ")" << " (" << particle.EndT() << "," << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ() << ")" << std::endl;
+                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() << " (" << particle.T() << "," << particle.Vx() << "," << particle.Vy() << "," << particle.Vz() << ")" << " (" << particle.EndT() << "," << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ() << ")" << std::endl;
                     }
                 }
             }
