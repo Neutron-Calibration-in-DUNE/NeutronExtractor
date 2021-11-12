@@ -80,7 +80,7 @@ namespace neutron
         std::vector<std::vector<Int_t>> electron_ids;
         std::vector<std::vector<Int_t>> electron_parent;
         std::vector<std::vector<Double_t>> electron_energy;
-        std::vector<std::vector<Double_t>> edep_parent;
+        std::vector<std::vector<Int_t>> edep_parent;
         std::vector<std::vector<Double_t>> edep_energy; 
         std::vector<std::vector<Int_t>> edep_num_electrons;
         std::vector<std::vector<Double_t>> edep_x;
