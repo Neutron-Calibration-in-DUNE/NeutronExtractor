@@ -290,7 +290,7 @@ namespace neutron
                         // add electron to the list
                         fListOfElectrons[fEvent-1].emplace_back(particle.TrackId());
                         DetectorVolume currentVolume = fGeometry->getVolume(
-                            particle.Vx(i), particle.Vy(i), particle.Vz(i)
+                            particle.Vx(), particle.Vy(), particle.Vz()
                         );
                         std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() <<  "," <<  currentVolume.material_name << std::endl;
                     }
@@ -305,7 +305,7 @@ namespace neutron
             for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
             {
                 DetectorVolume currentVolume = fGeometry->getVolume(
-                    GeantEnergyDepost.StartX(), GeantEnergyDepost.StartY(), GeantEnergyDepost.StartZ()
+                    GeantEnergyDeposit.StartX(), GeantEnergyDeposit.StartY(), GeantEnergyDeposit.StartZ()
                 );
                 std::cout << "ED: " << GeantEnergyDeposit.TrackID() << "," << currentVolume.material_name << std::endl;
                 // std::cout << fEvent << "," << GeantEnergyDeposit.TrackID();
