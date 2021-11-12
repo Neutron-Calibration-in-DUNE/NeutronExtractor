@@ -346,9 +346,9 @@ namespace neutron
             for (auto energyDeposit : *mcEnergyDeposit)
             {
                 DetectorVolume currentVolume = fGeometry->getVolume(
-                    GeantEnergyDeposit.StartX(), GeantEnergyDeposit.StartY(), GeantEnergyDeposit.StartZ()
+                    energyDeposit.StartX(), energyDeposit.StartY(), energyDeposit.StartZ()
                 );
-                std::cout << "NEST: " << GeantEnergyDeposit.TrackID() << "," << currentVolume.material_name << std::endl;
+                std::cout << "NEST: " << energyDeposit.TrackID() << "," << currentVolume.material_name << std::endl;
                 //std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
 
                 // check if the deposit has a parent in the list of electrons
