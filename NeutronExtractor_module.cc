@@ -81,6 +81,9 @@ namespace neutron
         std::vector<std::vector<Double_t>> electron_energy;
         std::vector<std::vector<Double_t>> edep_energy; 
         std::vector<std::vector<Int_t>> edep_num_electrons;
+        std::vector<std::vector<Double_t>> edep_x;
+        std::vector<std::vector<Double_t>> edep_y;
+        std::vector<std::vector<Double_t>> edep_z;
 
         EventList(Int_t event) : event_id(event){}
     };
@@ -291,6 +294,9 @@ namespace neutron
                         eventList.electron_energy.emplace_back(std::vector<Double_t>());
                         eventList.edep_energy.emplace_back(std::vector<Double_t>());
                         eventList.edep_num_electrons.emplace_back(std::vector<Int_t>());
+                        eventList.edep_x.emplace_back(std::vector<Double_t>());
+                        eventList.edep_y.emplace_back(std::vector<Double_t>());
+                        eventList.edep_z.emplace_back(std::vector<Double_t>());
                     }
 
                 }
@@ -391,6 +397,9 @@ namespace neutron
                         {
                             eventList.edep_energy[i].emplace_back(energyDeposit.Energy());
                             eventList.edep_num_electrons[i].emplace_back(energyDeposit.NumElectrons());
+                            eventList.edep_x[i].emplace_back(energyDeposit.StartX());
+                            eventList.edep_y[i].emplace_back(energyDeposit.StartY());
+                            eventList.edep_z[i].emplace_back(energyDeposit.StartZ());
                         }
                     }
                 }
@@ -433,6 +442,9 @@ namespace neutron
         fNeutronTree->Branch("electron_energy", &event_list.electron_energy);
         fNeutronTree->Branch("edep_energy", &event_list.edep_energy);
         fNeutronTree->Branch("edep_num_electrons", &event_list.edep_num_electrons);
+        fNeutronTree->Branch("edep_x", &event_list.edep_x);
+        fNeutronTree->Branch("edep_y", &event_list.edep_y);
+        fNeutronTree->Branch("edep_z", &event_list.edep_z);
         for (size_t i = 0; i < fEventList.size(); i++) 
         {
             event_list.event_id = fEventList[i].event_id;
@@ -443,6 +455,9 @@ namespace neutron
             event_list.electron_energy = fEventList[i].electron_energy;
             event_list.edep_energy = fEventList[i].edep_energy;
             event_list.edep_num_electrons = fEventList[i].edep_num_electrons;
+            event_list.edep_x = fEventList[i].edep_x;
+            event_list.edep_y = fEventList[i].edep_y;
+            event_list.edep_z = fEventList[i].edep_z;
             fNeutronTree->Fill();
         }
 
