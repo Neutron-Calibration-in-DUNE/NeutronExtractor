@@ -292,7 +292,7 @@ namespace neutron
                         DetectorVolume currentVolume = fGeometry->getVolume(
                             particle.Vx(), particle.Vy(), particle.Vz()
                         );
-                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() <<  "," <<  currentVolume.material_name << "," << particle.E() << "," << particle.EndE() "," << particle.T() << std::endl;
+                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() <<  "," <<  currentVolume.material_name << "," << particle.E() << "," << particle.EndE() << "," << particle.T() << std::endl;
                     }
                 }
             }
