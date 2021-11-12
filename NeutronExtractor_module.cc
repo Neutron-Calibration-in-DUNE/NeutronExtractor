@@ -342,7 +342,7 @@ namespace neutron
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
                 {
-                    std::cout << "Edep: " << energyDeposit.TrackId() << std::endl;
+                    std::cout << "Edep: " << energyDeposit.TrackID() << std::endl;
                 }
             }
         }
