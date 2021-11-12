@@ -259,6 +259,7 @@ namespace neutron
                     fMCNeutrons.addNeutron(fEvent, particle);
                     fNumberOfNeutronsPerEvent[fEvent-1]++;
                     fListOfNeutrons[fEvent-1].emplace_back(particle.TrackId());
+                    std::cout << "Neutron: " << particle.TrackId() << "," << particle.Mother() << std::endl;
                 }
                 // check if the particle is a gamma
                 if (particle.PdgCode() == 22)
@@ -272,6 +273,7 @@ namespace neutron
                             fMCGammas.addGamma(fEvent, particle);
                             // add gamma to the list
                             fListOfGammas[fEvent-1].emplace_back(particle.TrackId());
+                            std::cout << "Gamma: " << particle.TrackId() << "," << particle.Mother() << std::endl;
                         }
                     }
                 }
@@ -287,6 +289,7 @@ namespace neutron
                         fMCElectrons.addElectron(fEvent, particle);
                         // add electron to the list
                         fListOfElectrons[fEvent-1].emplace_back(particle.TrackId());
+                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() << std::endl;
                     }
                 }
             }
@@ -298,30 +301,30 @@ namespace neutron
 
             for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
             {
-                std::cout << fEvent << "," << GeantEnergyDeposit.TrackID();
-                std::cout << "," << GeantEnergyDeposit.NumElectrons();
-                std::cout << ",(" << GeantEnergyDeposit.StartX() << "," << GeantEnergyDeposit.StartY() << "," << GeantEnergyDeposit.StartZ();
-                std::cout << "),(" << GeantEnergyDeposit.T0() << "," << GeantEnergyDeposit.T1() << ")"  << std::endl;
-                for (auto particle : *mcParticles)
-                {   
-                    if (particle.TrackId() == GeantEnergyDeposit.TrackID())
-                    {
-                        std::cout << "\t" << particle.TrackId() << ',' << particle.PdgCode() << "," << particle.Mother();
-                        std::cout << ",(" << particle.Vx() << "," << particle.Vy() << "," << particle.Vz();
-                        std::cout << "),(" << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ();
-                        std::cout << "),(" << particle.T() << "," << particle.EndT() << ")" << std::endl;
-                        for (auto parent : *mcParticles)
-                        {
-                            if (parent.TrackId() == particle.Mother())
-                            {
-                                std::cout << "\t\t" << parent.TrackId() << ',' << parent.PdgCode() << "," << parent.Mother();
-                                std::cout << ",(" << parent.Vx() << "," << parent.Vy() << "," << parent.Vz();
-                                std::cout << "),(" << parent.EndX() << "," << parent.EndY() << "," << parent.EndZ();
-                                std::cout << "),(" << parent.T() << "," << parent.EndT() << ")" << std::endl;
-                            }
-                        }
-                    }
-                }
+                // std::cout << fEvent << "," << GeantEnergyDeposit.TrackID();
+                // std::cout << "," << GeantEnergyDeposit.NumElectrons();
+                // std::cout << ",(" << GeantEnergyDeposit.StartX() << "," << GeantEnergyDeposit.StartY() << "," << GeantEnergyDeposit.StartZ();
+                // std::cout << "),(" << GeantEnergyDeposit.T0() << "," << GeantEnergyDeposit.T1() << ")"  << std::endl;
+                // for (auto particle : *mcParticles)
+                // {   
+                //     if (particle.TrackId() == GeantEnergyDeposit.TrackID())
+                //     {
+                //         std::cout << "\t" << particle.TrackId() << ',' << particle.PdgCode() << "," << particle.Mother();
+                //         std::cout << ",(" << particle.Vx() << "," << particle.Vy() << "," << particle.Vz();
+                //         std::cout << "),(" << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ();
+                //         std::cout << "),(" << particle.T() << "," << particle.EndT() << ")" << std::endl;
+                //         for (auto parent : *mcParticles)
+                //         {
+                //             if (parent.TrackId() == particle.Mother())
+                //             {
+                //                 std::cout << "\t\t" << parent.TrackId() << ',' << parent.PdgCode() << "," << parent.Mother();
+                //                 std::cout << ",(" << parent.Vx() << "," << parent.Vy() << "," << parent.Vz();
+                //                 std::cout << "),(" << parent.EndX() << "," << parent.EndY() << "," << parent.EndZ();
+                //                 std::cout << "),(" << parent.T() << "," << parent.EndT() << ")" << std::endl;
+                //             }
+                //         }
+                //     }
+                // }
 
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
@@ -339,6 +342,7 @@ namespace neutron
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
                 {
+                    std::cout << "Edep: " << particle.TrackId() << "," << particle.Mother() << std::endl;
                 }
             }
         }
