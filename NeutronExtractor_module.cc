@@ -324,7 +324,7 @@ namespace neutron
                 if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
                 {
                     // add the edep number of electrons to the list
-                    fMCNeutrons.addEdepElectrons(fEvent, energyDeposit);
+                    fMCNeutrons.addEdepElectron(fEvent, energyDeposit);
                 }
             }
         }
