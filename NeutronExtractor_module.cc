@@ -292,7 +292,7 @@ namespace neutron
                         DetectorVolume currentVolume = fGeometry->getVolume(
                             particle.Vx(), particle.Vy(), particle.Vz()
                         );
-                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() <<  "," <<  currentVolume.material_name << "," << particle.E() << "," << particle.EndE() << std::endl;
+                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() <<  "," <<  currentVolume.material_name << "," << particle.E() << "," << particle.EndE() "," << particle.T() << std::endl;
                     }
                 }
             }
@@ -307,7 +307,7 @@ namespace neutron
                 DetectorVolume currentVolume = fGeometry->getVolume(
                     GeantEnergyDeposit.StartX(), GeantEnergyDeposit.StartY(), GeantEnergyDeposit.StartZ()
                 );
-                std::cout << "ED: " << GeantEnergyDeposit.TrackID() << "," << currentVolume.material_name << "," << GeantEnergyDeposit.Energy() << std::endl;
+                std::cout << "ED: " << GeantEnergyDeposit.TrackID() << "," << currentVolume.material_name << "," << GeantEnergyDeposit.Energy() << "," << GeantEnergyDeposit.StartT() << std::endl;
                 // std::cout << fEvent << "," << GeantEnergyDeposit.TrackID();
                 // std::cout << "," << GeantEnergyDeposit.NumElectrons();
                 // std::cout << ",(" << GeantEnergyDeposit.StartX() << "," << GeantEnergyDeposit.StartY() << "," << GeantEnergyDeposit.StartZ();
@@ -348,7 +348,7 @@ namespace neutron
                 DetectorVolume currentVolume = fGeometry->getVolume(
                     energyDeposit.StartX(), energyDeposit.StartY(), energyDeposit.StartZ()
                 );
-                std::cout << "NEST: " << energyDeposit.TrackID() << "," << currentVolume.material_name << "," << energyDeposit.Energy() << std::endl;
+                std::cout << "NEST: " << energyDeposit.TrackID() << "," << currentVolume.material_name << "," << energyDeposit.Energy() << "," << energyDeposit.StartT() << std::endl;
                 //std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
 
                 // check if the deposit has a parent in the list of electrons
