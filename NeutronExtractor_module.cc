@@ -292,7 +292,6 @@ namespace neutron
                         DetectorVolume currentVolume = fGeometry->getVolume(
                             particle.Vx(), particle.Vy(), particle.Vz()
                         );
-                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() <<  "," <<  currentVolume.material_name << "," << particle.E() << "," << particle.EndE() << "," << particle.T() << std::endl;
                     }
                 }
             }
@@ -307,36 +306,9 @@ namespace neutron
                 DetectorVolume currentVolume = fGeometry->getVolume(
                     GeantEnergyDeposit.StartX(), GeantEnergyDeposit.StartY(), GeantEnergyDeposit.StartZ()
                 );
-                std::cout << "ED: " << GeantEnergyDeposit.TrackID() << "," << currentVolume.material_name << "," << GeantEnergyDeposit.Energy() << "," << GeantEnergyDeposit.StartT() << std::endl;
-                // std::cout << fEvent << "," << GeantEnergyDeposit.TrackID();
-                // std::cout << "," << GeantEnergyDeposit.NumElectrons();
-                // std::cout << ",(" << GeantEnergyDeposit.StartX() << "," << GeantEnergyDeposit.StartY() << "," << GeantEnergyDeposit.StartZ();
-                // std::cout << "),(" << GeantEnergyDeposit.T0() << "," << GeantEnergyDeposit.T1() << ")"  << std::endl;
-                // for (auto particle : *mcParticles)
-                // {   
-                //     if (particle.TrackId() == GeantEnergyDeposit.TrackID())
-                //     {
-                //         std::cout << "\t" << particle.TrackId() << ',' << particle.PdgCode() << "," << particle.Mother();
-                //         std::cout << ",(" << particle.Vx() << "," << particle.Vy() << "," << particle.Vz();
-                //         std::cout << "),(" << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ();
-                //         std::cout << "),(" << particle.T() << "," << particle.EndT() << ")" << std::endl;
-                //         for (auto parent : *mcParticles)
-                //         {
-                //             if (parent.TrackId() == particle.Mother())
-                //             {
-                //                 std::cout << "\t\t" << parent.TrackId() << ',' << parent.PdgCode() << "," << parent.Mother();
-                //                 std::cout << ",(" << parent.Vx() << "," << parent.Vy() << "," << parent.Vz();
-                //                 std::cout << "),(" << parent.EndX() << "," << parent.EndY() << "," << parent.EndZ();
-                //                 std::cout << "),(" << parent.T() << "," << parent.EndT() << ")" << std::endl;
-                //             }
-                //         }
-                //     }
-                // }
-
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
                 {
-                    std::cout << "Edep: " << GeantEnergyDeposit.TrackID() << std::endl;
                 }
             }
         }
@@ -348,13 +320,11 @@ namespace neutron
                 DetectorVolume currentVolume = fGeometry->getVolume(
                     energyDeposit.StartX(), energyDeposit.StartY(), energyDeposit.StartZ()
                 );
-                std::cout << "NEST: " << energyDeposit.TrackID() << "," << currentVolume.material_name << "," << energyDeposit.Energy() << "," << energyDeposit.StartT() << std::endl;
-                //std::cout << fEvent << "," << energyDeposit.TrackID() << "," << energyDeposit.NumElectrons() << std::endl;
-
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
                 {
-                    std::cout << "Edep: " << energyDeposit.TrackID() << std::endl;
+                    // add the edep number of electrons to the list
+                    fMCNeutrons.addEdepElectrons(fEvent, energyDeposit);
                 }
             }
         }

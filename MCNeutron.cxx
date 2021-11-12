@@ -30,6 +30,7 @@ namespace neutron
         fCaptureGammaInitialPx.emplace_back(std::vector<Double_t>());
         fCaptureGammaInitialPy.emplace_back(std::vector<Double_t>());
         fCaptureGammaInitialPz.emplace_back(std::vector<Double_t>());
+        fEdepElectrons.emplace_back(0);
         // add MCParticle values
         fEventId.emplace_back(eventId);
         fNeutronTrackId.emplace_back(particle.TrackId());
@@ -156,6 +157,13 @@ namespace neutron
         fCaptureGammaInitialPz[neutronIndex].emplace_back(gamma.Pz(0));
     }
 
+    void MCNeutron::addEdepElectron(Int_t eventId, sim::SimEnergyDeposit edep)
+    {
+        // get neutron index
+        Int_t neutronIndex = fNeutronMap[std::make_pair(eventId,gamma.Mother())];
+        fEdepElectrons[neutronIndex] += edep.NumElectrons();
+    }
+
     void MCNeutron::FillTTree()
     {
         // fill each neutron
@@ -206,6 +214,7 @@ namespace neutron
             std::vector<Double_t> capture_gamma_initial_px;
             std::vector<Double_t> capture_gamma_initial_py;
             std::vector<Double_t> capture_gamma_initial_pz;
+            Double_t num_edep_electrons;
         } NEUTRON;
         NEUTRON mc_neutron;
         // set up the branch structure
@@ -254,6 +263,7 @@ namespace neutron
         fMCNeutronTree->Branch("capture_gamma_initial_px", &mc_neutron.capture_gamma_initial_px);
         fMCNeutronTree->Branch("capture_gamma_initial_py", &mc_neutron.capture_gamma_initial_py);
         fMCNeutronTree->Branch("capture_gamma_initial_pz", &mc_neutron.capture_gamma_initial_pz);
+        fMCNeutronTree->Branch("num_edep_electrons", &mc_neutron.num_edep_electrons);
         // iterate over all neutrons
         for (size_t i = 0; i < fNumberOfNeutrons; i++)
         {
@@ -302,6 +312,7 @@ namespace neutron
             mc_neutron.capture_gamma_initial_px = fCaptureGammaInitialPx[i];
             mc_neutron.capture_gamma_initial_py = fCaptureGammaInitialPy[i];
             mc_neutron.capture_gamma_initial_pz = fCaptureGammaInitialPz[i];
+            mc_neutron.num_edep_electrons = fEdepElectrons[i];
             fMCNeutronTree->Fill();
         }
     }

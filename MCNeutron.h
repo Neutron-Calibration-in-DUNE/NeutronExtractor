@@ -74,6 +74,8 @@ namespace neutron
         void addNeutron(Int_t eventId, simb::MCParticle particle);
         // add a gamma
         void addGamma(Int_t eventId, simb::MCParticle gamma);
+        // add edep electrons
+        void addEdepElectron(Int_t eventId, sim::SimEnergyDeposit edep);
         // fill the mc neutron ttree
         void FillTTree();
     
@@ -143,6 +145,8 @@ namespace neutron
         std::vector<std::vector<Double_t>> fCaptureGammaInitialPx;
         std::vector<std::vector<Double_t>> fCaptureGammaInitialPy;
         std::vector<std::vector<Double_t>> fCaptureGammaInitialPz;
+
+        std::vector<Double_t> fEdepElectrons;
 
     };
 
