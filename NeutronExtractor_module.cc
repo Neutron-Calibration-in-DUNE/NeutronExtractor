@@ -361,22 +361,22 @@ namespace neutron
                 }
             }
         }
-        // get the energy depositions from IonAndScint for the event
-        auto mcGeantEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fLArGeantEnergyDepositProducerLabel);
-        if (mcGeantEnergyDeposit.isValid())
-        {
+        // // get the energy depositions from IonAndScint for the event
+        // auto mcGeantEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fLArGeantEnergyDepositProducerLabel);
+        // if (mcGeantEnergyDeposit.isValid())
+        // {
 
-            for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
-            {
-                // DetectorVolume currentVolume = fGeometry->getVolume(
-                //     GeantEnergyDeposit.StartX(), GeantEnergyDeposit.StartY(), GeantEnergyDeposit.StartZ()
-                // );
-                // // check if the deposit has a parent in the list of electrons
-                // if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
-                // {
-                // }
-            }
-        }
+        //     for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
+        //     {
+        //         // DetectorVolume currentVolume = fGeometry->getVolume(
+        //         //     GeantEnergyDeposit.StartX(), GeantEnergyDeposit.StartY(), GeantEnergyDeposit.StartZ()
+        //         // );
+        //         // // check if the deposit has a parent in the list of electrons
+        //         // if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
+        //         // {
+        //         // }
+        //     }
+        // }
         auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fIonAndScintProducerLabel);
         if (mcEnergyDeposit.isValid())
         {
