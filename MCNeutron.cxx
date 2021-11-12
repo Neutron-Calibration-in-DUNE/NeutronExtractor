@@ -157,12 +157,12 @@ namespace neutron
         fCaptureGammaInitialPz[neutronIndex].emplace_back(gamma.Pz(0));
     }
 
-    void MCNeutron::addEdepElectron(Int_t eventId, sim::SimEnergyDeposit edep)
-    {
-        // get neutron index
-        Int_t neutronIndex = fNeutronMap[std::make_pair(eventId,gamma.Mother())];
-        fEdepElectrons[neutronIndex] += edep.NumElectrons();
-    }
+    // void MCNeutron::addEdepElectron(Int_t eventId, sim::SimEnergyDeposit edep)
+    // {
+    //     // get neutron index
+    //     Int_t neutronIndex = fNeutronMap[std::make_pair(eventId,gamma.Mother())];
+    //     fEdepElectrons[neutronIndex] += edep.NumElectrons();
+    // }
 
     void MCNeutron::FillTTree()
     {
