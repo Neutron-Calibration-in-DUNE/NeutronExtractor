@@ -33,6 +33,6 @@ physics:
     end_paths: [ analysis ]
 }
 
-physics.analyzers.ana.NeutronExtractor.LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActiveInner"
+physics.analyzers.ana.LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActiveInner"
 source.fileNames:    ["/dune/data2/users/ncarrara/NeutronCalibrationLArSoft/FDSP/1x2x6/simple_tests/outputs/g4_output.root"]
 source.maxEvents:    500
