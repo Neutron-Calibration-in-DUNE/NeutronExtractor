@@ -289,7 +289,10 @@ namespace neutron
                         fMCElectrons.addElectron(fEvent, particle);
                         // add electron to the list
                         fListOfElectrons[fEvent-1].emplace_back(particle.TrackId());
-                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() << " (" << particle.T() << "," << particle.Vx() << "," << particle.Vy() << "," << particle.Vz() << ")" << " (" << particle.EndT() << "," << particle.EndX() << "," << particle.EndY() << "," << particle.EndZ() << ")" << std::endl;
+                        DetectorVolume currentVolume = fGeometry->getVolume(
+                            particle.Vx(i), particle.Vy(i), particle.Vz(i)
+                        );
+                        std::cout << "Electron: " << particle.TrackId() << "," << particle.Mother() <<  "," <<  currentVolume.material_name << std::endl;
                     }
                 }
             }
@@ -301,6 +304,10 @@ namespace neutron
 
             for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
             {
+                DetectorVolume currentVolume = fGeometry->getVolume(
+                    GeantEnergyDepost.StartX(), GeantEnergyDepost.StartY(), GeantEnergyDepost.StartZ()
+                );
+                std::cout << "ED: " << GeantEnergyDeposit.TrackID() << "," << currentVolume.material_name << std::endl;
                 // std::cout << fEvent << "," << GeantEnergyDeposit.TrackID();
                 // std::cout << "," << GeantEnergyDeposit.NumElectrons();
                 // std::cout << ",(" << GeantEnergyDeposit.StartX() << "," << GeantEnergyDeposit.StartY() << "," << GeantEnergyDeposit.StartZ();
@@ -329,6 +336,7 @@ namespace neutron
                 // check if the deposit has a parent in the list of electrons
                 if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
                 {
+                    std::cout << "Edep: " << GeantEnergyDeposit.TrackID() << std::endl;
                 }
             }
         }
