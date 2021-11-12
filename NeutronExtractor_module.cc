@@ -149,12 +149,12 @@ namespace neutron
         // number of events
         Int_t fNumberOfEvents;
 
-        std::vector<EventList> fEvents;
+        std::vector<EventList> fEventList;
 
         // // mc neutrons
         // MCNeutron fMCNeutrons;
         // // number of neutrons per event
-        // std::vector<Int_t> fNumberOfNeutronsPerEvent;
+        std::vector<Int_t> fNumberOfNeutronsPerEvent;
         // // list of neutrons for each event
         // std::vector<std::vector<Int_t>> fListOfNeutrons;
 
@@ -297,7 +297,7 @@ namespace neutron
                 // check if the particle is a gamma
                 if (particle.PdgCode() == 22)
                 {
-                    for(size_t i = 0; i < eventList.neutrons.size(); i++)
+                    for(size_t i = 0; i < eventList.neutron_ids.size(); i++)
                     {
                         if (eventList.neutrons[i] == particle.Mother())
                         {
