@@ -299,7 +299,7 @@ namespace neutron
                 {
                     for(size_t i = 0; i < eventList.neutron_ids.size(); i++)
                     {
-                        if (eventList.neutrons[i] == particle.Mother())
+                        if (eventList.neutron_ids[i] == particle.Mother())
                         {
                             eventList.gamma_ids[i].emplace_back(particle.TrackId());
                             eventList.gamma_energy[i].emplace_back(particle.E());
