@@ -78,7 +78,9 @@ namespace neutron
         std::vector<std::vector<Int_t>> gamma_ids;
         std::vector<std::vector<Double_t>> gamma_energy;
         std::vector<std::vector<Int_t>> electron_ids;
+        std::vector<std::vector<Int_t>> electron_parent;
         std::vector<std::vector<Double_t>> electron_energy;
+        std::vector<std::vector<Double_t>> edep_parent;
         std::vector<std::vector<Double_t>> edep_energy; 
         std::vector<std::vector<Int_t>> edep_num_electrons;
         std::vector<std::vector<Double_t>> edep_x;
@@ -291,7 +293,9 @@ namespace neutron
                         eventList.gamma_ids.emplace_back(std::vector<Int_t>());
                         eventList.gamma_energy.emplace_back(std::vector<Double_t>());
                         eventList.electron_ids.emplace_back(std::vector<Int_t>());
+                        eventList.electron_parent.emplace_back(std::vector<Int_t>());
                         eventList.electron_energy.emplace_back(std::vector<Double_t>());
+                        eventList.edep_parent.emplace_back(std::vector<Int_t>());
                         eventList.edep_energy.emplace_back(std::vector<Double_t>());
                         eventList.edep_num_electrons.emplace_back(std::vector<Int_t>());
                         eventList.edep_x.emplace_back(std::vector<Double_t>());
@@ -335,6 +339,7 @@ namespace neutron
                             if (eventList.gamma_ids[i][j] == particle.Mother())
                             {
                                 eventList.electron_ids[i].emplace_back(particle.TrackId());
+                                eventList.electron_parent[i].emplace_back(particle.Mother());
                                 eventList.electron_energy[i].emplace_back(particle.E());
                             }
                         }
@@ -347,6 +352,7 @@ namespace neutron
                             if (eventList.electron_ids[i][j] == particle.Mother())
                             {
                                 eventList.electron_ids[i].emplace_back(particle.TrackId());
+                                eventList.electron_parent[i].emplace_back(particle.Mother());
                                 eventList.electron_energy[i].emplace_back(particle.E());
                             }
                         }
@@ -395,6 +401,7 @@ namespace neutron
                     {
                         if (eventList.electron_ids[i][j] == energyDeposit.TrackID())
                         {
+                            eventList.edep_parent[i].emplace_back(energyDeposit.TrackID());
                             eventList.edep_energy[i].emplace_back(energyDeposit.Energy());
                             eventList.edep_num_electrons[i].emplace_back(energyDeposit.NumElectrons());
                             eventList.edep_x[i].emplace_back(energyDeposit.StartX());
@@ -439,7 +446,9 @@ namespace neutron
         fNeutronTree->Branch("gamma_ids", &event_list.gamma_ids);
         fNeutronTree->Branch("gamma_energy", &event_list.gamma_energy);
         fNeutronTree->Branch("electron_ids", &event_list.electron_ids);
+        fNeutronTree->Branch("electron_parent", &event_list.electron_parent);
         fNeutronTree->Branch("electron_energy", &event_list.electron_energy);
+        fNeutronTree->Branch("edep_parent", &event_list.edep_parent);
         fNeutronTree->Branch("edep_energy", &event_list.edep_energy);
         fNeutronTree->Branch("edep_num_electrons", &event_list.edep_num_electrons);
         fNeutronTree->Branch("edep_x", &event_list.edep_x);
@@ -454,7 +463,9 @@ namespace neutron
                 event_list.gamma_ids = fEventList[i].gamma_ids;
                 event_list.gamma_energy = fEventList[i].gamma_energy;
                 event_list.electron_ids = fEventList[i].electron_ids;
+                event_list.electron_parent = fEventList[i].electron_parent;
                 event_list.electron_energy = fEventList[i].electron_energy;
+                event_list.edep_parent = fEventList[i].edep_parent;
                 event_list.edep_energy = fEventList[i].edep_energy;
                 event_list.edep_num_electrons = fEventList[i].edep_num_electrons;
                 event_list.edep_x = fEventList[i].edep_x;
