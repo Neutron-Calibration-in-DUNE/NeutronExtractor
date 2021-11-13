@@ -262,7 +262,7 @@ namespace neutron
                             {
                                 if (eventList.neutron_ids[j] == eventList.gamma_neutron_ids[i])
                                 {
-                                    eventList.electron_neutron_ids.emplace_back(eventList.neutrons_ids[j]);
+                                    eventList.electron_neutron_ids.emplace_back(eventList.neutron_ids[j]);
                                 }
                             }
                             eventList.electron_energy.emplace_back(particle.E());
