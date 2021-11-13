@@ -297,7 +297,7 @@ namespace neutron
                         eventList.edep_parent.emplace_back(energyDeposit.TrackID());
                         eventList.edep_neutron_ids.emplace_back(eventList.electron_neutron_ids[i]);
                         eventList.edep_gamma_ids.emplace_back(eventList.electron_gamma_ids[i]);
-                        for (size_t j = 0; j < eventList.gamma_ids; j++)
+                        for (size_t j = 0; j < eventList.gamma_ids.size(); j++)
                         {
                             if (eventList.gamma_ids[j] == eventList.electron_gamma_ids[i])
                             {
