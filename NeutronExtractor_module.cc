@@ -75,17 +75,26 @@ namespace neutron
     {
         Int_t event_id;
         std::vector<Int_t> neutron_ids;
-        std::vector<std::vector<Int_t>> gamma_ids;
-        std::vector<std::vector<Double_t>> gamma_energy;
-        std::vector<std::vector<Int_t>> electron_ids;
-        std::vector<std::vector<Int_t>> electron_parent;
-        std::vector<std::vector<Double_t>> electron_energy;
-        std::vector<std::vector<Int_t>> edep_parent;
-        std::vector<std::vector<Double_t>> edep_energy; 
-        std::vector<std::vector<Int_t>> edep_num_electrons;
-        std::vector<std::vector<Double_t>> edep_x;
-        std::vector<std::vector<Double_t>> edep_y;
-        std::vector<std::vector<Double_t>> edep_z;
+        std::vector<Int_t> gamma_ids;
+        std::vector<Int_t> gamma_neutron_ids;
+        std::vector<Double_t> gamma_energy;
+        std::vector<Double_t> gamma_electron_energy;
+        std::vector<Double_t> gamma_edep_energy;
+
+        std::vector<Int_t> electron_ids;
+        std::vector<Int_t> electron_parent;
+        std::vector<Int_t> electron_gamma_ids;
+        std::vector<Int_t> electron_neutron_ids;
+        std::vector<Double_t> electron_energy;
+        std::vector<Int_t> edep_parent;
+
+        std::vector<Int_t> edep_neutron_ids;
+        std::vector<Int_t> edep_gamma_ids;
+        std::vector<Double_t> edep_energy; 
+        std::vector<Int_t> edep_num_electrons;
+        std::vector<Double_t> edep_x;
+        std::vector<Double_t> edep_y;
+        std::vector<Double_t> edep_z;
 
         EventList(Int_t event) : event_id(event){}
     };
@@ -156,22 +165,7 @@ namespace neutron
 
         std::vector<EventList> fEventList;
 
-        // // mc neutrons
-        // MCNeutron fMCNeutrons;
-        // // number of neutrons per event
         std::vector<Int_t> fNumberOfNeutronsPerEvent;
-        // // list of neutrons for each event
-        // std::vector<std::vector<Int_t>> fListOfNeutrons;
-
-        // // mc gammas
-        // MCGamma fMCGammas;
-        // // list of gammas for each event
-        // std::vector<std::vector<Int_t>> fListOfGammas;
-
-        // // mc electrons
-        // MCElectron fMCElectrons;
-        // // list of electrons for each event
-        // std::vector<std::vector<Int_t>> fListOfElectrons;
     };
 
     // constructor
@@ -187,53 +181,6 @@ namespace neutron
         consumes<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
     }
 
-    // // check list of neutrons
-    // bool NeutronExtractor::checkListOfNeutrons(Int_t eventId, Int_t trackId)
-    // {
-    //     if (eventId-1 >= fNumberOfEvents) { 
-    //         return false; 
-    //     }
-    //     else {
-    //         for (size_t i = 0; i < fListOfNeutrons[eventId-1].size(); i++) {
-    //             if (fListOfNeutrons[eventId-1][i] == trackId) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // // check list of gammas
-    // bool NeutronExtractor::checkListOfGammas(Int_t eventId, Int_t trackId)
-    // {
-    //     if (eventId-1 >= fNumberOfEvents) { 
-    //         return false; 
-    //     }
-    //     else {
-    //         for (size_t i = 0; i < fListOfGammas[eventId-1].size(); i++) {
-    //             if (fListOfGammas[eventId-1][i] == trackId) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // // check list of electrons
-    // bool NeutronExtractor::checkListOfElectrons(Int_t eventId, Int_t trackId)
-    // {
-    //     if (eventId-1 >= fNumberOfEvents) { 
-    //         return false; 
-    //     }
-    //     else {
-    //         for (size_t i = 0; i < fListOfElectrons[eventId-1].size(); i++) {
-    //             if (fListOfElectrons[eventId-1][i] == trackId) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
     // analyze function
     void NeutronExtractor::analyze(art::Event const& event)
     {
@@ -264,9 +211,6 @@ namespace neutron
         fNumberOfNeutronsPerEvent.emplace_back(0);
         // create a new event list
         EventList eventList(fNumberOfEvents-1);
-        // fListOfNeutrons.emplace_back(std::vector<Int_t>());
-        // fListOfGammas.emplace_back(std::vector<Int_t>());
-        // fListOfElectrons.emplace_back(std::vector<Int_t>());
 
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
@@ -280,27 +224,12 @@ namespace neutron
                 // check if the particle is a neutron
                 if (particle.PdgCode() == 2112)
                 {
-                    // fMCNeutrons.addNeutron(fEvent, particle);
-                    // fNumberOfNeutronsPerEvent[fEvent-1]++;
-                    // fListOfNeutrons[fEvent-1].emplace_back(particle.TrackId());
-                    // std::cout << "Neutron: " << particle.TrackId() << "," << particle.Mother() << std::endl;
                     DetectorVolume currentVolume = fGeometry->getVolume(
                         particle.Vx(), particle.Vy(), particle.Vz()
                     );
                     if (particle.EndProcess() == "nCapture" and currentVolume.material_name == "LAr")
                     {
                         eventList.neutron_ids.emplace_back(particle.TrackId());
-                        eventList.gamma_ids.emplace_back(std::vector<Int_t>());
-                        eventList.gamma_energy.emplace_back(std::vector<Double_t>());
-                        eventList.electron_ids.emplace_back(std::vector<Int_t>());
-                        eventList.electron_parent.emplace_back(std::vector<Int_t>());
-                        eventList.electron_energy.emplace_back(std::vector<Double_t>());
-                        eventList.edep_parent.emplace_back(std::vector<Int_t>());
-                        eventList.edep_energy.emplace_back(std::vector<Double_t>());
-                        eventList.edep_num_electrons.emplace_back(std::vector<Int_t>());
-                        eventList.edep_x.emplace_back(std::vector<Double_t>());
-                        eventList.edep_y.emplace_back(std::vector<Double_t>());
-                        eventList.edep_z.emplace_back(std::vector<Double_t>());
                     }
 
                 }
@@ -311,22 +240,13 @@ namespace neutron
                     {
                         if (eventList.neutron_ids[i] == particle.Mother())
                         {
-                            eventList.gamma_ids[i].emplace_back(particle.TrackId());
-                            eventList.gamma_energy[i].emplace_back(particle.E());
+                            eventList.gamma_ids.emplace_back(particle.TrackId());
+                            eventList.gamma_neutron_ids.emplace_back(particle.Mother());
+                            eventList.gamma_energy.emplace_back(particle.E());
+                            eventList.gamma_electron_energy.emplace_back(0);
+                            eventList.gamma_edep_energy.emplace_back(0);
                         }
                     }
-                    // // check that the gamma has a parent which is a neutron in the list
-                    // if (checkListOfNeutrons(fEvent, particle.Mother()))
-                    // {
-                    //     // // check if the gamma comes from a capture
-                    //     // if (particle.Process() == "nCapture") {
-                    //     //     fMCNeutrons.addGamma(fEvent, particle);
-                    //     //     fMCGammas.addGamma(fEvent, particle);
-                    //     //     // add gamma to the list
-                    //     //     fListOfGammas[fEvent-1].emplace_back(particle.TrackId());
-                    //     //     std::cout << "Gamma: " << particle.TrackId() << "," << particle.Mother() << std::endl;
-                    //     // }
-                    // }
                 }
                 // check if the particle is an electron
                 if (particle.PdgCode() == 11)
@@ -334,61 +254,39 @@ namespace neutron
                     // check for gammas first
                     for (size_t i = 0; i < eventList.gamma_ids.size(); i++)
                     {
-                        for(size_t j = 0; j < eventList.gamma_ids[i].size(); j++)
+                        if (eventList.gamma_ids[i] == particle.Mother())
                         {
-                            if (eventList.gamma_ids[i][j] == particle.Mother())
+                            eventList.electron_ids.emplace_back(particle.TrackId());
+                            eventList.electron_parent.emplace_back(particle.Mother());
+                            eventList.electron_gamma_ids.emplace_back(particle.Mother());
+                            eventList.gamma_electron_energy[i] += particle.E();
+                            // find the corresponding neutron id
+                            for(size_t j = 0; j < eventList.neutron_ids.size(); j++)
                             {
-                                eventList.electron_ids[i].emplace_back(particle.TrackId());
-                                eventList.electron_parent[i].emplace_back(particle.Mother());
-                                eventList.electron_energy[i].emplace_back(particle.E());
+                                if (eventList.neutron_ids[j] == eventList.gamma_neutron_ids[i])
+                                {
+                                    eventList.electron_neutron_ids.emplace_back(eventList.neutrons_ids[j]);
+                                }
                             }
+                            eventList.electron_energy.emplace_back(particle.E());
                         }
                     }
                     // then check electrons
                     for (size_t i = 0; i < eventList.electron_ids.size(); i++)
                     {
-                        for(size_t j = 0; j < eventList.electron_ids[i].size(); j++)
+                        if (eventList.electron_ids[i] == particle.Mother())
                         {
-                            if (eventList.electron_ids[i][j] == particle.Mother())
-                            {
-                                eventList.electron_ids[i].emplace_back(particle.TrackId());
-                                eventList.electron_parent[i].emplace_back(particle.Mother());
-                                eventList.electron_energy[i].emplace_back(particle.E());
-                            }
+                            eventList.electron_ids.emplace_back(particle.TrackId());
+                            eventList.electron_parent.emplace_back(particle.Mother());
+                            // find the corresponding gamma
+                            eventList.electron_gamma_ids.emplace_back(eventList.electron_gamma_ids[i]);
+                            eventList.electron_neutron_ids.emplace_back(eventList.electron_neutron_ids[i]);
+                            eventList.electron_energy.emplace_back(particle.E());
                         }
                     }
-                    // // check that the electron has a parent which is a gamma 
-                    // // or another electron in the list
-                    // if (checkListOfGammas(fEvent, particle.Mother()) || 
-                    //     checkListOfElectrons(fEvent, particle.Mother())
-                    // )
-                    // {
-                    //     fMCElectrons.addElectron(fEvent, particle);
-                    //     // add electron to the list
-                    //     fListOfElectrons[fEvent-1].emplace_back(particle.TrackId());
-                    //     DetectorVolume currentVolume = fGeometry->getVolume(
-                    //         particle.Vx(), particle.Vy(), particle.Vz()
-                    //     );
-                    // }
                 }
             }
         }
-        // // get the energy depositions from IonAndScint for the event
-        // auto mcGeantEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fLArGeantEnergyDepositProducerLabel);
-        // if (mcGeantEnergyDeposit.isValid())
-        // {
-
-        //     for (auto GeantEnergyDeposit : *mcGeantEnergyDeposit)
-        //     {
-        //         // DetectorVolume currentVolume = fGeometry->getVolume(
-        //         //     GeantEnergyDeposit.StartX(), GeantEnergyDeposit.StartY(), GeantEnergyDeposit.StartZ()
-        //         // );
-        //         // // check if the deposit has a parent in the list of electrons
-        //         // if (checkListOfElectrons(fEvent, GeantEnergyDeposit.TrackID()))
-        //         // {
-        //         // }
-        //     }
-        // }
         auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(fIonAndScintProducerLabel);
         if (mcEnergyDeposit.isValid())
         {
@@ -397,28 +295,25 @@ namespace neutron
                 // check the list of electrons
                 for (size_t i = 0; i < eventList.electron_ids.size(); i++)
                 {
-                    for (size_t j = 0; j < eventList.electron_ids[i].size(); j++)
+                    if (eventList.electron_ids[i] == energyDeposit.TrackID())
                     {
-                        if (eventList.electron_ids[i][j] == energyDeposit.TrackID())
+                        eventList.edep_parent.emplace_back(energyDeposit.TrackID());
+                        eventList.edep_neutron_ids.emplace_back(eventList.electron_neutron_ids[i]);
+                        eventList.edep_gamma_ids.emplace_back(eventList.electron_gamma_ids[i]);
+                        for (size_t j = 0; j < eventList.gamma_ids; j++)
                         {
-                            eventList.edep_parent[i].emplace_back(energyDeposit.TrackID());
-                            eventList.edep_energy[i].emplace_back(energyDeposit.Energy());
-                            eventList.edep_num_electrons[i].emplace_back(energyDeposit.NumElectrons());
-                            eventList.edep_x[i].emplace_back(energyDeposit.StartX());
-                            eventList.edep_y[i].emplace_back(energyDeposit.StartY());
-                            eventList.edep_z[i].emplace_back(energyDeposit.StartZ());
+                            if (eventList.gamma_ids[j] == eventList.electron_gamma_ids[i])
+                            {
+                                eventList.gamma_edep_energy[j] += energyDeposit.Energy();
+                            }
                         }
+                        eventList.edep_energy.emplace_back(energyDeposit.Energy());
+                        eventList.edep_num_electrons.emplace_back(energyDeposit.NumElectrons());
+                        eventList.edep_x.emplace_back(energyDeposit.StartX());
+                        eventList.edep_y.emplace_back(energyDeposit.StartY());
+                        eventList.edep_z.emplace_back(energyDeposit.StartZ());
                     }
                 }
-                // DetectorVolume currentVolume = fGeometry->getVolume(
-                //     energyDeposit.StartX(), energyDeposit.StartY(), energyDeposit.StartZ()
-                // );
-                // // check if the deposit has a parent in the list of electrons
-                // if (checkListOfElectrons(fEvent, energyDeposit.TrackID()))
-                // {
-                //     // add the edep number of electrons to the list
-                //     fMCNeutrons.addEdepElectron(fEvent, energyDeposit);
-                // }
             }
         }
         fEventList.emplace_back(eventList);
@@ -433,9 +328,6 @@ namespace neutron
     // end job
     void NeutronExtractor::endJob()
     {
-        // fMCNeutrons.FillTTree();
-        // fMCGammas.FillTTree();
-        // fMCElectrons.FillTTree();
         // global neutron info
         fMetaTree->Branch("number_of_events", &fNumberOfEvents);
         fMetaTree->Branch("number_of_neutrons_per_event", &fNumberOfNeutronsPerEvent);
@@ -444,11 +336,18 @@ namespace neutron
         fNeutronTree->Branch("event_id", &event_list.event_id);
         fNeutronTree->Branch("neutron_ids", &event_list.neutron_ids);
         fNeutronTree->Branch("gamma_ids", &event_list.gamma_ids);
+        fNeutronTree->Branch("gamma_neutron_ids", &event_list.gamma_neutron_ids);
         fNeutronTree->Branch("gamma_energy", &event_list.gamma_energy);
+        fNeutronTree->Branch("gamma_electron_energy", &event_list.gamma_electron_energy);
+        fNeutronTree->Branch("gamma_edep_energy", &event_list.gamma_edep_energy);
         fNeutronTree->Branch("electron_ids", &event_list.electron_ids);
+        fNeutronTree->Branch("electron_neutron_ids", &event_list.electron_neutron_ids);
+        fNeutronTree->Branch("electron_gamma_ids", &event_list.electron_gamma_ids);
         fNeutronTree->Branch("electron_parent", &event_list.electron_parent);
         fNeutronTree->Branch("electron_energy", &event_list.electron_energy);
         fNeutronTree->Branch("edep_parent", &event_list.edep_parent);
+        fNeutronTree->Branch("edep_neutron_ids", &event_list.edep_neutron_ids);
+        fNeutronTree->Branch("edep_gamma_ids", &event_list.edep_gamma_ids);
         fNeutronTree->Branch("edep_energy", &event_list.edep_energy);
         fNeutronTree->Branch("edep_num_electrons", &event_list.edep_num_electrons);
         fNeutronTree->Branch("edep_x", &event_list.edep_x);
@@ -461,11 +360,18 @@ namespace neutron
                 event_list.event_id = fEventList[i].event_id;
                 event_list.neutron_ids = fEventList[i].neutron_ids;
                 event_list.gamma_ids = fEventList[i].gamma_ids;
+                event_list.gamma_neutron_ids = fEventList[i].gamma_neutron_ids;
                 event_list.gamma_energy = fEventList[i].gamma_energy;
+                event_list.gamma_electron_energy = fEventList[i].gamma_electron_energy;
+                event_list.gamma_edep_energy = fEventList[i].gamma_edep_energy;
                 event_list.electron_ids = fEventList[i].electron_ids;
+                event_list.electron_neutron_ids = fEventList[i].electron_neutron_ids;
+                event_list.electron_gamma_ids = fEventList[i].electron_gamma_ids;
                 event_list.electron_parent = fEventList[i].electron_parent;
                 event_list.electron_energy = fEventList[i].electron_energy;
                 event_list.edep_parent = fEventList[i].edep_parent;
+                event_list.edep_neutron_ids = fEventList[i].edep_neutron_ids;
+                event_list.edep_gamma_ids = fEventList[i].edep_gamma_ids;
                 event_list.edep_energy = fEventList[i].edep_energy;
                 event_list.edep_num_electrons = fEventList[i].edep_num_electrons;
                 event_list.edep_x = fEventList[i].edep_x;
