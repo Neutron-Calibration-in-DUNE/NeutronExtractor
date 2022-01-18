@@ -72,6 +72,9 @@ namespace neutron
     {
         Int_t event_id;
         std::vector<Int_t> neutron_ids;
+        std::vector<Double_t> neutron_capture_x;
+        std::vector<Double_t> neutron_capture_y;
+        std::vector<Double_t> neutron_capture_z;
         std::vector<Int_t> gamma_ids;
         std::vector<Int_t> gamma_neutron_ids;
         std::vector<Double_t> gamma_energy;
@@ -160,7 +163,7 @@ namespace neutron
         // number of events
         Int_t fNumberOfEvents;
 
-        std::vector<EventList> fEventList;
+        EventList fTempEventList;
 
         std::vector<Int_t> fNumberOfNeutronsPerEvent;
     };
@@ -172,10 +175,35 @@ namespace neutron
     , fLArGeantEnergyDepositProducerLabel(config().LArGeantEnergyDepositProducerLabel())
     , fIonAndScintProducerLabel(config().IonAndScintProducerLabel())
     , fOutputFileArt(config().OutputFile())
+    , fTempEventList(0)
     {
         fMetaTree = fTFileService->make<TTree>("meta", "meta");
         fNeutronTree = fTFileService->make<TTree>("neutron", "neutron");
         consumes<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
+
+        fNeutronTree->Branch("event_id", &fTempEventList.event_id);
+        fNeutronTree->Branch("neutron_ids", &fTempEventList.neutron_ids);
+        fNeutronTree->Branch("neutron_capture_x", &fTempEventList.neutron_capture_x);
+        fNeutronTree->Branch("neutron_capture_y", &fTempEventList.neutron_capture_y);
+        fNeutronTree->Branch("neutron_capture_z", &fTempEventList.neutron_capture_z);
+        fNeutronTree->Branch("gamma_ids", &fTempEventList.gamma_ids);
+        fNeutronTree->Branch("gamma_neutron_ids", &fTempEventList.gamma_neutron_ids);
+        fNeutronTree->Branch("gamma_energy", &fTempEventList.gamma_energy);
+        fNeutronTree->Branch("gamma_electron_energy", &fTempEventList.gamma_electron_energy);
+        fNeutronTree->Branch("gamma_edep_energy", &fTempEventList.gamma_edep_energy);
+        fNeutronTree->Branch("electron_ids", &fTempEventList.electron_ids);
+        fNeutronTree->Branch("electron_neutron_ids", &fTempEventList.electron_neutron_ids);
+        fNeutronTree->Branch("electron_gamma_ids", &fTempEventList.electron_gamma_ids);
+        fNeutronTree->Branch("electron_parent", &fTempEventList.electron_parent);
+        fNeutronTree->Branch("electron_energy", &fTempEventList.electron_energy);
+        fNeutronTree->Branch("edep_parent", &fTempEventList.edep_parent);
+        fNeutronTree->Branch("edep_neutron_ids", &fTempEventList.edep_neutron_ids);
+        fNeutronTree->Branch("edep_gamma_ids", &fTempEventList.edep_gamma_ids);
+        fNeutronTree->Branch("edep_energy", &fTempEventList.edep_energy);
+        fNeutronTree->Branch("edep_num_electrons", &fTempEventList.edep_num_electrons);
+        fNeutronTree->Branch("edep_x", &fTempEventList.edep_x);
+        fNeutronTree->Branch("edep_y", &fTempEventList.edep_y);
+        fNeutronTree->Branch("edep_z", &fTempEventList.edep_z);
     }
 
     // analyze function
@@ -227,6 +255,9 @@ namespace neutron
                     if (particle.EndProcess() == "nCapture" and currentVolume.material_name == "LAr")
                     {
                         eventList.neutron_ids.emplace_back(particle.TrackId());
+                        eventList.neutron_capture_x.emplace_back(particle.EndX());
+                        eventList.neutron_capture_y.emplace_back(particle.EndY());
+                        eventList.neutron_capture_z.emplace_back(particle.EndZ());
                     }
 
                 }
@@ -313,7 +344,33 @@ namespace neutron
                 }
             }
         }
-        fEventList.emplace_back(eventList);
+        if (eventList.edep_x.size() > 0)
+        {
+            fTempEventList.event_id = eventList.event_id;
+            fTempEventList.neutron_ids = eventList.neutron_ids;
+            fTempEventList.neutron_capture_x = eventList.neutron_capture_x;
+            fTempEventList.neutron_capture_y = eventList.neutron_capture_y;
+            fTempEventList.neutron_capture_z = eventList.neutron_capture_z;
+            fTempEventList.gamma_ids = eventList.gamma_ids;
+            fTempEventList.gamma_neutron_ids = eventList.gamma_neutron_ids;
+            fTempEventList.gamma_energy = eventList.gamma_energy;
+            fTempEventList.gamma_electron_energy = eventList.gamma_electron_energy;
+            fTempEventList.gamma_edep_energy = eventList.gamma_edep_energy;
+            fTempEventList.electron_ids = eventList.electron_ids;
+            fTempEventList.electron_neutron_ids = eventList.electron_neutron_ids;
+            fTempEventList.electron_gamma_ids = eventList.electron_gamma_ids;
+            fTempEventList.electron_parent = eventList.electron_parent;
+            fTempEventList.electron_energy = eventList.electron_energy;
+            fTempEventList.edep_parent = eventList.edep_parent;
+            fTempEventList.edep_neutron_ids = eventList.edep_neutron_ids;
+            fTempEventList.edep_gamma_ids = eventList.edep_gamma_ids;
+            fTempEventList.edep_energy = eventList.edep_energy;
+            fTempEventList.edep_num_electrons = eventList.edep_num_electrons;
+            fTempEventList.edep_x = eventList.edep_x;
+            fTempEventList.edep_y = eventList.edep_y;
+            fTempEventList.edep_z = eventList.edep_z;
+            fNeutronTree->Fill();
+        }
     }
     // begin job
     void NeutronExtractor::beginJob()
@@ -328,56 +385,6 @@ namespace neutron
         // global neutron info
         fMetaTree->Branch("number_of_events", &fNumberOfEvents);
         fMetaTree->Branch("number_of_neutrons_per_event", &fNumberOfNeutronsPerEvent);
-
-        EventList event_list(0);
-        fNeutronTree->Branch("event_id", &event_list.event_id);
-        fNeutronTree->Branch("neutron_ids", &event_list.neutron_ids);
-        fNeutronTree->Branch("gamma_ids", &event_list.gamma_ids);
-        fNeutronTree->Branch("gamma_neutron_ids", &event_list.gamma_neutron_ids);
-        fNeutronTree->Branch("gamma_energy", &event_list.gamma_energy);
-        fNeutronTree->Branch("gamma_electron_energy", &event_list.gamma_electron_energy);
-        fNeutronTree->Branch("gamma_edep_energy", &event_list.gamma_edep_energy);
-        fNeutronTree->Branch("electron_ids", &event_list.electron_ids);
-        fNeutronTree->Branch("electron_neutron_ids", &event_list.electron_neutron_ids);
-        fNeutronTree->Branch("electron_gamma_ids", &event_list.electron_gamma_ids);
-        fNeutronTree->Branch("electron_parent", &event_list.electron_parent);
-        fNeutronTree->Branch("electron_energy", &event_list.electron_energy);
-        fNeutronTree->Branch("edep_parent", &event_list.edep_parent);
-        fNeutronTree->Branch("edep_neutron_ids", &event_list.edep_neutron_ids);
-        fNeutronTree->Branch("edep_gamma_ids", &event_list.edep_gamma_ids);
-        fNeutronTree->Branch("edep_energy", &event_list.edep_energy);
-        fNeutronTree->Branch("edep_num_electrons", &event_list.edep_num_electrons);
-        fNeutronTree->Branch("edep_x", &event_list.edep_x);
-        fNeutronTree->Branch("edep_y", &event_list.edep_y);
-        fNeutronTree->Branch("edep_z", &event_list.edep_z);
-        for (size_t i = 0; i < fEventList.size(); i++) 
-        {
-            if (fEventList[i].edep_x.size() > 0)
-            {
-                event_list.event_id = fEventList[i].event_id;
-                event_list.neutron_ids = fEventList[i].neutron_ids;
-                event_list.gamma_ids = fEventList[i].gamma_ids;
-                event_list.gamma_neutron_ids = fEventList[i].gamma_neutron_ids;
-                event_list.gamma_energy = fEventList[i].gamma_energy;
-                event_list.gamma_electron_energy = fEventList[i].gamma_electron_energy;
-                event_list.gamma_edep_energy = fEventList[i].gamma_edep_energy;
-                event_list.electron_ids = fEventList[i].electron_ids;
-                event_list.electron_neutron_ids = fEventList[i].electron_neutron_ids;
-                event_list.electron_gamma_ids = fEventList[i].electron_gamma_ids;
-                event_list.electron_parent = fEventList[i].electron_parent;
-                event_list.electron_energy = fEventList[i].electron_energy;
-                event_list.edep_parent = fEventList[i].edep_parent;
-                event_list.edep_neutron_ids = fEventList[i].edep_neutron_ids;
-                event_list.edep_gamma_ids = fEventList[i].edep_gamma_ids;
-                event_list.edep_energy = fEventList[i].edep_energy;
-                event_list.edep_num_electrons = fEventList[i].edep_num_electrons;
-                event_list.edep_x = fEventList[i].edep_x;
-                event_list.edep_y = fEventList[i].edep_y;
-                event_list.edep_z = fEventList[i].edep_z;
-                fNeutronTree->Fill();
-            }
-        }
-
         fMetaTree->Fill();
     }
 }
