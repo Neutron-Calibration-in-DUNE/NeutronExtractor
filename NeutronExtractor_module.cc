@@ -71,6 +71,7 @@ namespace neutron
     struct EventList
     {
         Int_t event_id;
+        Int_t primary_neutrons;
         std::vector<Int_t> neutron_ids;
         std::vector<Double_t> neutron_capture_x;
         std::vector<Double_t> neutron_capture_y;
@@ -182,6 +183,7 @@ namespace neutron
         consumes<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
 
         fNeutronTree->Branch("event_id", &fTempEventList.event_id);
+        fNeutronTree->Branch("primary_neutrons", &fTempEventList.primary_neutrons);
         fNeutronTree->Branch("neutron_ids", &fTempEventList.neutron_ids);
         fNeutronTree->Branch("neutron_capture_x", &fTempEventList.neutron_capture_x);
         fNeutronTree->Branch("neutron_capture_y", &fTempEventList.neutron_capture_y);
@@ -236,7 +238,7 @@ namespace neutron
         fNumberOfNeutronsPerEvent.emplace_back(0);
         // create a new event list
         EventList eventList(fNumberOfEvents-1);
-
+        eventList.primary_neutrons = 0;
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
         // iterate over all MC particles and grab all neutrons, all gammas
@@ -249,10 +251,14 @@ namespace neutron
                 // check if the particle is a neutron
                 if (particle.PdgCode() == 2112)
                 {
-                    DetectorVolume currentVolume = fGeometry->getVolume(
-                        particle.Vx(), particle.Vy(), particle.Vz()
+                    if (particle.Mother() == 0)
+                    {
+                        eventList.primary_neutrons += 1;
+                    }
+                    DetectorVolume endingVolume = fGeometry->getVolume(
+                        particle.EndX(), particle.EndY(), particle.EndZ()
                     );
-                    if (particle.EndProcess() == "nCapture" and currentVolume.material_name == "LAr")
+                    if (particle.EndProcess() == "nCapture" and endingVolume.material_name == "LAr")
                     {
                         eventList.neutron_ids.emplace_back(particle.TrackId());
                         eventList.neutron_capture_x.emplace_back(particle.EndX());
@@ -347,6 +353,7 @@ namespace neutron
         if (eventList.edep_x.size() > 0)
         {
             fTempEventList.event_id = eventList.event_id;
+            fTempEventList.primary_neutrons = eventList.primary_neutrons;
             fTempEventList.neutron_ids = eventList.neutron_ids;
             fTempEventList.neutron_capture_x = eventList.neutron_capture_x;
             fTempEventList.neutron_capture_y = eventList.neutron_capture_y;
