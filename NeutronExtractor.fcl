@@ -6,6 +6,8 @@ NeutronExtractor:
     LArGeantProducerLabel:              "largeant"
     LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActive"
     IonAndScintProducerLabel:           "IonAndScint"
+    FindHits:                           true
+    HitFinderProducerLabel:             "gaushit"
     OutputFile:                         "output.root"
 }
 

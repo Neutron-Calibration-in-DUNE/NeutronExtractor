@@ -46,6 +46,7 @@
 #include "lardataobj/RecoBase/Slice.h"
 #include "lardataobj/Simulation/SimChannel.h"
 #include "larsim/Simulation/LArG4Parameters.h"
+#include "larsim/Utils/TruthMatchUtils.h"
 #include "nusimdata/SimulationBase/MCParticle.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
 
@@ -120,6 +121,16 @@ namespace neutron
                 fhicl::Name("IonAndScintProducerLabel"),
                 fhicl::Comment("tag of the input data product with the ionization and scintillation simulation")
             };
+            fhicl::Atom<bool> FindHits
+            {
+                fhicl::Name("FindHits"),
+                fhicl::Comment("whether to look for hits in the data file")
+            };
+            fhicl::Atom<art::InputTag> HitFinderProducerLabel
+            {
+                fhicl::Name("HitFinderProducerLabel"),
+                fhicl::Comment("tag of the data product which contains the hits")
+            };
             fhicl::Atom<art::InputTag> OutputFile
             {
                 fhicl::Name("OutputFile"),
@@ -149,6 +160,8 @@ namespace neutron
         art::InputTag fLArGeantProducerLabel;
         art::InputTag fLArGeantEnergyDepositProducerLabel;
         art::InputTag fIonAndScintProducerLabel;
+        bool fFindHits;
+        art::InputTag fHitFinderProducerLabel;
         art::InputTag fOutputFileArt;
         // geometry information
         DetectorGeometry* fGeometry = DetectorGeometry::getInstance("NeutronExtractor");
@@ -175,12 +188,15 @@ namespace neutron
     , fLArGeantProducerLabel(config().LArGeantProducerLabel())
     , fLArGeantEnergyDepositProducerLabel(config().LArGeantEnergyDepositProducerLabel())
     , fIonAndScintProducerLabel(config().IonAndScintProducerLabel())
+    , fFindHits(config().FindHits())
+    , fHitFinderProducerLabel(config().HitFinderProducerLabel())
     , fOutputFileArt(config().OutputFile())
     , fTempEventList(0)
     {
         fMetaTree = fTFileService->make<TTree>("meta", "meta");
         fNeutronTree = fTFileService->make<TTree>("neutron", "neutron");
         consumes<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
+        consumes<std::vector<sim::SimEnergyDeposit>>(fLArGeantEnergyDepositProducerLabel);
 
         fNeutronTree->Branch("event_id", &fTempEventList.event_id);
         fNeutronTree->Branch("primary_neutrons", &fTempEventList.primary_neutrons);
@@ -239,6 +255,9 @@ namespace neutron
         // create a new event list
         EventList eventList(fNumberOfEvents-1);
         eventList.primary_neutrons = 0;
+        // get clock information
+        detinfo::DetectorClocksData const detClocks
+            = art::ServiceHandle<detinfo::DetectorClocksService const>()->DataForJob();
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
         // iterate over all MC particles and grab all neutrons, all gammas
@@ -347,6 +366,19 @@ namespace neutron
                         eventList.edep_y.emplace_back(energyDeposit.StartY());
                         eventList.edep_z.emplace_back(energyDeposit.StartZ());
                     }
+                }
+            }
+        }
+        # iterate over hits
+        if fFindHits == true
+        {
+            auto recoHits = event.getValidHandle<std::vector<recob::Hit>>(fHitFinderProducerLabel);
+            if (recoHits.isValid())
+            {
+                for (auto hit : *recoHits)
+                {
+                    int trackId = TrueParticleID(detClocks, hit, false);
+                    std::cout << "event: " << fEvent << ", hit track id: " << trackId << std::endl;
                 }
             }
         }
