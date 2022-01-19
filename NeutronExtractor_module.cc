@@ -369,7 +369,7 @@ namespace neutron
                 }
             }
         }
-        # iterate over hits
+        // iterate over hits
         if fFindHits == true
         {
             auto recoHits = event.getValidHandle<std::vector<recob::Hit>>(fHitFinderProducerLabel);
