@@ -19,6 +19,7 @@
 #include "art/Framework/Principal/Run.h"
 #include "art/Framework/Principal/SubRun.h"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
+#include "art/Persistency/Common/PtrMaker.h"
 #include "canvas/Utilities/InputTag.h"
 #include "canvas/Utilities/Exception.h"
 #include "canvas/Persistency/Common/FindManyP.h"
@@ -377,7 +378,7 @@ namespace neutron
             {
                 for (auto hit : *recoHits)
                 {
-                    art::Ptr<recob::Hit> hit_ptr = static_cast<art::Ptr<recob::Hit>>(hit);
+                    auto const hit_ptr = art::PtrMaker<recob::Hit>(hit);
                     int trackId = TruthMatchUtils::TrueParticleID(detClocks, hit_ptr, false);
                     std::cout << "event: " << fEvent << ", hit track id: " << trackId << std::endl;
                 }
