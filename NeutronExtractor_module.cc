@@ -377,7 +377,7 @@ namespace neutron
             {
                 for (auto hit : *recoHits)
                 {
-                    art::Ptr<recob::Hit> hit_ptr = *hit;
+                    art::Ptr<recob::Hit> hit_ptr = std::static_cast<art::Ptr<recob::Hit>>(hit);
                     int trackId = TruthMatchUtils::TrueParticleID(detClocks, hit_ptr, false);
                     std::cout << "event: " << fEvent << ", hit track id: " << trackId << std::endl;
                 }
