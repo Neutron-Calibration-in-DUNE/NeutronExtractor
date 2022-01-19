@@ -374,11 +374,12 @@ namespace neutron
         if (fFindHits == true)
         {
             auto recoHits = event.getValidHandle<std::vector<recob::Hit>>(fHitFinderProducerLabel);
+            auto const hitPtrMaker = art::PtrMaker<recob::Hit>(event);
             if (recoHits.isValid())
             {
                 for (auto hit : *recoHits)
                 {
-                    auto const hit_ptr = art::PtrMaker<recob::Hit>(hit);
+                    auto const hit_ptr = hitPtrMaker(hit);
                     int trackId = TruthMatchUtils::TrueParticleID(detClocks, hit_ptr, false);
                     std::cout << "event: " << fEvent << ", hit track id: " << trackId << std::endl;
                 }
