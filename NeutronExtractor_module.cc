@@ -381,7 +381,7 @@ namespace neutron
                 std::map<int,int> trueParticleHits, trueParticleHitsView0, trueParticleHitsView1, trueParticleHitsView2;
                 for (const auto& hit : allHits)
                 {
-                    TruthMatchUtils::G4ID g4ID(TruthMatchUtils::TrueParticleID(clockData, hit, fRollUpUnsavedIDs));
+                    TruthMatchUtils::G4ID g4ID(TruthMatchUtils::TrueParticleID(detClocks, hit, false));
                     if (TruthMatchUtils::Valid(g4ID)){
                         std::cout << "event: " << fEvent << ", hit track id: " << g4ID << std::endl;
                         trueParticleHits[g4ID]++;
