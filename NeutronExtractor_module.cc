@@ -48,6 +48,7 @@
 #include "lardataobj/Simulation/SimChannel.h"
 #include "larsim/Simulation/LArG4Parameters.h"
 #include "larsim/Utils/TruthMatchUtils.h"
+#include "lardata/ArtDataHelper/TrackUtils.h"
 #include "nusimdata/SimulationBase/MCParticle.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
 
