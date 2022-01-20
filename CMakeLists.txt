@@ -5,6 +5,7 @@ art_make(LIB_LIBRARIES
             larcorealg_Geometry
             larcore_Geometry_Geometry_service
             lardata_Utilities
+            larsim_Utils
             nusimdata_SimulationBase
             ${ART_FRAMEWORK_CORE}
             ${ART_FRAMEWORK_PRINCIPAL}
@@ -37,6 +38,7 @@ art_make(LIB_LIBRARIES
             larcorealg_Geometry
             larcore_Geometry_Geometry_service
             larsim_Simulation nug4_ParticleNavigation lardataobj_Simulation
+            larsim_Utils
             lardata_Utilities
             lardataobj_RawData
             larreco_Calorimetry
