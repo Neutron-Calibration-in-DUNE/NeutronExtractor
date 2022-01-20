@@ -373,15 +373,23 @@ namespace neutron
         // iterate over hits
         if (fFindHits == true)
         {
-            auto recoHits = event.getValidHandle<std::vector<recob::Hit>>(fHitFinderProducerLabel);
-            auto const hitPtrMaker = art::PtrMaker<recob::Hit>(event);
-            if (recoHits.isValid())
+            std::vector<art::Ptr<recob::Hit> > allHits;
+            auto hitHandle = event.getValidHandle<std::vector<recob::Hit>>(fHitFinderProducerLabel);
+            if (hitHandle.isValid())
             {
-                for (auto hit : *recoHits)
+                art::fill_ptr_vector(allHits, hitHandle);
+                std::map<int,int> trueParticleHits, trueParticleHitsView0, trueParticleHitsView1, trueParticleHitsView2;
+                for (const auto& hit : allHits)
                 {
-                    auto const hit_ptr = hitPtrMaker(hit);
-                    int trackId = TruthMatchUtils::TrueParticleID(detClocks, hit_ptr, false);
-                    std::cout << "event: " << fEvent << ", hit track id: " << trackId << std::endl;
+                    TruthMatchUtils::G4ID g4ID(TruthMatchUtils::TrueParticleID(clockData, hit, fRollUpUnsavedIDs));
+                    if (TruthMatchUtils::Valid(g4ID)){
+                        std::cout << "event: " << fEvent << ", hit track id: " << g4ID << std::endl;
+                        trueParticleHits[g4ID]++;
+                        if(hit->View()==0)trueParticleHitsView0[g4ID]++;
+                        else if(hit->View()==1)trueParticleHitsView1[g4ID]++;
+                        else if(hit->View()==2)trueParticleHitsView2[g4ID]++;
+                    }
+                    
                 }
             }
         }
