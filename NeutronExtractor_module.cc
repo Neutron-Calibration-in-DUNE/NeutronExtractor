@@ -257,8 +257,7 @@ namespace neutron
         EventList eventList(fNumberOfEvents-1);
         eventList.primary_neutrons = 0;
         // get clock information
-        detinfo::DetectorClocksData const detClocks
-            = art::ServiceHandle<detinfo::DetectorClocksService const>()->DataForJob();
+        auto const clockData = art::ServiceHandle<detinfo::DetectorClocksService>()->DataFor(event);
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
         // iterate over all MC particles and grab all neutrons, all gammas
@@ -381,7 +380,7 @@ namespace neutron
                 std::map<int,int> trueParticleHits, trueParticleHitsView0, trueParticleHitsView1, trueParticleHitsView2;
                 for (const auto& hit : allHits)
                 {
-                    TruthMatchUtils::G4ID g4ID(TruthMatchUtils::TrueParticleID(detClocks, hit, false));
+                    TruthMatchUtils::G4ID g4ID(TruthMatchUtils::TrueParticleID(clockData, hit, false));
                     if (TruthMatchUtils::Valid(g4ID)){
                         std::cout << "event: " << fEvent << ", hit track id: " << g4ID << std::endl;
                         trueParticleHits[g4ID]++;
