@@ -415,6 +415,14 @@ namespace neutron
                 }
             }
             auto spacePointHandle = event.getValidHandle<std::vector<recob::SpacePoint>>(fSpacePointProducerLabel);
+            if (spacePointHandle.isValid())
+            {
+                for (auto space_point : *spacePointHandle)
+                {
+                    std::cout << "event: " << fEvent << ", space point id: " << space_point.ID() << std::endl;
+                    // Double_t pos[3] = space_point.XYZ();
+                }
+            }
         }
         if (eventList.edep_x.size() > 0)
         {
