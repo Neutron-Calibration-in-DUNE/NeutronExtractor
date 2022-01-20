@@ -420,7 +420,8 @@ namespace neutron
                 for (auto space_point : *spacePointHandle)
                 {
                     std::cout << "event: " << fEvent << ", space point id: " << space_point.ID() << std::endl;
-                    Double_t pos[3] = space_point.XYZ();
+                    Double_t pos[3] = {0,0,0};
+                    pos = space_point.XYZ();
                     std::cout << "x: " << pos[0] << ", y: " << pos[1] << ", z: " << pos[2] << std::endl;
                 }
             }
