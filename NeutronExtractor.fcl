@@ -8,6 +8,7 @@ NeutronExtractor:
     IonAndScintProducerLabel:           "IonAndScint"
     FindHits:                           true
     HitFinderProducerLabel:             "gaushit"
+    SpacePointProducerLabel:            "spsolve"
     OutputFile:                         "output.root"
 }
 

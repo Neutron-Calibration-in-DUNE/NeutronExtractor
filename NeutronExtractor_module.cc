@@ -100,6 +100,15 @@ namespace neutron
         std::vector<Double_t> edep_y;
         std::vector<Double_t> edep_z;
 
+        std::vector<Int_t> hit_track_ids;
+        std::vector<Int_t> hit_channel_ids;
+        std::vector<Int_t> hit_view;
+
+        std::vector<Int_t> space_point_id;
+        std::vector<Double_t> space_point_x;
+        std::vector<Double_t> space_point_y;
+        std::vector<Double_t> space_point_z;
+
         EventList(Int_t event) : event_id(event){}
     };
 
@@ -133,6 +142,11 @@ namespace neutron
                 fhicl::Name("HitFinderProducerLabel"),
                 fhicl::Comment("tag of the data product which contains the hits")
             };
+            fhicl::Atom<art::InputTag> SpacePointProducerLabel
+            {
+                fhicl::Name("SpacePointProducerLabel"),
+                fhicl::Comment("tag of the data product which contains the space points")
+            };
             fhicl::Atom<art::InputTag> OutputFile
             {
                 fhicl::Name("OutputFile"),
@@ -164,6 +178,7 @@ namespace neutron
         art::InputTag fIonAndScintProducerLabel;
         bool fFindHits;
         art::InputTag fHitFinderProducerLabel;
+        art::InputTag fSpacePointProducerLabel;
         art::InputTag fOutputFileArt;
         // geometry information
         DetectorGeometry* fGeometry = DetectorGeometry::getInstance("NeutronExtractor");
@@ -192,6 +207,7 @@ namespace neutron
     , fIonAndScintProducerLabel(config().IonAndScintProducerLabel())
     , fFindHits(config().FindHits())
     , fHitFinderProducerLabel(config().HitFinderProducerLabel())
+    , fSpacePointProducerLabel(config().SpacePointProducerLabel())
     , fOutputFileArt(config().OutputFile())
     , fTempEventList(0)
     {
@@ -199,6 +215,11 @@ namespace neutron
         fNeutronTree = fTFileService->make<TTree>("neutron", "neutron");
         consumes<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
         consumes<std::vector<sim::SimEnergyDeposit>>(fLArGeantEnergyDepositProducerLabel);
+        if (fFindHits)
+        {
+            consumes<std::vector<recob::Hit>>(fHitFinderProducerLabel);
+            consumes<std::vector<recob::SpacePoint>>(fSpacePointProducerLabel);
+        }
 
         fNeutronTree->Branch("event_id", &fTempEventList.event_id);
         fNeutronTree->Branch("primary_neutrons", &fTempEventList.primary_neutrons);
@@ -224,6 +245,8 @@ namespace neutron
         fNeutronTree->Branch("edep_x", &fTempEventList.edep_x);
         fNeutronTree->Branch("edep_y", &fTempEventList.edep_y);
         fNeutronTree->Branch("edep_z", &fTempEventList.edep_z);
+        fNeutronTree->Branch("hit_track_ids", &fTempEventList.hit_track_ids);
+        fNeutronTree->Branch("hit_view", &fTempEventList.hit_view);
     }
 
     // analyze function
@@ -373,7 +396,7 @@ namespace neutron
         // iterate over hits
         if (fFindHits == true)
         {
-            std::vector<art::Ptr<recob::Hit> > allHits;
+            std::vector<art::Ptr<recob::Hit>> allHits;
             auto hitHandle = event.getValidHandle<std::vector<recob::Hit>>(fHitFinderProducerLabel);
             if (hitHandle.isValid())
             {
@@ -382,16 +405,16 @@ namespace neutron
                 for (const auto& hit : allHits)
                 {
                     TruthMatchUtils::G4ID g4ID(TruthMatchUtils::TrueParticleID(clockData, hit, false));
-                    if (TruthMatchUtils::Valid(g4ID)){
+                    if (TruthMatchUtils::Valid(g4ID))
+                    {
                         std::cout << "event: " << fEvent << ", hit track id: " << g4ID << std::endl;
-                        trueParticleHits[g4ID]++;
-                        if(hit->View()==0)trueParticleHitsView0[g4ID]++;
-                        else if(hit->View()==1)trueParticleHitsView1[g4ID]++;
-                        else if(hit->View()==2)trueParticleHitsView2[g4ID]++;
+                        eventList.hit_track_ids.emplace_back(g4ID);
+                        eventList.hit_view.emplace_back(hit->View());
                     }
                     
                 }
             }
+            auto spacePointHandle = event.getValidHandle<std::vector<recob::SpacePoint>>(fSpacePointProducerLabel);
         }
         if (eventList.edep_x.size() > 0)
         {
@@ -419,6 +442,8 @@ namespace neutron
             fTempEventList.edep_x = eventList.edep_x;
             fTempEventList.edep_y = eventList.edep_y;
             fTempEventList.edep_z = eventList.edep_z;
+            fTempEventList.hit_track_ids = eventList.hit_track_ids;
+            fTempEventList.hit_view = eventList.hit_view;
             fNeutronTree->Fill();
         }
     }
