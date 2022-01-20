@@ -104,7 +104,7 @@ namespace neutron
         std::vector<Int_t> hit_channel_ids;
         std::vector<Int_t> hit_view;
 
-        std::vector<Int_t> space_point_id;
+        std::vector<Int_t> space_point_ids;
         std::vector<Double_t> space_point_x;
         std::vector<Double_t> space_point_y;
         std::vector<Double_t> space_point_z;
@@ -247,6 +247,10 @@ namespace neutron
         fNeutronTree->Branch("edep_z", &fTempEventList.edep_z);
         fNeutronTree->Branch("hit_track_ids", &fTempEventList.hit_track_ids);
         fNeutronTree->Branch("hit_view", &fTempEventList.hit_view);
+        fNeutronTree->Branch("space_point_ids", &fTempEventList.space_point_ids);
+        fNeutronTree->Branch("space_point_x", &fTempEventList.space_point_x);
+        fNeutronTree->Branch("space_point_y", &fTempEventList.space_point_y);
+        fNeutronTree->Branch("space_point_z", &fTempEventList.space_point_z);
     }
 
     // analyze function
@@ -407,7 +411,6 @@ namespace neutron
                     TruthMatchUtils::G4ID g4ID(TruthMatchUtils::TrueParticleID(clockData, hit, false));
                     if (TruthMatchUtils::Valid(g4ID))
                     {
-                        std::cout << "event: " << fEvent << ", hit track id: " << g4ID << std::endl;
                         eventList.hit_track_ids.emplace_back(g4ID);
                         eventList.hit_view.emplace_back(hit->View());
                     }
@@ -419,9 +422,11 @@ namespace neutron
             {
                 for (auto space_point : *spacePointHandle)
                 {
-                    std::cout << "event: " << fEvent << ", space point id: " << space_point.ID() << std::endl;
                     const Double_t *pos = space_point.XYZ();
-                    std::cout << "x: " << pos[0] << ", y: " << pos[1] << ", z: " << pos[2] << std::endl;
+                    eventList.space_point_ids.emplace_back(space_point.ID());
+                    eventList.space_point_x.emplace_back(pos[0]);
+                    eventList.space_point_y.emplace_back(pos[1]);
+                    eventList.space_point_z.emplace_back(pos[2]);
                 }
             }
         }
@@ -453,6 +458,10 @@ namespace neutron
             fTempEventList.edep_z = eventList.edep_z;
             fTempEventList.hit_track_ids = eventList.hit_track_ids;
             fTempEventList.hit_view = eventList.hit_view;
+            fTempEventList.space_point_ids = eventList.space_point_ids;
+            fTempEventList.space_point_x = eventList.space_point_x;
+            fTempEventList.space_point_y = eventList.space_point_y;
+            fTempEventList.space_point_z = eventList.space_point_z;
             fNeutronTree->Fill();
         }
     }
