@@ -100,6 +100,15 @@ namespace neutron
         std::vector<Double_t> edep_y;
         std::vector<Double_t> edep_z;
 
+        Int_t primary_muons;
+        std::vector<Int_t> muon_ids;
+        std::vector<Int_t> muon_edep_ids;
+        std::vector<Double_t> muon_edep_energy;
+        std::vector<Double_t> muon_edep_num_electrons;
+        std::vector<Double_t> muon_edep_x;
+        std::vector<Double_t> muon_edep_y;
+        std::vector<Double_t> muon_edep_z;
+
         std::vector<Int_t> hit_track_ids;
         std::vector<Int_t> hit_channel_ids;
         std::vector<Int_t> hit_view;
@@ -245,6 +254,14 @@ namespace neutron
         fNeutronTree->Branch("edep_x", &fTempEventList.edep_x);
         fNeutronTree->Branch("edep_y", &fTempEventList.edep_y);
         fNeutronTree->Branch("edep_z", &fTempEventList.edep_z);
+        fNeutronTree->Branch("primary_muons", &fTempEventList.primary_muons);
+        fNeutronTree->Branch("muon_ids", &fTempEventList.muon_ids);
+        fNeutronTree->Branch("muon_edep_ids", &fTempEventList.muon_edep_ids);
+        fNeutronTree->Branch("muon_edep_energy", &fTempEventList.muon_edep_energy);
+        fNeutronTree->Branch("muon_edep_num_electrons", &fTempEventList.muon_edep_num_electrons);
+        fNeutronTree->Branch("muon_edep_x", &fTempEventList.muon_edep_x);
+        fNeutronTree->Branch("muon_edep_y", &fTempEventList.muon_edep_y);
+        fNeutronTree->Branch("muon_edep_z", &fTempEventList.muon_edep_z);
         fNeutronTree->Branch("hit_track_ids", &fTempEventList.hit_track_ids);
         fNeutronTree->Branch("hit_view", &fTempEventList.hit_view);
         fNeutronTree->Branch("space_point_ids", &fTempEventList.space_point_ids);
@@ -313,6 +330,11 @@ namespace neutron
                         eventList.neutron_capture_z.emplace_back(particle.EndZ());
                     }
 
+                }
+                if (particle.PdgCode() == 13)
+                {
+                    eventList.primary_muons += 1;
+                    eventList.muon_ids.emplace_back(particle.TrackId());
                 }
                 // check if the particle is a gamma
                 if (particle.PdgCode() == 22)
@@ -393,6 +415,19 @@ namespace neutron
                         eventList.edep_x.emplace_back(energyDeposit.StartX());
                         eventList.edep_y.emplace_back(energyDeposit.StartY());
                         eventList.edep_z.emplace_back(energyDeposit.StartZ());
+                        continue;
+                    }
+                }
+                for (size_t i = 0; i < eventList.muon_ids.size(); i++)
+                {
+                    if (eventList.muon_ids[i] == energyDeposit.TrackID())
+                    {
+                        eventList.muon_edep_ids.emplace_back(energyDeposit.TrackID());
+                        eventList.muon_edep_energy.emplace_back(energyDeposit.Energy());
+                        eventList.muon_edep_num_electrons.emplace_back(energyDeposit.NumElectrons());
+                        eventList.muon_edep_x.emplace_back(energyDeposit.StartX());
+                        eventList.muon_edep_y.emplace_back(energyDeposit.StartY());
+                        eventList.muon_edep_z.emplace_back(energyDeposit.StartZ());
                     }
                 }
             }
@@ -456,6 +491,14 @@ namespace neutron
             fTempEventList.edep_x = eventList.edep_x;
             fTempEventList.edep_y = eventList.edep_y;
             fTempEventList.edep_z = eventList.edep_z;
+            fTempEventList.primary_muons = eventList.primary_muons;
+            fTempEventList.muon_ids = eventList.muon_ids;
+            fTempEventList.muon_edep_ids = eventList.muon_edep_ids;
+            fTempEventList.muon_edep_energy = eventList.muon_edep_energy;
+            fTempEventList.muon_edep_num_electrons = eventList.muon_edep_num_electrons;
+            fTempEventList.muon_edep_x = eventList.muon_edep_x;
+            fTempEventList.muon_edep_y = eventList.muon_edep_y;
+            fTempEventList.muon_edep_z = eventList.muon_edep_z;
             fTempEventList.hit_track_ids = eventList.hit_track_ids;
             fTempEventList.hit_view = eventList.hit_view;
             fTempEventList.space_point_ids = eventList.space_point_ids;

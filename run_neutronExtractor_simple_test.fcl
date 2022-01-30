@@ -34,5 +34,6 @@ physics:
 }
 
 physics.analyzers.ana.LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActiveInner"
-source.fileNames:    ["/dune/data2/users/ncarrara/NeutronCalibrationLArSoft/FDSP/1x2x6/top_study/outputs/reco_full_output.root"]
+physics.analyzers.ana.FindHits: false
+source.fileNames:    ["/dune/data2/users/ncarrara/NeutronCalibrationLArSoft/ProtoDUNE-I/UNet/outputs/g4_output.root"]
 source.maxEvents:    5
