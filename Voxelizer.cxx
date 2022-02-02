@@ -1,0 +1,120 @@
+#include "Voxelizer.h"
+
+namespace neutron 
+{
+    Voxelizer::Voxelizer()
+    {}
+    
+    Voxelizer::Voxelizer(BoundingBox boundingBox)
+    : fBoundingBox(boundingBox)
+    {
+
+    }
+
+    Voxelizer::~Voxelizer()
+    {}
+
+    Voxels Voxelizer::generateVoxels(
+        Double_t voxelSize,
+        std::vector<Double_t> x_values,
+        std::vector<Double_t> y_values,
+        std::vector<Double_t> z_values
+    )
+    {
+        # set up variables
+        Double_t xMin = fBoundingBox.x_min;
+        Double_t yMin = fBoundingBox.y_min;
+        Double_t zMin = fBoundingBox.z_min;
+        Double_t xRange = (fBoundingBox.x_max - fBoundingBox.x_min);
+        Double_t yRange = (fBoundingBox.y_max - fBoundingBox.y_min);
+        Double_t zRange = (fBoundingBox.z_max - fBoundingBox.z_min);
+        Int_t numXVoxels = int(xRange / voxelSize);
+        Int_t numYVoxels = int(yRange / voxelSize);
+        Int_t numZVoxels = int(zRange / voxelSize);
+        // to voxelize, first normalize: x' = (x - x_min)/xRange,
+        // then multiply by number of voxels: x'' = x' * numXVoxels,
+        // then cast to an int, x_voxel = int(x'')
+        std::vector<Int_t> x_voxels(x_values.size());
+        std::vector<Int_t> y_voxels(y_values.size());
+        std::vector<Int_t> z_voxels(z_values.size());
+        # iterate through values
+        for (Int_t i = 0; i < x_values.size(); i++)
+        {
+            x_voxels[i] = int((x_values[i] - xMin)/voxelSize);
+            y_voxels[i] = int((y_values[i] - yMin)/voxelSize);
+            z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
+        }
+        Voxels voxels()
+    }
+
+    Voxels Voxelizer::generateLabeledNeutronCosmicVoxels(
+        const Double_t voxelSize,
+        const std::vector<Double_t> &neutron_x,
+        const std::vector<Double_t> &neutron_y,
+        const std::vector<Double_t> &neutron_z,
+        const std::vector<Double_t> &neutron_edep_energy,
+        const std::vector<Double_t> &muon_x,
+        const std::vector<Double_t> &muon_y,
+        const std::vector<Double_t> &muon_z,
+        const std::vector<Double_t> &muon_edep_energy,
+        const bool discretizeFeatures,
+        const bool useMixedLabels
+    )
+    {
+        Voxels neutronVoxels = generateVoxels(voxelSize,
+            neutron_x, neutron_y, neutron_z);
+        Voxels muonVoxels = generateVoxels(voxelSize,
+            muon_x, muon_y, muon_z);
+        
+        neutronVoxels.values = neutron_edep_energy;
+        muonVoxels.values = muon_edep_energy;
+
+        // consolidate edep energy values
+        neutronVoxels.consolidate(discretizeFeatures);
+        muonVoxels.consolidate(discretizeFeatures);
+        for (Int_t i = 0; i < neutronVoxels.x_id.size(); i++)
+        {
+            neutronVoxels.labels[i] = 0;
+        }
+        // construct training set
+        for (Int_t i = 0; i < muonVoxels.x_id.size(); i++)
+        {
+            // search neutron list for muon voxel
+            Int_t index = neutronVoxels.findVoxel(
+                muonVoxels.x_id[i],
+                muonVoxels.y_id[i],
+                muonVoxels.z_id[i]
+            );
+            // if muon voxel is in the neutron voxel list, then...
+            if (index != -1)
+            {
+                // decide what to do with the energy
+                if (!discretizeFeatures)
+                {
+                    neutronVoxels.values[index] += muonVoxels.values[i];
+                }
+                // decide what to do with the labels
+                if (useMixedLabels)
+                {
+                    neutronVoxels.labels[index] = 2;
+                }
+                else
+                {
+                    if (muon_edep_energy[i] >= neutron_edep_energy[index])
+                    {
+                        neutronVoxels.labels[index] = 1;
+                    }
+                }
+            }
+            else
+            {
+                neutronVoxels.x_id.emplace_back(muonVoxels.x_id[i]);
+                neutronVoxels.y_id.emplace_back(muonVoxels.y_id[i]);
+                neutronVoxels.z_id.emplace_back(muonVoxels.z_id[i]);
+                neutronVoxels.values.emplace_back(muonVoxels.values[i]);
+                neutronVoxels.labels.emplace_back(1);
+            }
+        }
+        return neutronVoxels;
+    }
+}
