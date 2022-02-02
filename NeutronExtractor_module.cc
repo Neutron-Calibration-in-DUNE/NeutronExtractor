@@ -586,6 +586,7 @@ namespace neutron
         if (fGenerateNeutronCosmicVoxels)
         {
             fTempVoxels = fVoxelizer.generateLabeledNeutronCosmicVoxels(
+                fNumberOfEvents-1,
                 fVoxelSize,
                 fTempNeutronList.edep_x,
                 fTempNeutronList.edep_y,
