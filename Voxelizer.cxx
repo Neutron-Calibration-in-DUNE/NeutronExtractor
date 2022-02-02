@@ -80,10 +80,9 @@ namespace neutron
         muonVoxels.values = muon_edep_energy;
 
         // consolidate edep energy values
-        std::cout << "before" << std::endl;
         neutronVoxels.consolidate(discretizeFeatures);
         muonVoxels.consolidate(discretizeFeatures);
-        std::cout << "after" << std::endl;
+        
         for (size_t i = 0; i < neutronVoxels.x_id.size(); i++)
         {
             neutronVoxels.labels.emplace_back(0);
