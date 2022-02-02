@@ -7,6 +7,10 @@ NeutronExtractor:
     LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActive"
     IonAndScintProducerLabel:           "IonAndScint"
     FindHits:                           true
+    GenerateNeutronCosmicVoxels:        true
+    VoxelSize:                          4.7
+    DiscretizeFeatures:                 true
+    UseMixedVoxelLabeling:              true
     HitFinderProducerLabel:             "gaushit"
     SpacePointProducerLabel:            "spsolve"
     OutputFile:                         "output.root"

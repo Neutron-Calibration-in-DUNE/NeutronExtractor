@@ -598,7 +598,7 @@ namespace neutron
                 fTempMuonList.muon_edep_energy,
                 fDiscretizeVoxelFeatures,
                 fUseMixedVoxelLabeling
-            )
+            );
             fVoxelTree->Fill();
         }
     }
