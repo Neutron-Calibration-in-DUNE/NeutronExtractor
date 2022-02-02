@@ -86,7 +86,7 @@ namespace neutron
         std::cout << "after" << std::endl;
         for (size_t i = 0; i < neutronVoxels.x_id.size(); i++)
         {
-            neutronVoxels.labels[i] = 0;
+            neutronVoxels.labels.emplace_back(0);
         }
         // construct training set
         for (size_t i = 0; i < muonVoxels.x_id.size(); i++)
