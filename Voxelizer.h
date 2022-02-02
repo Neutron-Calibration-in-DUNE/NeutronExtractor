@@ -25,6 +25,7 @@ namespace neutron
     // struct for containing voxel information
     struct Voxels
     {
+        Int_t event_id;
         // voxelization info
         Double_t x_min; Double_t x_max;
         Double_t y_min; Double_t y_max;
@@ -44,15 +45,32 @@ namespace neutron
         // labels
         std::vector<Int_t> labels;
 
-        Voxels(Double_t x_min, Double_t x_max, 
+        Voxels(Int_t event) 
+        : event_id(event) 
+        {}
+
+        Voxels(Int_t event,
+            Double_t x_min, Double_t x_max, 
             Double_t y_min, Double_t y_max,
             Double_t z_min, Double_t z_max,
             Double_t voxel_size,
             Int_t num_voxels_x, Int_t num_voxels_y, Int_t num_voxels_z,
-            std::vector<Int_t> x_id, std::vector<Int_t> y_id, std::vector<Int_t> z_id)
-        : x_min(x_min), x_max(x_max), y_min(y_min), y_max(y_max), z_min(z_min), z_max(z_max),
-        voxel_size(voxel_size), num_voxels_x(num_voxels_x), num_voxels_y(num_voxels_y),
-        num_voxels_z(num_voxels_z), x_id(x_id), y_id(y_id), z_id(z_id)
+            std::vector<Int_t> x_id, std::vector<Int_t> y_id, std::vector<Int_t> z_id
+        )
+        : event(event_id)
+        , x_min(x_min)
+        , x_max(x_max)
+        , y_min(y_min)
+        , y_max(y_max)
+        , z_min(z_min)
+        , z_max(z_max)
+        , voxel_size(voxel_size)
+        , num_voxels_x(num_voxels_x)
+        , num_voxels_y(num_voxels_y)
+        , num_voxels_z(num_voxels_z)
+        , x_id(x_id)
+        , y_id(y_id)
+        , z_id(z_id)
         {}
 
         Int_t findVoxel(Int_t x, Int_t y, Int_t z)

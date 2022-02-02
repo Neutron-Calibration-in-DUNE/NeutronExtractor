@@ -45,9 +45,9 @@ namespace neutron
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
         }
         Voxels voxels(
-            xMin, xMax, 
-            yMin, yMax, 
-            zMin, zMax, 
+            xMin, fBoundingBox.x_max, 
+            yMin, fBoundingBox.y_max, 
+            zMin, fBoundingBox.z_max, 
             voxelSize,
             numXVoxels, numYVoxels, numZVoxels,
             x_voxels, y_voxels, z_voxels);

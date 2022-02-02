@@ -74,7 +74,7 @@ namespace neutron
 {
     struct NeutronList
     {
-        # neutron capture related information
+        // neutron capture related information
         Int_t event_id;
         Int_t primary_neutrons;
         std::vector<Int_t> neutron_ids;
@@ -116,7 +116,8 @@ namespace neutron
 
     struct MuonList
     {
-        # muon related information
+        Int_t event_id;
+        // muon related information
         Int_t primary_muons;
         std::vector<Int_t> muon_ids;
         std::vector<Int_t> muon_edep_ids;
@@ -310,6 +311,7 @@ namespace neutron
         fNeutronTree->Branch("space_point_y", &fTempNeutronList.space_point_y);
         fNeutronTree->Branch("space_point_z", &fTempNeutronList.space_point_z);
 
+        fMuonTree->Branch("event_id", &fTempMuondList.event_id);
         fMuonTree->Branch("primary_muons", &fTempMuonList.primary_muons);
         fMuonTree->Branch("muon_ids", &fTempMuonList.muon_ids);
         fMuonTree->Branch("muon_edep_ids", &fTempMuonList.muon_edep_ids);
@@ -584,13 +586,13 @@ namespace neutron
         {
             fTempVoxels = fVoxelizer.generateLabeledNeutronCosmicVoxels(
                 fVoxelSize,
-                fTempNeutronList.neutron_x,
-                fTempNeutronList.neutron_y,
-                fTempNeutronList.neutron_z,
-                fTempNeutronList.neutron_edep_energy,
-                fTempMuonList.muon_x,
-                fTempMuonList.muon_y,
-                fTempMuonList.muon_z,
+                fTempNeutronList.edep_x,
+                fTempNeutronList.edep_y,
+                fTempNeutronList.edep_z,
+                fTempNeutronList.edep_energy,
+                fTempMuonList.muon_edep_x,
+                fTempMuonList.muon_edep_y,
+                fTempMuonList.muon_edep_z,
                 fTempMuonList.muon_edep_energy,
                 fDiscretizeVoxelFeatures,
                 fUseMixedVoxelLabeling
