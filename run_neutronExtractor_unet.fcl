@@ -35,5 +35,6 @@ physics:
 
 physics.analyzers.ana.LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActiveInner"
 physics.analyzers.ana.FindHits: false
+physics.analyzers.ana.UseMixedVoxelLabeling: false
 source.fileNames:    ["/dune/data2/users/ncarrara/NeutronCalibrationLArSoft/ProtoDUNE-I/UNet/outputs/g4_output.root"]
-source.maxEvents:    5
+source.maxEvents:    1
