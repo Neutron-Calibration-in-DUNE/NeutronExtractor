@@ -4,7 +4,7 @@ namespace neutron
 {
     Voxelizer::Voxelizer()
     {}
-    
+
     Voxelizer::Voxelizer(BoundingBox boundingBox)
     : fBoundingBox(boundingBox)
     {
@@ -21,7 +21,7 @@ namespace neutron
         std::vector<Double_t> z_values
     )
     {
-        # set up variables
+        // set up variables
         Double_t xMin = fBoundingBox.x_min;
         Double_t yMin = fBoundingBox.y_min;
         Double_t zMin = fBoundingBox.z_min;
@@ -37,14 +37,21 @@ namespace neutron
         std::vector<Int_t> x_voxels(x_values.size());
         std::vector<Int_t> y_voxels(y_values.size());
         std::vector<Int_t> z_voxels(z_values.size());
-        # iterate through values
-        for (Int_t i = 0; i < x_values.size(); i++)
+        // iterate through values
+        for (size_t i = 0; i < x_values.size(); i++)
         {
             x_voxels[i] = int((x_values[i] - xMin)/voxelSize);
             y_voxels[i] = int((y_values[i] - yMin)/voxelSize);
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
         }
-        Voxels voxels()
+        Voxels voxels(
+            xMin, xMax, 
+            yMin, yMax, 
+            zMin, zMax, 
+            voxelSize,
+            numXVoxels, numYVoxels, numZVoxels,
+            x_voxels, y_voxels, z_voxels);
+        return voxels;
     }
 
     Voxels Voxelizer::generateLabeledNeutronCosmicVoxels(
@@ -72,12 +79,12 @@ namespace neutron
         // consolidate edep energy values
         neutronVoxels.consolidate(discretizeFeatures);
         muonVoxels.consolidate(discretizeFeatures);
-        for (Int_t i = 0; i < neutronVoxels.x_id.size(); i++)
+        for (size_t i = 0; i < neutronVoxels.x_id.size(); i++)
         {
             neutronVoxels.labels[i] = 0;
         }
         // construct training set
-        for (Int_t i = 0; i < muonVoxels.x_id.size(); i++)
+        for (size_t i = 0; i < muonVoxels.x_id.size(); i++)
         {
             // search neutron list for muon voxel
             Int_t index = neutronVoxels.findVoxel(

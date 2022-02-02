@@ -57,7 +57,7 @@ namespace neutron
 
         Int_t findVoxel(Int_t x, Int_t y, Int_t z)
         {
-            for (Int_t i = 0; i < x_id.size(); i++)
+            for (size_t i = 0; i < x_id.size(); i++)
             {
                 if (x_id[i] == x and y_id[i] == y and z_id[i] == z)
                 {
@@ -73,9 +73,9 @@ namespace neutron
             std::vector<Int_t> y;
             std::vector<Int_t> z;
             std::vector<Double_t> val;
-            for (Int_t i = 0; i < x_id.size(); i++)
+            for (size_t i = 0; i < x_id.size(); i++)
             {
-                for (Int_t j = 0; j < x.size(); j++)
+                for (size_t j = 0; j < x.size(); j++)
                 {
                     if (x_id[i] == x[j] and y_id[i] == y[j] and z_id[i] == z[j])
                     {
@@ -122,7 +122,7 @@ namespace neutron
 
         void setBoundingBox(BoundingBox boundingBox) { fBoundingBox = boundingBox; }
 
-        # function that returns voxels
+        // function that returns voxels
         Voxels generateVoxels(Double_t voxelSize,
             std::vector<Double_t> x_values,
             std::vector<Double_t> y_values,
