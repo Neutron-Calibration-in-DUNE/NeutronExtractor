@@ -71,10 +71,12 @@ namespace neutron
         const bool useMixedLabels
     )
     {
+        std::cout << "before" << std::endl;
         Voxels neutronVoxels = generateVoxels(event, voxelSize,
             neutron_x, neutron_y, neutron_z);
         Voxels muonVoxels = generateVoxels(event, voxelSize,
             muon_x, muon_y, muon_z);
+        std::cout << "after" << std::endl;
         
         neutronVoxels.values = neutron_edep_energy;
         muonVoxels.values = muon_edep_energy;
