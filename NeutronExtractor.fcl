@@ -9,7 +9,7 @@ NeutronExtractor:
     FindHits:                           true
     GenerateNeutronCosmicVoxels:        true
     VoxelSize:                          4.7
-    DiscretizeFeatures:                 true
+    DiscretizeVoxelFeatures:            true
     UseMixedVoxelLabeling:              true
     HitFinderProducerLabel:             "gaushit"
     SpacePointProducerLabel:            "spsolve"
