@@ -57,7 +57,7 @@ namespace neutron
             Int_t num_voxels_x, Int_t num_voxels_y, Int_t num_voxels_z,
             std::vector<Int_t> x_id, std::vector<Int_t> y_id, std::vector<Int_t> z_id
         )
-        : event(event_id)
+        : event_id(event)
         , x_min(x_min)
         , x_max(x_max)
         , y_min(y_min)
@@ -141,13 +141,16 @@ namespace neutron
         void setBoundingBox(BoundingBox boundingBox) { fBoundingBox = boundingBox; }
 
         // function that returns voxels
-        Voxels generateVoxels(Double_t voxelSize,
+        Voxels generateVoxels(
+            Int_t event,
+            Double_t voxelSize,
             std::vector<Double_t> x_values,
             std::vector<Double_t> y_values,
             std::vector<Double_t> z_values
         );
 
         Voxels generateLabeledNeutronCosmicVoxels(
+            Int_t event,
             const Double_t voxelSize,
             const std::vector<Double_t> &neutron_x,
             const std::vector<Double_t> &neutron_y,

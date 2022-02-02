@@ -15,6 +15,7 @@ namespace neutron
     {}
 
     Voxels Voxelizer::generateVoxels(
+        Int_t event,
         Double_t voxelSize,
         std::vector<Double_t> x_values,
         std::vector<Double_t> y_values,
@@ -45,6 +46,7 @@ namespace neutron
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
         }
         Voxels voxels(
+            event,
             xMin, fBoundingBox.x_max, 
             yMin, fBoundingBox.y_max, 
             zMin, fBoundingBox.z_max, 
@@ -55,6 +57,7 @@ namespace neutron
     }
 
     Voxels Voxelizer::generateLabeledNeutronCosmicVoxels(
+        Int_t event,
         const Double_t voxelSize,
         const std::vector<Double_t> &neutron_x,
         const std::vector<Double_t> &neutron_y,
@@ -68,9 +71,9 @@ namespace neutron
         const bool useMixedLabels
     )
     {
-        Voxels neutronVoxels = generateVoxels(voxelSize,
+        Voxels neutronVoxels = generateVoxels(event, voxelSize,
             neutron_x, neutron_y, neutron_z);
-        Voxels muonVoxels = generateVoxels(voxelSize,
+        Voxels muonVoxels = generateVoxels(event, voxelSize,
             muon_x, muon_y, muon_z);
         
         neutronVoxels.values = neutron_edep_energy;
