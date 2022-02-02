@@ -111,7 +111,7 @@ namespace neutron
         std::vector<Double_t> space_point_y;
         std::vector<Double_t> space_point_z;
 
-        NeutronList(Int_t event) : event_id(event){}
+        NeutronList(Int_t event) : event_id(event) {}
     };
 
     struct MuonList
@@ -127,7 +127,7 @@ namespace neutron
         std::vector<Double_t> muon_edep_y;
         std::vector<Double_t> muon_edep_z;
 
-        MuonList(Int_t event) : event_id(event){}
+        MuonList(Int_t event) : event_id(event) {}
     };
 
     class NeutronExtractor : public art::EDAnalyzer
@@ -263,6 +263,7 @@ namespace neutron
     , fOutputFileArt(config().OutputFile())
     , fTempNeutronList(0)
     , fTempMuonList(0)
+    , fTempVoxels(0)
     {
         fMetaTree = fTFileService->make<TTree>("meta", "meta");
         fNeutronTree = fTFileService->make<TTree>("neutron", "neutron");
@@ -311,7 +312,7 @@ namespace neutron
         fNeutronTree->Branch("space_point_y", &fTempNeutronList.space_point_y);
         fNeutronTree->Branch("space_point_z", &fTempNeutronList.space_point_z);
 
-        fMuonTree->Branch("event_id", &fTempMuondList.event_id);
+        fMuonTree->Branch("event_id", &fTempMuonList.event_id);
         fMuonTree->Branch("primary_muons", &fTempMuonList.primary_muons);
         fMuonTree->Branch("muon_ids", &fTempMuonList.muon_ids);
         fMuonTree->Branch("muon_edep_ids", &fTempMuonList.muon_edep_ids);
