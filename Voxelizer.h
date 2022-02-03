@@ -106,7 +106,7 @@ namespace neutron
                         break;
                     }
                 }
-                if duplicate == false
+                if (duplicate == false)
                 {
                     x.emplace_back(x_id[i]);
                     y.emplace_back(y_id[i]);
