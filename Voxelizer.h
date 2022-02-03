@@ -111,15 +111,15 @@ namespace neutron
                     x.emplace_back(x_id[i]);
                     y.emplace_back(y_id[i]);
                     z.emplace_back(z_id[i]);
-                }
-                if (discretizeFeatures)
-                {
-                    val.emplace_back(1);
-                }
-                else
-                {
-                    val.emplace_back(values[i]);
-                }
+                    if (discretizeFeatures)
+                    {
+                        val.emplace_back(1);
+                    }
+                    else
+                    {
+                        val.emplace_back(values[i]);
+                    }
+                }   
             }
             x_id = x;
             y_id = y;
