@@ -171,6 +171,7 @@ namespace neutron
             std::vector<Double_t> val;
             for (size_t i = 0; i < x_id.size(); i++)
             {
+                bool duplicate = false;
                 for (size_t j = 0; j < x.size(); j++)
                 {
                     if (x_id[i] == x[j] and y_id[i] == y[j] and z_id[i] == z[j])
@@ -179,20 +180,24 @@ namespace neutron
                         {
                             val[j] += values[i];
                         }
+                        duplicate = true;
                         break;
                     }
                 }
-                x.emplace_back(x_id[i]);
-                y.emplace_back(y_id[i]);
-                z.emplace_back(z_id[i]);
-                if (discretizeFeatures)
+                if (duplicate == false)
                 {
-                    val.emplace_back(1);
-                }
-                else
-                {
-                    val.emplace_back(values[i]);
-                }
+                    x.emplace_back(x_id[i]);
+                    y.emplace_back(y_id[i]);
+                    z.emplace_back(z_id[i]);
+                    if (discretizeFeatures)
+                    {
+                        val.emplace_back(1);
+                    }
+                    else
+                    {
+                        val.emplace_back(values[i]);
+                    }
+                }   
             }
             x_id = x;
             y_id = y;

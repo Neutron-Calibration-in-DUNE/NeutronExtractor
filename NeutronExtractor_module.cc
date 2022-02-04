@@ -391,17 +391,19 @@ namespace neutron
                     {
                         neutronList.primary_neutrons += 1;
                     }
-                    DetectorVolume endingVolume = fGeometry->getVolume(
-                        particle.EndX(), particle.EndY(), particle.EndZ()
-                    );
-                    if (particle.EndProcess() == "nCapture" and endingVolume.material_name == "LAr")
+                    if (particle.EndProcess() == "nCapture")
                     {
-                        neutronList.neutron_ids.emplace_back(particle.TrackId());
-                        neutronList.neutron_capture_x.emplace_back(particle.EndX());
-                        neutronList.neutron_capture_y.emplace_back(particle.EndY());
-                        neutronList.neutron_capture_z.emplace_back(particle.EndZ());
+                        DetectorVolume endingVolume = fGeometry->getVolume(
+                            particle.EndX(), particle.EndY(), particle.EndZ()
+                        );
+                        if (endingVolume.material_name == "LAr")
+                        {
+                            neutronList.neutron_ids.emplace_back(particle.TrackId());
+                            neutronList.neutron_capture_x.emplace_back(particle.EndX());
+                            neutronList.neutron_capture_y.emplace_back(particle.EndY());
+                            neutronList.neutron_capture_z.emplace_back(particle.EndZ());
+                        }
                     }
-
                 }
                 if (particle.PdgCode() == 13)
                 {
