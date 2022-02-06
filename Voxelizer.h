@@ -52,6 +52,9 @@ namespace neutron
         // features
         std::vector<Double_t> values;
 
+        // Generating the map between sub volumes and voxels
+        std::map<Int_t, std::vector<voxStruct>> subvolVoxMap;
+
         // labels
         std::vector<Int_t> labels;
 
@@ -102,8 +105,7 @@ namespace neutron
             return combination(x, 1) + combination(x + y + 1, 2) + combination(x + y + z + 2, 3);
         }
 
-        // Generating the map between sub volumes and voxels
-        std::map<Int_t, std::vector<voxStruct>> subvolVoxMap;
+        
         // Need to do this before using findVoxel function
         void generateSubvolVoxMap()
         {
@@ -123,12 +125,12 @@ namespace neutron
 
                 if(subvolItr != subvolVoxMap.end())
                 {
-                    subvolVoxMap[subvol].insert(vox);
+                    subvolVoxMap[subvol].emplace_back(vox);
                 }
                 else
                 {
-                    subvolVoxMap.insert( make_pair(subvol, std::vector<voxStruct>()) );
-                    subvolVoxMap[subvol].insert(vox);
+                    subvolVoxMap.insert(make_pair(subvol, std::vector<voxStruct>()));
+                    subvolVoxMap[subvol].emplace_back(vox);
                 }
             }
         }
@@ -137,17 +139,15 @@ namespace neutron
         Int_t findVoxel(Int_t x, Int_t y, Int_t z)
         {
             Int_t subvol = generateSubvolNum(x, y, z);
-
             std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
 
             for (int i = 0; i < (int) subvolItr->second.size(); i++)
             {
-                if (subvolItr->second.at(i).x_id == x && subvolItr->second.at(i).y_id == y && subvolItr->second.at(i).z_id == z)
+                if (subvolItr->second[i].x_id == x && subvolItr->second[i].y_id == y && subvolItr->second[i].z_id == z)
                 {
                     return i;
                 }
             }
-
             return -1;
         }
 /*
