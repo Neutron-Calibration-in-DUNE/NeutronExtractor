@@ -89,7 +89,7 @@ namespace neutron
         }
 
         // construct training set
-        neutronVoxels.generateSubvolVoxMap(); // Do this before using findVoxel()
+        //neutronVoxels.generateSubvolVoxMap(); // Do this before using findVoxel()
 
         for (size_t i = 0; i < muonVoxels.x_id.size(); i++)
         {
