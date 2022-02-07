@@ -190,7 +190,7 @@ namespace neutron
                             val[j] += values[i];
                         }
                         duplicate = true;
-                        ids[j].emplace_back(edep_ids[i]);
+                        ids[j].insert(ids[j].end(), edep_ids[i].begin(), edep_ids[i].end());
                     }
                 }
                 if (duplicate == false)
