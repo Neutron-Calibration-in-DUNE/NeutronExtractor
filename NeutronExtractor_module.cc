@@ -337,6 +337,7 @@ namespace neutron
         fVoxelTree->Branch("z_id", &fTempVoxels.z_id);
         fVoxelTree->Branch("values", &fTempVoxels.values);
         fVoxelTree->Branch("labels", &fTempVoxels.labels);
+        fVoxelTree->Branch("edep_ids", &fTempVoxels.edep_ids);
     }
 
     // analyze function
@@ -594,10 +595,12 @@ namespace neutron
                 fTempNeutronList.edep_y,
                 fTempNeutronList.edep_z,
                 fTempNeutronList.edep_energy,
+                fTempNeutronList.neutron_edep_ids,
                 fTempMuonList.muon_edep_x,
                 fTempMuonList.muon_edep_y,
                 fTempMuonList.muon_edep_z,
                 fTempMuonList.muon_edep_energy,
+                fTempMuonList.muon_edep_ids,
                 fDiscretizeVoxelFeatures,
                 fUseMixedVoxelLabeling
             );

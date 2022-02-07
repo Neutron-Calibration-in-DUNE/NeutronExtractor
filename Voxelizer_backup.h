@@ -52,11 +52,13 @@ namespace neutron
         // features
         std::vector<Double_t> values;
 
+        // Generating the map between sub volumes and voxels
+        std::map<Int_t, std::vector<voxStruct>> subvolVoxMap;
+
         // labels
         std::vector<Int_t> labels;
 
-        // edep ids
-        std::vector<std::vector<Int_t>> edep_ids;
+        std::vector<std::vector<Int_t>> edep_track_ids;
 
         Voxels(Int_t event) 
         : event_id(event) 
@@ -68,8 +70,7 @@ namespace neutron
             Double_t z_min, Double_t z_max,
             Double_t voxel_size,
             Int_t num_voxels_x, Int_t num_voxels_y, Int_t num_voxels_z,
-            std::vector<Int_t> x_id, std::vector<Int_t> y_id, std::vector<Int_t> z_id,
-            std::vector<std::vector<Int_t>> edep_ids
+            std::vector<Int_t> x_id, std::vector<Int_t> y_id, std::vector<Int_t> z_id
         )
         : event_id(event)
         , x_min(x_min)
@@ -85,80 +86,72 @@ namespace neutron
         , x_id(x_id)
         , y_id(y_id)
         , z_id(z_id)
-        , edep_ids(edep_ids)
         {}
 
         // Generate sub volume number
         // We are dividing the space into sub volumes to better search for voxels
-        Int_t factorial(Int_t n)
-        {
-            if (n == 0 || n == 1) return 1;
-            else return n * factorial(n-1);
-        }
-        Int_t combination(Int_t n, Int_t r)
-        {
-            return factorial(n) / (factorial(r) * factorial(n-r));
-        }
-        Int_t generateSubvolNum(Int_t xID, Int_t yID, Int_t zID)
-        {
-            Int_t x = (int) (xID/100) + 1;
-            Int_t y = (int) (yID/100) + 1;
-            Int_t z = (int) (zID/100) + 1;
-            return combination(x, 1) + combination(x + y + 1, 2) + combination(x + y + z + 2, 3);
-        }
+        // Int_t factorial(Int_t n)
+        // {
+        //     if (n == 0 || n == 1) return 1;
+        //     else return n * factorial(n-1);
+        // }
+        // Int_t combination(Int_t n, Int_t r)
+        // {
+        //     return factorial(n) / (factorial(r) * factorial(n-r));
+        // }
+        // Int_t generateSubvolNum(Int_t xID, Int_t yID, Int_t zID)
+        // {
+        //     Int_t x = (int) (xID/100) + 1;
+        //     Int_t y = (int) (yID/100) + 1;
+        //     Int_t z = (int) (zID/100) + 1;
+        //     return combination(x, 1) + combination(x + y + 1, 2) + combination(x + y + z + 2, 3);
+        // }
 
-        // Generating the map between sub volumes and voxels
-        std::map<Int_t, std::vector<voxStruct>> subvolVoxMap;
-        // Need to do this before using findVoxel function
-        void generateSubvolVoxMap()
-        {
-            subvolVoxMap.clear();
+        // // Need to do this before using findVoxel function
+        // void generateSubvolVoxMap()
+        // {
+        //     subvolVoxMap.clear();
 
-            // Filling the map
-            for (size_t i = 0; i < x_id.size(); i++)
-            {   
-                Int_t subvol = generateSubvolNum(x_id[i], y_id[i], z_id[i]);
+        //     // Filling the map
+        //     for (size_t i = 0; i < x_id.size(); i++)
+        //     {   
+        //         Int_t subvol = generateSubvolNum(x_id[i], y_id[i], z_id[i]);
                 
-                voxStruct vox;
-                vox.x_id = x_id[i];
-                vox.y_id = y_id[i];
-                vox.z_id = z_id[i];
+        //         voxStruct vox;
+        //         vox.x_id = x_id[i];
+        //         vox.y_id = y_id[i];
+        //         vox.z_id = z_id[i];
 
-                std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
+        //         std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
 
-                if(subvolItr != subvolVoxMap.end())
-                {
-                    subvolVoxMap[subvol].insert(vox);
-                }
-                else
-                {
-                    subvolVoxMap.insert( make_pair(subvol, std::vector<voxStruct>()) );
-                    subvolVoxMap[subvol].insert(vox);
-                }
-            }
-        }
+        //         if(subvolItr != subvolVoxMap.end())
+        //         {
+        //             subvolVoxMap[subvol].emplace_back(vox);
+        //         }
+        //         else
+        //         {
+        //             subvolVoxMap.insert(make_pair(subvol, std::vector<voxStruct>()));
+        //             subvolVoxMap[subvol].emplace_back(vox);
+        //         }
+        //     }
+        // }
 
         //Do generateSubvolVoxMap() before using this
-        Int_t findVoxel(Int_t x, Int_t y, Int_t z)
-        {
-            Int_t subvol = generateSubvolNum(x, y, z);
+        // Int_t findVoxel(Int_t x, Int_t y, Int_t z)
+        // {
+        //     Int_t subvol = generateSubvolNum(x, y, z);
+        //     std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
 
-            std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
+        //     for (int i = 0; i < (int) subvolItr->second.size(); i++)
+        //     {
+        //         if (subvolItr->second[i].x_id == x && subvolItr->second[i].y_id == y && subvolItr->second[i].z_id == z)
+        //         {
+        //             return i;
+        //         }
+        //     }
+        //     return -1;
+        // }
 
-            if (subvolItr != subvolVoxMap.end())
-            {
-                for (int i = 0; i < (int) subvolItr->second.size(); i++)
-                {
-                    if (subvolItr->second[i].x_id == x && subvolItr->second[i].y_id == y && subvolItr->second[i].z_id == z)
-                    {
-                        return i;
-                    }
-                }
-            }
-
-            return -1;
-        }
-/*
         Int_t findVoxel(Int_t x, Int_t y, Int_t z)
         {
             for (size_t i = 0; i < x_id.size(); i++)
@@ -170,14 +163,13 @@ namespace neutron
             }
             return -1;
         }
-*/
+
         void consolidate(const bool discretizeFeatures)
         {
             std::vector<Int_t> x;
             std::vector<Int_t> y;
             std::vector<Int_t> z;
             std::vector<Double_t> val;
-            std::vector<std::vector<Int_t>> ids;
             for (size_t i = 0; i < x_id.size(); i++)
             {
                 bool duplicate = false;
@@ -190,7 +182,7 @@ namespace neutron
                             val[j] += values[i];
                         }
                         duplicate = true;
-                        ids[j].emplace_back(edep_ids[i])
+                        break;
                     }
                 }
                 if (duplicate == false)
@@ -198,7 +190,6 @@ namespace neutron
                     x.emplace_back(x_id[i]);
                     y.emplace_back(y_id[i]);
                     z.emplace_back(z_id[i]);
-                    ids.emplace_back(std::vector<Int_t>({edep_ids[i]}));
                     if (discretizeFeatures)
                     {
                         val.emplace_back(1);
@@ -213,7 +204,6 @@ namespace neutron
             y_id = y;
             z_id = z;
             values = val;
-            edep_ids = ids;
         }
     };
 
@@ -240,8 +230,7 @@ namespace neutron
             Double_t voxelSize,
             std::vector<Double_t> x_values,
             std::vector<Double_t> y_values,
-            std::vector<Double_t> z_values,
-            std::vector<Int_t>    edep_ids
+            std::vector<Double_t> z_values
         );
 
         Voxels generateLabeledNeutronCosmicVoxels(
@@ -251,12 +240,10 @@ namespace neutron
             const std::vector<Double_t> &neutron_y,
             const std::vector<Double_t> &neutron_z,
             const std::vector<Double_t> &neutron_edep_energy,
-            const std::vector<Int_t>    &neutron_edep_ids,
             const std::vector<Double_t> &muon_x,
             const std::vector<Double_t> &muon_y,
             const std::vector<Double_t> &muon_z,
             const std::vector<Double_t> &muon_edep_energy,
-            const std::vector<Int_t>    &muon_edep_ids,
             const bool discretizeFeatures,
             const bool useMixedLabels
         );

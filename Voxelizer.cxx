@@ -19,7 +19,8 @@ namespace neutron
         Double_t voxelSize,
         std::vector<Double_t> x_values,
         std::vector<Double_t> y_values,
-        std::vector<Double_t> z_values
+        std::vector<Double_t> z_values,
+        std::vector<Int_t>    edep_ids
     )
     {
         // set up variables
@@ -38,12 +39,15 @@ namespace neutron
         std::vector<Int_t> x_voxels(x_values.size());
         std::vector<Int_t> y_voxels(y_values.size());
         std::vector<Int_t> z_voxels(z_values.size());
+        
+        std::vector<std::vector<Int_t>> voxel_edep_ids(x_values.size());
         // iterate through values
         for (size_t i = 0; i < x_values.size(); i++)
         {
             x_voxels[i] = int((x_values[i] - xMin)/voxelSize);
             y_voxels[i] = int((y_values[i] - yMin)/voxelSize);
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
+            voxel_edep_ids = std::vector<Int_t>({edep_ids[i]});
         }
         Voxels voxels(
             event,
@@ -52,7 +56,8 @@ namespace neutron
             zMin, fBoundingBox.z_max, 
             voxelSize,
             numXVoxels, numYVoxels, numZVoxels,
-            x_voxels, y_voxels, z_voxels);
+            x_voxels, y_voxels, z_voxels,
+            voxel_edep_ids);
         return voxels;
     }
 
@@ -63,18 +68,20 @@ namespace neutron
         const std::vector<Double_t> &neutron_y,
         const std::vector<Double_t> &neutron_z,
         const std::vector<Double_t> &neutron_edep_energy,
+        const std::vector<Int_t>    &neutron_edep_ids,
         const std::vector<Double_t> &muon_x,
         const std::vector<Double_t> &muon_y,
         const std::vector<Double_t> &muon_z,
         const std::vector<Double_t> &muon_edep_energy,
+        const std::vector<Int_t>    &muon_edep_ids,
         const bool discretizeFeatures,
         const bool useMixedLabels
     )
     {
         Voxels neutronVoxels = generateVoxels(event, voxelSize,
-            neutron_x, neutron_y, neutron_z);
+            neutron_x, neutron_y, neutron_z, neutron_edep_ids);
         Voxels muonVoxels = generateVoxels(event, voxelSize,
-            muon_x, muon_y, muon_z);
+            muon_x, muon_y, muon_z, muon_edep_ids);
         
         neutronVoxels.values = neutron_edep_energy;
         muonVoxels.values = muon_edep_energy;
@@ -119,6 +126,12 @@ namespace neutron
                         neutronVoxels.labels[index] = 1;
                     }
                 }
+                // add the edep ids
+                neutronVoxels.edep_ids[index].insert(
+                    neutronVoxels.edep_ids[index].end(),
+                    muonVoxels.edep_ids[i].begin(),
+                    muonVoxels.edep_ids[i].end()
+                );
             }
             else
             {
@@ -127,6 +140,7 @@ namespace neutron
                 neutronVoxels.z_id.emplace_back(muonVoxels.z_id[i]);
                 neutronVoxels.values.emplace_back(muonVoxels.values[i]);
                 neutronVoxels.labels.emplace_back(1);
+                neutronVoxels.edep_ids.emplace_back(muon_voxels.edep_ids[i]);
             }
         }
         return neutronVoxels;
