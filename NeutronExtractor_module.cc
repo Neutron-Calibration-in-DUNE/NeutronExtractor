@@ -595,7 +595,7 @@ namespace neutron
                 fTempNeutronList.edep_y,
                 fTempNeutronList.edep_z,
                 fTempNeutronList.edep_energy,
-                fTempNeutronList.neutron_edep_ids,
+                fTempNeutronList.edep_neutron_ids,
                 fTempMuonList.muon_edep_x,
                 fTempMuonList.muon_edep_y,
                 fTempMuonList.muon_edep_z,
