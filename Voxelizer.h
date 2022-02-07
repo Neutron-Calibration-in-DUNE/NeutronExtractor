@@ -88,77 +88,77 @@ namespace neutron
         , edep_ids(edep_ids)
         {}
 
-        // Generate sub volume number
-        // We are dividing the space into sub volumes to better search for voxels
-        Int_t factorial(Int_t n)
-        {
-            if (n == 0 || n == 1) return 1;
-            else return n * factorial(n-1);
-        }
-        Int_t combination(Int_t n, Int_t r)
-        {
-            return factorial(n) / (factorial(r) * factorial(n-r));
-        }
-        Int_t generateSubvolNum(Int_t xID, Int_t yID, Int_t zID)
-        {
-            Int_t x = (int) (xID/100) + 1;
-            Int_t y = (int) (yID/100) + 1;
-            Int_t z = (int) (zID/100) + 1;
-            return combination(x, 1) + combination(x + y + 1, 2) + combination(x + y + z + 2, 3);
-        }
+        // // Generate sub volume number
+        // // We are dividing the space into sub volumes to better search for voxels
+        // Int_t factorial(Int_t n)
+        // {
+        //     if (n == 0 || n == 1) return 1;
+        //     else return n * factorial(n-1);
+        // }
+        // Int_t combination(Int_t n, Int_t r)
+        // {
+        //     return factorial(n) / (factorial(r) * factorial(n-r));
+        // }
+        // Int_t generateSubvolNum(Int_t xID, Int_t yID, Int_t zID)
+        // {
+        //     Int_t x = (int) (xID/100) + 1;
+        //     Int_t y = (int) (yID/100) + 1;
+        //     Int_t z = (int) (zID/100) + 1;
+        //     return combination(x, 1) + combination(x + y + 1, 2) + combination(x + y + z + 2, 3);
+        // }
 
-        // Generating the map between sub volumes and voxels
-        std::map<Int_t, std::vector<voxStruct>> subvolVoxMap;
-        // Need to do this before using findVoxel function
-        void generateSubvolVoxMap()
-        {
-            subvolVoxMap.clear();
+        // // Generating the map between sub volumes and voxels
+        // std::map<Int_t, std::vector<voxStruct>> subvolVoxMap;
+        // // Need to do this before using findVoxel function
+        // void generateSubvolVoxMap()
+        // {
+        //     subvolVoxMap.clear();
 
-            // Filling the map
-            for (size_t i = 0; i < x_id.size(); i++)
-            {   
-                Int_t subvol = generateSubvolNum(x_id[i], y_id[i], z_id[i]);
+        //     // Filling the map
+        //     for (size_t i = 0; i < x_id.size(); i++)
+        //     {   
+        //         Int_t subvol = generateSubvolNum(x_id[i], y_id[i], z_id[i]);
                 
-                voxStruct vox;
-                vox.x_id = x_id[i];
-                vox.y_id = y_id[i];
-                vox.z_id = z_id[i];
+        //         voxStruct vox;
+        //         vox.x_id = x_id[i];
+        //         vox.y_id = y_id[i];
+        //         vox.z_id = z_id[i];
 
-                std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
+        //         std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
 
-                if(subvolItr != subvolVoxMap.end())
-                {
-                    subvolVoxMap[subvol].insert(vox);
-                }
-                else
-                {
-                    subvolVoxMap.insert( make_pair(subvol, std::vector<voxStruct>()) );
-                    subvolVoxMap[subvol].insert(vox);
-                }
-            }
-        }
+        //         if(subvolItr != subvolVoxMap.end())
+        //         {
+        //             subvolVoxMap[subvol].insert(vox);
+        //         }
+        //         else
+        //         {
+        //             subvolVoxMap.insert( make_pair(subvol, std::vector<voxStruct>()) );
+        //             subvolVoxMap[subvol].insert(vox);
+        //         }
+        //     }
+        // }
 
-        //Do generateSubvolVoxMap() before using this
-        Int_t findVoxel(Int_t x, Int_t y, Int_t z)
-        {
-            Int_t subvol = generateSubvolNum(x, y, z);
+        // //Do generateSubvolVoxMap() before using this
+        // Int_t findVoxel(Int_t x, Int_t y, Int_t z)
+        // {
+        //     Int_t subvol = generateSubvolNum(x, y, z);
 
-            std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
+        //     std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
 
-            if (subvolItr != subvolVoxMap.end())
-            {
-                for (int i = 0; i < (int) subvolItr->second.size(); i++)
-                {
-                    if (subvolItr->second[i].x_id == x && subvolItr->second[i].y_id == y && subvolItr->second[i].z_id == z)
-                    {
-                        return i;
-                    }
-                }
-            }
+        //     if (subvolItr != subvolVoxMap.end())
+        //     {
+        //         for (int i = 0; i < (int) subvolItr->second.size(); i++)
+        //         {
+        //             if (subvolItr->second[i].x_id == x && subvolItr->second[i].y_id == y && subvolItr->second[i].z_id == z)
+        //             {
+        //                 return i;
+        //             }
+        //         }
+        //     }
 
-            return -1;
-        }
-/*
+        //     return -1;
+        // }
+
         Int_t findVoxel(Int_t x, Int_t y, Int_t z)
         {
             for (size_t i = 0; i < x_id.size(); i++)
@@ -170,7 +170,7 @@ namespace neutron
             }
             return -1;
         }
-*/
+
         void consolidate(const bool discretizeFeatures)
         {
             std::vector<Int_t> x;
