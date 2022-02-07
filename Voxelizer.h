@@ -140,11 +140,14 @@ namespace neutron
 
             std::map<Int_t, std::vector<voxStruct>>::iterator subvolItr = subvolVoxMap.find(subvol);
 
-            for (int i = 0; i < (int) subvolItr->second.size(); i++)
+            if (subvolItr != subvolVoxMap.end())
             {
-                if (subvolItr->second.at(i).x_id == x && subvolItr->second.at(i).y_id == y && subvolItr->second.at(i).z_id == z)
+                for (int i = 0; i < (int) subvolItr->second.size(); i++)
                 {
-                    return i;
+                    if (subvolItr->second[i].x_id == x && subvolItr->second[i].y_id == y && subvolItr->second[i].z_id == z)
+                    {
+                        return i;
+                    }
                 }
             }
 
