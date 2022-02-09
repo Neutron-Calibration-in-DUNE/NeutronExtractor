@@ -527,180 +527,180 @@ namespace neutron
                         auto numTrajectoryPoints = particle.NumberTrajectoryPoints();
                         neutronTrajectories.num_total_steps.emplace_back(numTrajectoryPoints);
 
-                        // Initialize the full trajectory arrays
-                        std::vector<Double_t> t(numTrajectoryPoints);
-                        std::vector<Double_t> x(numTrajectoryPoints);
-                        std::vector<Double_t> y(numTrajectoryPoints);
-                        std::vector<Double_t> z(numTrajectoryPoints);
-                        std::vector<Double_t> energy(numTrajectoryPoints);
-                        std::vector<Double_t> px(numTrajectoryPoints);
-                        std::vector<Double_t> py(numTrajectoryPoints);
-                        std::vector<Double_t> pz(numTrajectoryPoints);
-                        std::vector<std::string> volume_name(numTrajectoryPoints);
-                        std::vector<std::string> material_name(numTrajectoryPoints);
-                        std::vector<Double_t> material(numTrajectoryPoints);
+                        // // Initialize the full trajectory arrays
+                        // std::vector<Double_t> t(numTrajectoryPoints);
+                        // std::vector<Double_t> x(numTrajectoryPoints);
+                        // std::vector<Double_t> y(numTrajectoryPoints);
+                        // std::vector<Double_t> z(numTrajectoryPoints);
+                        // std::vector<Double_t> energy(numTrajectoryPoints);
+                        // std::vector<Double_t> px(numTrajectoryPoints);
+                        // std::vector<Double_t> py(numTrajectoryPoints);
+                        // std::vector<Double_t> pz(numTrajectoryPoints);
+                        // std::vector<std::string> volume_name(numTrajectoryPoints);
+                        // std::vector<std::string> material_name(numTrajectoryPoints);
+                        // std::vector<Double_t> material(numTrajectoryPoints);
 
-                        // keep track of different particle trajectory statistics
-                        std::vector<Double_t> enter_lar = {-1.,-1.,-1.,-1.};
-                        std::vector<Double_t> exit_lar = {-1.,-1.,-1.,-1.};
-                        Double_t total_distance = 0;
-                        Double_t internal_distance = 0;
-                        Double_t lar_distance = 0;          
-                        std::vector<Double_t> total_dedx(numTrajectoryPoints);
-                        std::vector<Double_t> internal_dedx;
-                        std::vector<Double_t> lar_dedx;
+                        // // keep track of different particle trajectory statistics
+                        // std::vector<Double_t> enter_lar = {-1.,-1.,-1.,-1.};
+                        // std::vector<Double_t> exit_lar = {-1.,-1.,-1.,-1.};
+                        // Double_t total_distance = 0;
+                        // Double_t internal_distance = 0;
+                        // Double_t lar_distance = 0;          
+                        // std::vector<Double_t> total_dedx(numTrajectoryPoints);
+                        // std::vector<Double_t> internal_dedx;
+                        // std::vector<Double_t> lar_dedx;
                         
-                        // statistics helpers
-                        bool entered_lar = false;
-                        bool exited_lar = false;
+                        // // statistics helpers
+                        // bool entered_lar = false;
+                        // bool exited_lar = false;
 
-                        // Iterating over the trajectory points
-                        for (size_t i = 0; i < numTrajectoryPoints; i++)
-                        {
-                            t[i] = particle.T(i);
-                            x[i] = particle.Vx(i);
-                            y[i] = particle.Vy(i);
-                            z[i] = particle.Vz(i);
-                            energy[i] = particle.E(i);
-                            px[i] = particle.Px(i);
-                            py[i] = particle.Py(i);
-                            pz[i] = particle.Pz(i);
-                            // some volume information for the current step
-                            DetectorVolume volume = fGeometry->getVolume(
-                                particle.Vx(i), particle.Vy(i), particle.Vz(i)
-                            );
-                            volume_name[i] = volume.volume_name;
-                            material_name[i] = volume.material_name;
-                            material[i] = volume.material;
-                            // Distance  and dEdx calculations
-                            Double_t dx = 0;
-                            Double_t dE = 0;
-                            if (i != 0)
-                            {
-                                dx = sqrt(
-                                    (x[i] - x[i-1])*(x[i] - x[i-1])
-                                + (y[i] - y[i-1])*(y[i] - y[i-1])
-                                + (z[i] - z[i-1])*(z[i] - z[i-1])
-                                ); 
-                                dE = energy[i] - energy[i-1];
-                            }
-                            // calculate dedx
-                            Double_t dEdx = 0;
-                            if (i != 0) {
-                                dEdx = dE/dx;
-                            }
-                            // append total distance and dedx values
-                            total_distance += dx;
-                            total_dedx[i] = dEdx;
-                            // append internal and lar values
-                            if (exited_lar == false)
-                            {
-                                // if we are in the active volume
-                                if (volume.volume_type == 2)
-                                {
-                                    if (entered_lar == false)
-                                    {
-                                        entered_lar = true;
-                                        enter_lar[0] = particle.T(i);
-                                        enter_lar[1] = particle.Vx(i);
-                                        enter_lar[2] = particle.Vy(i);
-                                        enter_lar[3] = particle.Vz(i);
-                                    }
-                                    // accumulate the internal dedx values
-                                    internal_distance += dx;
-                                    internal_dedx.emplace_back(dEdx);
-                                    // accumulate the internal LAr values
-                                    if (volume.material == 18)
-                                    {
-                                        lar_distance += dx;
-                                        lar_dedx.emplace_back(dEdx);
-                                    }
-                                }
-                                else
-                                {
-                                    if (entered_lar == true)
-                                    {
-                                        exited_lar = true;
-                                        exit_lar[0] = particle.T(i);
-                                        exit_lar[1] = particle.Vx(i);
-                                        exit_lar[2] = particle.Vy(i);
-                                        exit_lar[3] = particle.Vz(i);
-                                    }
-                                }
-                            }
-                        }
-                        // save summary statistics
-                        neutronTrajectories.enter_lar_t.emplace_back(enter_lar[0]);
-                        neutronTrajectories.enter_lar_x.emplace_back(enter_lar[1]);
-                        neutronTrajectories.enter_lar_y.emplace_back(enter_lar[2]);
-                        neutronTrajectories.enter_lar_z.emplace_back(enter_lar[3]);
-                        neutronTrajectories.exit_lar_t.emplace_back(exit_lar[0]);
-                        neutronTrajectories.exit_lar_x.emplace_back(exit_lar[1]);
-                        neutronTrajectories.exit_lar_y.emplace_back(exit_lar[2]);
-                        neutronTrajectories.exit_lar_z.emplace_back(exit_lar[3]);
-                        neutronTrajectories.total_distance.emplace_back(total_distance);
-                        neutronTrajectories.internal_distance.emplace_back(internal_distance);
-                        neutronTrajectories.lar_distance.emplace_back(lar_distance);
-                        // if the user wants dEdx, then save it too
-                        if (fSavePrimaryNeutrondEdx)
-                        {
-                            neutronTrajectories.total_dedx.emplace_back(total_dedx);
-                            neutronTrajectories.internal_dedx.emplace_back(internal_dedx);
-                            neutronTrajectories.lar_dedx.emplace_back(lar_dedx);
-                        }
-                        // If the user wants the full trajectory, save it
-                        if (fSavePrimaryNeutronTrajectories)
-                        {
-                            neutronTrajectories.t.emplace_back(t);
-                            neutronTrajectories.x.emplace_back(x);
-                            neutronTrajectories.y.emplace_back(y);
-                            neutronTrajectories.z.emplace_back(z);
-                            neutronTrajectories.energy.emplace_back(energy);
-                            neutronTrajectories.px.emplace_back(px);
-                            neutronTrajectories.py.emplace_back(py);
-                            neutronTrajectories.pz.emplace_back(pz);
-                            neutronTrajectories.volume_name.emplace_back(volume_name);
-                            neutronTrajectories.material_name.emplace_back(material_name);
-                            neutronTrajectories.material.emplace_back(material);
-                        }
-                        // otherwise, just save the beginning and end points
-                        else
-                        {
-                            std::vector<Double_t> t = {particle.T(), particle.EndT()};
-                            std::vector<Double_t> x = {particle.Vx(), particle.EndX()};
-                            std::vector<Double_t> y = {particle.Vy(), particle.EndY()};
-                            std::vector<Double_t> z = {particle.Vz(), particle.EndZ()};
-                            std::vector<Double_t> energy = {particle.E(), particle.EndE()};
-                            std::vector<Double_t> px = {particle.Px(), particle.EndPx()};
-                            std::vector<Double_t> py = {particle.Py(), particle.EndPy()};
-                            std::vector<Double_t> pz = {particle.Pz(), particle.EndPz()};
-                            DetectorVolume begin_volume = fGeometry->getVolume(
-                                particle.Vx(), particle.Vy(), particle.Vz()
-                            );
-                            DetectorVolume end_volume = fGeometry->getVolume(
-                                particle.EndX(), particle.EndY(), particle.EndZ()
-                            );
-                            std::vector<std::string> volume_name = {
-                                begin_volume.volume_name, end_volume.volume_name
-                            };
-                            std::vector<std::string> material_name = {
-                                begin_volume.material_name, end_volume.material_name
-                            };
-                            std::vector<Double_t> material = {
-                                begin_volume.material, end_volume.material
-                            };
-                            neutronTrajectories.t.emplace_back(t);
-                            neutronTrajectories.x.emplace_back(x);
-                            neutronTrajectories.y.emplace_back(y);
-                            neutronTrajectories.z.emplace_back(z);
-                            neutronTrajectories.energy.emplace_back(energy);
-                            neutronTrajectories.px.emplace_back(px);
-                            neutronTrajectories.py.emplace_back(py);
-                            neutronTrajectories.pz.emplace_back(pz);
-                            neutronTrajectories.volume_name.emplace_back(volume_name);
-                            neutronTrajectories.material_name.emplace_back(material_name);
-                            neutronTrajectories.material.emplace_back(material);
-                        }
+                        // // Iterating over the trajectory points
+                        // for (size_t i = 0; i < numTrajectoryPoints; i++)
+                        // {
+                        //     t[i] = particle.T(i);
+                        //     x[i] = particle.Vx(i);
+                        //     y[i] = particle.Vy(i);
+                        //     z[i] = particle.Vz(i);
+                        //     energy[i] = particle.E(i);
+                        //     px[i] = particle.Px(i);
+                        //     py[i] = particle.Py(i);
+                        //     pz[i] = particle.Pz(i);
+                        //     // some volume information for the current step
+                        //     DetectorVolume volume = fGeometry->getVolume(
+                        //         particle.Vx(i), particle.Vy(i), particle.Vz(i)
+                        //     );
+                        //     volume_name[i] = volume.volume_name;
+                        //     material_name[i] = volume.material_name;
+                        //     material[i] = volume.material;
+                        //     // Distance  and dEdx calculations
+                        //     Double_t dx = 0;
+                        //     Double_t dE = 0;
+                        //     if (i != 0)
+                        //     {
+                        //         dx = sqrt(
+                        //             (x[i] - x[i-1])*(x[i] - x[i-1])
+                        //         + (y[i] - y[i-1])*(y[i] - y[i-1])
+                        //         + (z[i] - z[i-1])*(z[i] - z[i-1])
+                        //         ); 
+                        //         dE = energy[i] - energy[i-1];
+                        //     }
+                        //     // calculate dedx
+                        //     Double_t dEdx = 0;
+                        //     if (i != 0) {
+                        //         dEdx = dE/dx;
+                        //     }
+                        //     // append total distance and dedx values
+                        //     total_distance += dx;
+                        //     total_dedx[i] = dEdx;
+                        //     // append internal and lar values
+                        //     if (exited_lar == false)
+                        //     {
+                        //         // if we are in the active volume
+                        //         if (volume.volume_type == 2)
+                        //         {
+                        //             if (entered_lar == false)
+                        //             {
+                        //                 entered_lar = true;
+                        //                 enter_lar[0] = particle.T(i);
+                        //                 enter_lar[1] = particle.Vx(i);
+                        //                 enter_lar[2] = particle.Vy(i);
+                        //                 enter_lar[3] = particle.Vz(i);
+                        //             }
+                        //             // accumulate the internal dedx values
+                        //             internal_distance += dx;
+                        //             internal_dedx.emplace_back(dEdx);
+                        //             // accumulate the internal LAr values
+                        //             if (volume.material == 18)
+                        //             {
+                        //                 lar_distance += dx;
+                        //                 lar_dedx.emplace_back(dEdx);
+                        //             }
+                        //         }
+                        //         else
+                        //         {
+                        //             if (entered_lar == true)
+                        //             {
+                        //                 exited_lar = true;
+                        //                 exit_lar[0] = particle.T(i);
+                        //                 exit_lar[1] = particle.Vx(i);
+                        //                 exit_lar[2] = particle.Vy(i);
+                        //                 exit_lar[3] = particle.Vz(i);
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                        // // save summary statistics
+                        // neutronTrajectories.enter_lar_t.emplace_back(enter_lar[0]);
+                        // neutronTrajectories.enter_lar_x.emplace_back(enter_lar[1]);
+                        // neutronTrajectories.enter_lar_y.emplace_back(enter_lar[2]);
+                        // neutronTrajectories.enter_lar_z.emplace_back(enter_lar[3]);
+                        // neutronTrajectories.exit_lar_t.emplace_back(exit_lar[0]);
+                        // neutronTrajectories.exit_lar_x.emplace_back(exit_lar[1]);
+                        // neutronTrajectories.exit_lar_y.emplace_back(exit_lar[2]);
+                        // neutronTrajectories.exit_lar_z.emplace_back(exit_lar[3]);
+                        // neutronTrajectories.total_distance.emplace_back(total_distance);
+                        // neutronTrajectories.internal_distance.emplace_back(internal_distance);
+                        // neutronTrajectories.lar_distance.emplace_back(lar_distance);
+                        // // if the user wants dEdx, then save it too
+                        // if (fSavePrimaryNeutrondEdx)
+                        // {
+                        //     neutronTrajectories.total_dedx.emplace_back(total_dedx);
+                        //     neutronTrajectories.internal_dedx.emplace_back(internal_dedx);
+                        //     neutronTrajectories.lar_dedx.emplace_back(lar_dedx);
+                        // }
+                        // // If the user wants the full trajectory, save it
+                        // if (fSavePrimaryNeutronTrajectories)
+                        // {
+                        //     neutronTrajectories.t.emplace_back(t);
+                        //     neutronTrajectories.x.emplace_back(x);
+                        //     neutronTrajectories.y.emplace_back(y);
+                        //     neutronTrajectories.z.emplace_back(z);
+                        //     neutronTrajectories.energy.emplace_back(energy);
+                        //     neutronTrajectories.px.emplace_back(px);
+                        //     neutronTrajectories.py.emplace_back(py);
+                        //     neutronTrajectories.pz.emplace_back(pz);
+                        //     neutronTrajectories.volume_name.emplace_back(volume_name);
+                        //     neutronTrajectories.material_name.emplace_back(material_name);
+                        //     neutronTrajectories.material.emplace_back(material);
+                        // }
+                        // // otherwise, just save the beginning and end points
+                        // else
+                        // {
+                        //     std::vector<Double_t> t = {particle.T(), particle.EndT()};
+                        //     std::vector<Double_t> x = {particle.Vx(), particle.EndX()};
+                        //     std::vector<Double_t> y = {particle.Vy(), particle.EndY()};
+                        //     std::vector<Double_t> z = {particle.Vz(), particle.EndZ()};
+                        //     std::vector<Double_t> energy = {particle.E(), particle.EndE()};
+                        //     std::vector<Double_t> px = {particle.Px(), particle.EndPx()};
+                        //     std::vector<Double_t> py = {particle.Py(), particle.EndPy()};
+                        //     std::vector<Double_t> pz = {particle.Pz(), particle.EndPz()};
+                        //     DetectorVolume begin_volume = fGeometry->getVolume(
+                        //         particle.Vx(), particle.Vy(), particle.Vz()
+                        //     );
+                        //     DetectorVolume end_volume = fGeometry->getVolume(
+                        //         particle.EndX(), particle.EndY(), particle.EndZ()
+                        //     );
+                        //     std::vector<std::string> volume_name = {
+                        //         begin_volume.volume_name, end_volume.volume_name
+                        //     };
+                        //     std::vector<std::string> material_name = {
+                        //         begin_volume.material_name, end_volume.material_name
+                        //     };
+                        //     std::vector<Double_t> material = {
+                        //         begin_volume.material, end_volume.material
+                        //     };
+                        //     neutronTrajectories.t.emplace_back(t);
+                        //     neutronTrajectories.x.emplace_back(x);
+                        //     neutronTrajectories.y.emplace_back(y);
+                        //     neutronTrajectories.z.emplace_back(z);
+                        //     neutronTrajectories.energy.emplace_back(energy);
+                        //     neutronTrajectories.px.emplace_back(px);
+                        //     neutronTrajectories.py.emplace_back(py);
+                        //     neutronTrajectories.pz.emplace_back(pz);
+                        //     neutronTrajectories.volume_name.emplace_back(volume_name);
+                        //     neutronTrajectories.material_name.emplace_back(material_name);
+                        //     neutronTrajectories.material.emplace_back(material);
+                        // }
                     }
                     // Now we look for actual captures.
                     if (particle.EndProcess() == "nCapture")
