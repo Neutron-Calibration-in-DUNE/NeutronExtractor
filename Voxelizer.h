@@ -270,7 +270,8 @@ namespace neutron
             std::vector<Double_t> x_values,
             std::vector<Double_t> y_values,
             std::vector<Double_t> z_values,
-            std::vector<Int_t>    edep_ids
+            std::vector<Int_t>    edep_ids,
+            Int_t                 label
         );
 
         Voxels generateLabeledNeutronCosmicVoxels(
