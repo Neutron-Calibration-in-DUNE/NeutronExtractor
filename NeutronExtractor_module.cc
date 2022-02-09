@@ -629,23 +629,23 @@ namespace neutron
                             }
                         }
                         // save summary statistics
-                        neutronTrajectories.enter_lar_t = enter_lar[0];
-                        neutronTrajectories.enter_lar_x = enter_lar[1];
-                        neutronTrajectories.enter_lar_y = enter_lar[2];
-                        neutronTrajectories.enter_lar_z = enter_lar[3];
-                        neutronTrajectories.exit_lar_t = exit_lar[0];
-                        neutronTrajectories.exit_lar_x = exit_lar[1];
-                        neutronTrajectories.exit_lar_y = exit_lar[2];
-                        neutronTrajectories.exit_lar_z = exit_lar[3];
-                        neutronTrajectories.total_distance = total_distance;
-                        neutronTrajectories.internal_distance = internal_distance;
-                        neutronTrajectories.lar_distance = lar_distance;
+                        neutronTrajectories.enter_lar_t.emplace_back(enter_lar[0]);
+                        neutronTrajectories.enter_lar_x.emplace_back(enter_lar[1]);
+                        neutronTrajectories.enter_lar_y.emplace_back(enter_lar[2]);
+                        neutronTrajectories.enter_lar_z.emplace_back(enter_lar[3]);
+                        neutronTrajectories.exit_lar_t.emplace_back(exit_lar[0]);
+                        neutronTrajectories.exit_lar_x.emplace_back(exit_lar[1]);
+                        neutronTrajectories.exit_lar_y.emplace_back(exit_lar[2]);
+                        neutronTrajectories.exit_lar_z.emplace_back(exit_lar[3]);
+                        neutronTrajectories.total_distance.emplace_back(total_distance);
+                        neutronTrajectories.internal_distance.emplace_back(internal_distance);
+                        neutronTrajectories.lar_distance.emplace_back(lar_distance);
                         // if the user wants dEdx, then save it too
                         if (fSavePrimarydEdx)
                         {
-                            neutronTrajectories.total_dedx = total_dedx;
-                            neutronTrajectories.internal_dedx = internal_dedx;
-                            neutronTrajectories.lar_dedx = lar_dedx;
+                            neutronTrajectories.total_dedx.emplace_back(total_dedx);
+                            neutronTrajectories.internal_dedx.emplace_back(internal_dedx);
+                            neutronTrajectories.lar_dedx.emplace_back(lar_dedx);
                         }
                         // If the user wants the full trajectory, save it
                         if (fSavePrimaryNeutronTrajectories)
