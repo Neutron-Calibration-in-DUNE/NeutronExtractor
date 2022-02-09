@@ -89,7 +89,7 @@ namespace neutron
             neutron_x, neutron_y, neutron_z, neutron_edep_ids, 0);
         Voxels muonVoxels = generateVoxels(event, voxelSize,
             muon_x, muon_y, muon_z, muon_edep_ids, 1);
-        std::cout << "HERE" << std::endl;
+        
         
         neutronVoxels.values = neutron_edep_energy;
         muonVoxels.values = muon_edep_energy;
@@ -97,6 +97,7 @@ namespace neutron
         // consolidate edep energy values
         neutronVoxels.consolidate(discretizeFeatures);
         muonVoxels.consolidate(discretizeFeatures);
+        std::cout << "HERE" << std::endl;
         
         for (size_t i = 0; i < neutronVoxels.x_id.size(); i++)
         {
