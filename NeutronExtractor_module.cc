@@ -524,7 +524,7 @@ namespace neutron
 
                         // Collect the number of trajectory points
                         auto numTrajectoryPoints = particle.NumberTrajectoryPoints();
-                        neutronTrajectories.num_total_steps = numTrajectoryPoints;
+                        neutronTrajectories.num_total_steps.emplace_back(numTrajectoryPoints);
 
                         // Initialize the full trajectory arrays
                         std::vector<Double_t> t(numTrajectoryPoints);
