@@ -641,7 +641,7 @@ namespace neutron
                         neutronTrajectories.internal_distance.emplace_back(internal_distance);
                         neutronTrajectories.lar_distance.emplace_back(lar_distance);
                         // if the user wants dEdx, then save it too
-                        if (fSavePrimarydEdx)
+                        if (fSavePrimaryNeutrondEdx)
                         {
                             neutronTrajectories.total_dedx.emplace_back(total_dedx);
                             neutronTrajectories.internal_dedx.emplace_back(internal_dedx);
