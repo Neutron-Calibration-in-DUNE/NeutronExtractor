@@ -48,7 +48,7 @@ namespace neutron
             x_voxels[i] = int((x_values[i] - xMin)/voxelSize);
             y_voxels[i] = int((y_values[i] - yMin)/voxelSize);
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
-            int temp = std::static_cast<int>(i);
+            int temp = static_cast<int>(i);
             voxel_edep_ids[i] = std::vector<Int_t>({temp});
         }
         Voxels voxels(
