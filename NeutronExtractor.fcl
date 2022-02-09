@@ -3,6 +3,8 @@ BEGIN_PROLOG
 NeutronExtractor:
 {
     module_type:                        "NeutronExtractor"
+    SavePrimaryNeutronTrajectories:     false
+    SavePrimaryNeutrondEdx:             false
     LArGeantProducerLabel:              "largeant"
     LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActive"
     IonAndScintProducerLabel:           "IonAndScint"

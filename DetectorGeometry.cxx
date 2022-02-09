@@ -92,14 +92,13 @@ namespace neutron
     { 
         return fTotalTPCMass; 
     }
-    ///////////////////////////////////////////////////////////////////////////////////////
     DetectorGeometry::DetectorGeometry(const std::string name)
     : sName(name)
     {
         // set up the geometry interface
         fGeometryCore = lar::providerFrom<geo::Geometry>();
         // initialize TTrees
-        fGeometryTree = fTFileService->make<TTree>("Geometry", "Geometry");
+        fGeometryTree = fTFileService->make<TTree>("geometry", "geometry");
         // get detector clock data
         auto const clock_data = 
             art::ServiceHandle<detinfo::DetectorClocksService const>()->DataForJob();

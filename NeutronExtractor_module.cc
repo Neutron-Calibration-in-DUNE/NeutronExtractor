@@ -5,10 +5,7 @@
  *          Generated at Mon Oct 11 11:21:12 2021 using cetskelgen
  * @ingroup NeutronExtractor
  * @author  Nicholas Carrara (nmcarrara@ucdavis.edu),
- *          Jingbo Wang
- *          Junying Haung
  *          Yashwanth Bezawada
- *          Walker Johnson
 **/
 
 // art framework includes
@@ -26,12 +23,10 @@
 #include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
-
 // special utility includes
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Table.h"
 #include "art_root_io/TFileService.h"
-
 
 // LArSoft includes
 #include "larcore/Geometry/Geometry.h"
@@ -72,6 +67,57 @@ namespace neutron {
 
 namespace neutron
 {
+    struct NeutronTrajectories
+    {
+        /// struct for storing neutron trajectories for an event.
+        /** This struct contains some quantities of interest beyond
+         *  the trajectories, such as:
+         *      1. When/where the neutron first enters the LAr.
+         *      2. When/where the neutron exits the LAr after entering.
+         *      3. The total distance traveled inside the LAr.
+         *      4. How many different materials the neutron interacts with inside the LAr.
+         *      5. The overall dE/dx of the trajectory.
+         *      6. The dE/dx just inside the LAr.
+         * 
+         */ 
+        Int_t event_id;
+        std::vector<Int_t> track_id;
+        std::vector<Int_t> mother;
+        std::vector<std::string> process;
+        std::vector<std::string> end_process;
+        std::vector<std::vector<Double_t>> t;
+        std::vector<std::vector<Double_t>> x;
+        std::vector<std::vector<Double_t>> y;
+        std::vector<std::vector<Double_t>> z;
+        std::vector<std::vector<Double_t>> energy;
+        std::vector<std::vector<Double_t>> px;
+        std::vector<std::vector<Double_t>> py;
+        std::vector<std::vector<Double_t>> pz;
+        std::vector<std::vector<std::string>> volume_name; 
+        std::vector<std::vector<std::string>> material_name;
+        std::vector<std::vector<Double_t>> material;
+
+        std::vector<Double_t> enter_lar_t;
+        std::vector<Double_t> enter_lar_x;
+        std::vector<Double_t> enter_lar_y;
+        std::vector<Double_t> enter_lar_z;
+        std::vector<Double_t> exit_lar_t;
+        std::vector<Double_t> exit_lar_x;
+        std::vector<Double_t> exit_lar_y;
+        std::vector<Double_t> exit_lar_z;
+        
+        std::vector<Double_t> total_distance;
+        std::vector<Double_t> internal_distance;
+        std::vector<Double_t> lar_distance;
+        
+        std::vector<std::vector<Double_t>> total_dedx;
+        std::vector<std::vector<Double_t>> internal_dedx;
+        std::vector<std::vector<Double_t>> lar_dedx;
+
+        std::vector<Int_t> num_total_steps;
+
+        NeutronTrajectories(Int_t event) : event_id(event) {}
+    };
     struct NeutronList
     {
         // neutron capture related information
@@ -135,6 +181,28 @@ namespace neutron
     public:
         struct Config
         {
+            /// Neutron Trajectory Information
+            /** We will save the entire trajectory of each neutron if this tag is 
+             *  set to true.  This will include information at each step as well
+             *  as statistics from the trajectory as a whole.  These trajectories
+             *  are stored in the sim::MCParticle class, so little has to be done
+             *  on the user side to obtain all the relevant information.
+             */ 
+            fhicl::Atom<bool> SavePrimaryNeutronTrajectories
+            {
+                fhicl::Name("SavePrimaryNeutronTrajectories"),
+                fhicl::Comment("whether or not to save the neutron trajectories in a TFile.")
+            };
+            fhicl::Atom<bool> SavePrimaryNeutrondEdx
+            {
+                fhicl::Name("SavePrimaryNeutrondEdx"),
+                fhicl::Comment("whether or not to save the neutron dEdx values.")
+            };
+            /// larg4 Energy Deposition Information
+            /**
+             * 
+             * 
+             */ 
             fhicl::Atom<art::InputTag> LArGeantProducerLabel
             {
                 fhicl::Name("LArGeantProducerLabel"),
@@ -211,6 +279,10 @@ namespace neutron
         bool checkListOfElectrons(Int_t eventId, Int_t trackId);
 
     private:
+        /// Neutron Trajectory Information
+        bool fSavePrimaryNeutronTrajectories;
+        bool fSavePrimaryNeutrondEdx;
+        /// Energy Deposition Information
         art::InputTag fLArGeantProducerLabel;
         art::InputTag fLArGeantEnergyDepositProducerLabel;
         art::InputTag fIonAndScintProducerLabel;
@@ -222,13 +294,17 @@ namespace neutron
         art::InputTag fHitFinderProducerLabel;
         art::InputTag fSpacePointProducerLabel;
         art::InputTag fOutputFileArt;
-        // geometry information
-        DetectorGeometry* fGeometry = DetectorGeometry::getInstance("NeutronExtractor");
-        // voxelizer
-        Voxelizer fVoxelizer;
-        // ROOT
+        
+        /// ROOT output through art::TFileService
+        /** We will save different TTrees to different TFiles specified 
+         *  by the directories for each type.  For example, the neutron
+         *  trajectory information will be stored in a TFile. 
+         * 
+         */ 
         art::ServiceHandle<art::TFileService> fTFileService;
+        /// TTrees for different tasks
         TTree *fMetaTree;
+        TTree *fNeutronTrajectoryTree;
         TTree *fNeutronTree;
         TTree *fMuonTree;
         TTree *fVoxelTree;
@@ -237,12 +313,19 @@ namespace neutron
         int fSubRun;
         int fEvent;
 
+        // geometry information
+        DetectorGeometry* fGeometry = DetectorGeometry::getInstance("NeutronExtractor");
+        // voxelizer
+        Voxelizer fVoxelizer;
+
         // number of events
         Int_t fNumberOfEvents;
 
-        NeutronList fTempNeutronList;
-        MuonList fTempMuonList;
-        Voxels fTempVoxels;
+        /// temporary structs for holding event information
+        NeutronTrajectories fTempNeutronTrajectories;
+        NeutronList         fTempNeutronList;
+        MuonList            fTempMuonList;
+        Voxels              fTempVoxels;
 
         std::vector<Int_t> fNumberOfNeutronsPerEvent;
     };
@@ -250,6 +333,9 @@ namespace neutron
     // constructor
     NeutronExtractor::NeutronExtractor(Parameters const& config)
     : EDAnalyzer(config)
+    , fSavePrimaryNeutronTrajectories(config().SavePrimaryNeutronTrajectories())
+    , fSavePrimaryNeutrondEdx(config().SavePrimaryNeutrondEdx())
+    , fNeutronTrajectoryFile(config().NeutronTrajectoryFile())
     , fLArGeantProducerLabel(config().LArGeantProducerLabel())
     , fLArGeantEnergyDepositProducerLabel(config().LArGeantEnergyDepositProducerLabel())
     , fIonAndScintProducerLabel(config().IonAndScintProducerLabel())
@@ -261,14 +347,17 @@ namespace neutron
     , fHitFinderProducerLabel(config().HitFinderProducerLabel())
     , fSpacePointProducerLabel(config().SpacePointProducerLabel())
     , fOutputFileArt(config().OutputFile())
+    , fTempNeutronTrajectories(0)
     , fTempNeutronList(0)
     , fTempMuonList(0)
     , fTempVoxels(0)
     {
-        fMetaTree = fTFileService->make<TTree>("meta", "meta");
+        /// set up TTrees
+        fMetaTree    = fTFileService->make<TTree>("meta", "meta");
+        fNeutronTrajectoryTree = fTFileService->make<TTree>("neutron_trajectories", "neutron_trajectories");
         fNeutronTree = fTFileService->make<TTree>("neutron", "neutron");
-        fMuonTree = fTFileService->make<TTree>("muon", "muon");
-        fVoxelTree = fTFileService->make<TTree>("voxels", "voxels");
+        fMuonTree    = fTFileService->make<TTree>("muon", "muon");
+        fVoxelTree   = fTFileService->make<TTree>("voxels", "voxels");
 
         // construct voxelizer
         fVoxelizer.setBoundingBox(fGeometry->GetTotalActiveTPCBox());
@@ -280,6 +369,38 @@ namespace neutron
             consumes<std::vector<recob::Hit>>(fHitFinderProducerLabel);
             consumes<std::vector<recob::SpacePoint>>(fSpacePointProducerLabel);
         }
+        // set up branches
+        fNeutronTrajectoryTree->Branch("event_id",  &fTempNeutronTrajectories.event_id);
+        fNeutronTrajectoryTree->Branch("track_id",  &fTempNeutronTrajectories.track_id);
+        fNeutronTrajectoryTree->Branch("mother",    &fTempNeutronTrajectories.mother);
+        fNeutronTrajectoryTree->Branch("process",   &fTempNeutronTrajectories.process);
+        fNeutronTrajectoryTree->Branch("end_process", &fTempNeutronTrajectories.end_process);
+        fNeutronTrajectoryTree->Branch("t", &fTempNeutronTrajectories.t);
+        fNeutronTrajectoryTree->Branch("x", &fTempNeutronTrajectories.x);
+        fNeutronTrajectoryTree->Branch("y", &fTempNeutronTrajectories.y);
+        fNeutronTrajectoryTree->Branch("z", &fTempNeutronTrajectories.z);
+        fNeutronTrajectoryTree->Branch("energy", &fTempNeutronTrajectories.energy);
+        fNeutronTrajectoryTree->Branch("px", &fTempNeutronTrajectories.px);
+        fNeutronTrajectoryTree->Branch("py", &fTempNeutronTrajectories.py);
+        fNeutronTrajectoryTree->Branch("pz", &fTempNeutronTrajectories.pz);
+        fNeutronTrajectoryTree->Branch("volume_name", &fTempNeutronTrajectories.volume_name);
+        fNeutronTrajectoryTree->Branch("material_name", &fTempNeutronTrajectories.material_name);
+        fNeutronTrajectoryTree->Branch("material", &fTempNeutronTrajectories.material);
+        fNeutronTrajectoryTree->Branch("enter_lar_t", &fTempNeutronTrajectories.enter_lar_t);
+        fNeutronTrajectoryTree->Branch("enter_lar_x", &fTempNeutronTrajectories.enter_lar_x);
+        fNeutronTrajectoryTree->Branch("enter_lar_y", &fTempNeutronTrajectories.enter_lar_y);
+        fNeutronTrajectoryTree->Branch("enter_lar_z", &fTempNeutronTrajectories.enter_lar_z);
+        fNeutronTrajectoryTree->Branch("exit_lar_t", &fTempNeutronTrajectories.exit_lar_t);
+        fNeutronTrajectoryTree->Branch("exit_lar_x", &fTempNeutronTrajectories.exit_lar_x);
+        fNeutronTrajectoryTree->Branch("exit_lar_y", &fTempNeutronTrajectories.exit_lar_y);
+        fNeutronTrajectoryTree->Branch("exit_lar_z", &fTempNeutronTrajectories.exit_lar_z);
+        fNeutronTrajectoryTree->Branch("total_distance", &fTempNeutronTrajectories.total_distance);
+        fNeutronTrajectoryTree->Branch("internal_distance", &fTempNeutronTrajectories.internal_distance);
+        fNeutronTrajectoryTree->Branch("lar_distance", &fTempNeutronTrajectories.lar_distance);
+        fNeutronTrajectoryTree->Branch("total_dedx", &fTempNeutronTrajectories.total_dedx);
+        fNeutronTrajectoryTree->Branch("internal_dedx", &fTempNeutronTrajectories.internal_dedx);
+        fNeutronTrajectoryTree->Branch("lar_dedx", &fTempNeutronTrajectories.lar_dedx);
+        fNeutronTrajectoryTree->Branch("num_total_steps", &fTempNeutronTrajectories.num_total_steps);
 
         fNeutronTree->Branch("event_id", &fTempNeutronList.event_id);
         fNeutronTree->Branch("primary_neutrons", &fTempNeutronList.primary_neutrons);
@@ -361,6 +482,7 @@ namespace neutron
                 << " No simb::MCParticle objects in this event - "
                 << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
         }
+
         // get the event meta data 
         fRun    = event.run();
         fSubRun = event.subRun();
@@ -370,12 +492,15 @@ namespace neutron
         fNumberOfNeutronsPerEvent.emplace_back(0);
 
         // create a new event list
-        NeutronList neutronList(fNumberOfEvents-1);
+        NeutronTrajectory neutronTrajectories(fNumberOfEvents-1);
+        NeutronList       neutronList(fNumberOfEvents-1);
+        MuonList          muonList(fNumberOfEvents-1);
         neutronList.primary_neutrons = 0;
-        MuonList muonList(fNumberOfEvents-1);
         muonList.primary_muons = 0;
+
         // get clock information
         auto const clockData = art::ServiceHandle<detinfo::DetectorClocksService>()->DataFor(event);
+
         // get the list of MC particles from Geant4
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(fLArGeantProducerLabel);
         // iterate over all MC particles and grab all neutrons, all gammas
@@ -391,7 +516,193 @@ namespace neutron
                     if (particle.Mother() == 0)
                     {
                         neutronList.primary_neutrons += 1;
+                        // First grab basic info from trajectories, 
+                        // track_id, mother, process and end_process.
+                        neutronTrajectories.track_id.emplace_back(particle.TrackId());
+                        neutronTrajectories.mother.emplace_back(particle.Mother());
+                        neutronTrajectories.process.emplace_back(particle.Process());
+                        neutronTrajectories.end_process.emplace_back(particle.EndProcess());
+
+                        // Collect the number of trajectory points
+                        auto numTrajectoryPoints = particle.NumberTrajectoryPoints();
+                        neutronTrajectories.num_total_steps = numTrajectoryPoints;
+
+                        // Initialize the full trajectory arrays
+                        std::vector<Double_t> t(numTrajectoryPoints);
+                        std::vector<Double_t> x(numTrajectoryPoints);
+                        std::vector<Double_t> y(numTrajectoryPoints);
+                        std::vector<Double_t> z(numTrajectoryPoints);
+                        std::vector<Double_t> energy(numTrajectoryPoints);
+                        std::vector<Double_t> px(numTrajectoryPoints);
+                        std::vector<Double_t> py(numTrajectoryPoints);
+                        std::vector<Double_t> pz(numTrajectoryPoints);
+                        std::vector<std::string> volume_name(numTrajectoryPoints);
+                        std::vector<std::string> material_name(numTrajectoryPoints);
+                        std::vector<Double_t> material(numTrajectoryPoints);
+
+                        // keep track of different particle trajectory statistics
+                        std::vector<Double_t> enter_lar = {-1.,-1.,-1.,-1.};
+                        std::vector<Double_t> exit_lar = {-1.,-1.,-1.,-1.};
+                        Double_t total_distance = 0;
+                        Double_t internal_distance = 0;
+                        Double_t lar_distance = 0;          
+                        std::vector<Double_t> total_dedx(numTrajectoryPoints);
+                        std::vector<Double_t> internal_dedx;
+                        std::vector<Double_t> lar_dedx;
+                        
+                        // statistics helpers
+                        bool entered_lar = False;
+                        bool exited_lar = False;
+
+                        // Iterating over the trajectory points
+                        for (size_t i = 0; i < numTrajectoryPoints; i++)
+                        {
+                            t[i] = particle.T(i);
+                            x[i] = particle.Vx(i);
+                            y[i] = particle.Vy(i);
+                            z[i] = particle.Vz(i);
+                            energy[i] = particle.E(i);
+                            px[i] = particle.Px(i);
+                            py[i] = particle.Py(i);
+                            pz[i] = particle.Pz(i);
+                            // some volume information for the current step
+                            DetectorVolume volume = fGeometry->getVolume(
+                                particle.Vx(i), particle.Vy(i), particle.Vz(i)
+                            );
+                            volume_name[i] = volume.volume_name;
+                            material_name[i] = volume.material_name;
+                            material[i] = volume.material;
+                            // Distance  and dEdx calculations
+                            Double_t dx = 0;
+                            Double_t dE = 0;
+                            if (i != 0)
+                            {
+                                dx = sqrt(
+                                    (x[i] - x[i-1])*(x[i] - x[i-1])
+                                + (y[i] - y[i-1])*(y[i] - y[i-1])
+                                + (z[i] - z[i-1])*(z[i] - z[i-1])
+                                )  
+                                dE = energy[i] - energy[i-1];
+                            }
+                            // calculate dedx
+                            Double_t dEdx = 0;
+                            if (i != 0) {
+                                dEdx = dE/dx;
+                            }
+                            // append total distance and dedx values
+                            total_distance += dx;
+                            total_dedx[i] = dEdx;
+                            // append internal and lar values
+                            if (exited_lar == False)
+                            {
+                                // if we are in the active volume
+                                if (volume.volume_type == 2)
+                                {
+                                    if (entered_lar == False)
+                                    {
+                                        entered_lar = True;
+                                        enter_lar[0] = particle.T(i);
+                                        enter_lar[1] = particle.Vx(i);
+                                        enter_lar[2] = particle.Vy(i);
+                                        enter_lar[3] = particle.Vz(i);
+                                    }
+                                    // accumulate the internal dedx values
+                                    internal_distance += dx;
+                                    internal_dedx.emplace_back(dEdx);
+                                    // accumulate the internal LAr values
+                                    if (volume.material == 18)
+                                    {
+                                        lar_distance += dx;
+                                        lar_dedx.emplace_back(dEdx);
+                                    }
+                                }
+                                else
+                                {
+                                    if (entered_lar == True)
+                                    {
+                                        exited_lar = True;
+                                        exit_lar[0] = particle.T(i);
+                                        exit_lar[1] = particle.Vx(i);
+                                        exit_lar[2] = particle.Vy(i);
+                                        exit_lar[3] = particle.Vz(i);
+                                    }
+                                }
+                            }
+                        }
+                        // save summary statistics
+                        neutronTrajectories.enter_lar_t = enter_lar[0];
+                        neutronTrajectories.enter_lar_x = enter_lar[1];
+                        neutronTrajectories.enter_lar_y = enter_lar[2];
+                        neutronTrajectories.enter_lar_z = enter_lar[3];
+                        neutronTrajectories.exit_lar_t = exit_lar[0];
+                        neutronTrajectories.exit_lar_x = exit_lar[1];
+                        neutronTrajectories.exit_lar_y = exit_lar[2];
+                        neutronTrajectories.exit_lar_z = exit_lar[3];
+                        neutronTrajectories.total_distance = total_distance;
+                        neutronTrajectories.internal_distance = internal_distance;
+                        neutronTrajectories.lar_distance = lar_distance;
+                        // if the user wants dEdx, then save it too
+                        if (fSavePrimarydEdx)
+                        {
+                            neutronTrajectories.total_dedx = total_dedx;
+                            neutronTrajectories.internal_dedx = internal_dedx;
+                            neutronTrajectories.lar_dedx = lar_dedx;
+                        }
+                        // If the user wants the full trajectory, save it
+                        if (fSavePrimaryNeutronTrajectories)
+                        {
+                            neutronTrajectories.t.emplace_back(t);
+                            neutronTrajectories.x.emplace_back(x);
+                            neutronTrajectories.y.emplace_back(y);
+                            neutronTrajectories.z.emplace_back(z);
+                            neutronTrajectories.energy.emplace_back(energy);
+                            neutronTrajectories.px.emplace_back(px);
+                            neutronTrajectories.py.emplace_back(py);
+                            neutronTrajectories.pz.emplace_back(pz);
+                            neutronTrajectories.volume_name.emplace_back(volume_name);
+                            neutronTrajectories.material_name.emplace_back(material_name);
+                            neutronTrajectories.material.emplace_back(material);
+                        }
+                        // otherwise, just save the beginning and end points
+                        else
+                        {
+                            std::vector<Double_t> t(2) = {particle.T(), particle.EndT()};
+                            std::vector<Double_t> x(2) = {particle.Vx(), particle.EndX()};
+                            std::vector<Double_t> y(2) = {particle.Vy(), particle.EndY()};
+                            std::vector<Double_t> z(2) = {particle.Vz(), particle.EndZ()};
+                            std::vector<Double_t> energy(2) = {particle.E(), particle.EndE()};
+                            std::vector<Double_t> px(2) = {particle.Px(), particle.EndPx()};
+                            std::vector<Double_t> py(2) = {particle.Py(), particle.EndPy()};
+                            std::vector<Double_t> pz(2) = {particle.Pz(), particle.EndPz()};
+                            DetectorVolume begin_volume = fGeometry->getVolume(
+                                particle.Vx(), particle.Vy(), particle.Vz()
+                            );
+                            DetectorVolume end_volume = fGeometry->getVolume(
+                                particle.EndX(), particle.EndY(), particle.EndZ()
+                            );
+                            std::vector<std::string> volume_name(2) = {
+                                begin_volume.volume_name, end_volume.volume_name
+                            };
+                            std::vector<std::string> material_name(2) = {
+                                begin_volume.material_name, end_volume.material_name
+                            };
+                            std::vector<Double_t> material(2) = {
+                                begin_volume.material, end_volume.material
+                            };
+                            neutronTrajectories.t.emplace_back(t);
+                            neutronTrajectories.x.emplace_back(x);
+                            neutronTrajectories.y.emplace_back(y);
+                            neutronTrajectories.z.emplace_back(z);
+                            neutronTrajectories.energy.emplace_back(energy);
+                            neutronTrajectories.px.emplace_back(px);
+                            neutronTrajectories.py.emplace_back(py);
+                            neutronTrajectories.pz.emplace_back(pz);
+                            neutronTrajectories.volume_name.emplace_back(volume_name);
+                            neutronTrajectories.material_name.emplace_back(material_name);
+                            neutronTrajectories.material.emplace_back(material);
+                        }
                     }
+                    // Now we look for actual captures.
                     if (particle.EndProcess() == "nCapture")
                     {
                         DetectorVolume endingVolume = fGeometry->getVolume(
@@ -540,6 +851,39 @@ namespace neutron
                 }
             }
         }
+        // save neutron trajectories
+        fTempNeutronTrajectories.event_id = neutronTrajectories.event_id;
+        fTempNeutronTrajectories.track_id = neutronTrajectories.track_id;
+        fTempNeutronTrajectories.mother   = neutronTrajectories.mother;
+        fTempNeutronTrajectories.process  = neutronTrajectories.process;
+        fTempNeutronTrajectories.end_process = neutronTrajectories.end_process;
+        fTempNeutronTrajectories.t = neutronTrajectories.t;
+        fTempNeutronTrajectories.x = neutronTrajectories.x;
+        fTempNeutronTrajectories.y = neutronTrajectories.y;
+        fTempNeutronTrajectories.z = neutronTrajectories.z;
+        fTempNeutronTrajectories.energy = neutronTrajectories.energy;
+        fTempNeutronTrajectories.px = neutronTrajectories.px;
+        fTempNeutronTrajectories.py = neutronTrajectories.py;
+        fTempNeutronTrajectories.pz = neutronTrajectories.pz;
+        fTempNeutronTrajectories.volume_name = neutronTrajectories.volume_name;
+        fTempNeutronTrajectories.material_name = neutronTrajectories.material_name;
+        fTempNeutronTrajectories.material = neutronTrajectories.material;
+        fTempNeutronTrajectories.enter_lar_t = neutronTrajectories.enter_lar_t;
+        fTempNeutronTrajectories.enter_lar_x = neutronTrajectories.enter_lar_x;
+        fTempNeutronTrajectories.enter_lar_y = neutronTrajectories.enter_lar_y;
+        fTempNeutronTrajectories.enter_lar_z = neutronTrajectories.enter_lar_z;
+        fTempNeutronTrajectories.exit_lar_t = neutronTrajectories.exit_lar_t;
+        fTempNeutronTrajectories.exit_lar_x = neutronTrajectories.exit_lar_x;
+        fTempNeutronTrajectories.exit_lar_y = neutronTrajectories.exit_lar_y;
+        fTempNeutronTrajectories.exit_lar_z = neutronTrajectories.exit_lar_z;
+        fTempNeutronTrajectories.total_distance = neutronTrajectories.total_distance;
+        fTempNeutronTrajectories.internal_distance = neutronTrajectories.internal_distance;
+        fTempNeutronTrajectories.lar_distance = neutronTrajectories.lar_distance;
+        fTempNeutronTrajectories.total_dedx = neutronTrajectories.total_dedx;
+        fTempNeutronTrajectories.internal_dedx = neutronTrajectories.internal_dedx;
+        fTempNeutronTrajectories.lar_dedx = neutronTrajectories.lar_dedx;
+
+        fNeutronTrajectoryTree->Fill();
         if (neutronList.edep_x.size() > 0)
         {
             fTempNeutronList.event_id = neutronList.event_id;
