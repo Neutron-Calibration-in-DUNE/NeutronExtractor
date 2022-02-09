@@ -48,7 +48,7 @@ namespace neutron
             x_voxels[i] = int((x_values[i] - xMin)/voxelSize);
             y_voxels[i] = int((y_values[i] - yMin)/voxelSize);
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
-            Int_t temp = std::static_cast<int>(i);
+            int temp = std::static_cast<int>(i);
             voxel_edep_ids[i] = std::vector<Int_t>({temp});
         }
         Voxels voxels(
@@ -134,7 +134,7 @@ namespace neutron
                     }
                 }
                 // add the edep ids
-                neutronVoxels.muon_edep_ids[index] = muonVoxels.muon_edep_ids[i]);
+                neutronVoxels.muon_edep_ids[index] = muonVoxels.muon_edep_ids[i];
             }
             else
             {
@@ -143,7 +143,7 @@ namespace neutron
                 neutronVoxels.z_id.emplace_back(muonVoxels.z_id[i]);
                 neutronVoxels.values.emplace_back(muonVoxels.values[i]);
                 neutronVoxels.labels.emplace_back(1);
-                neutronVoxels.muon_edep_ids.emplace_back(muonVoxels.muon_edep_ids[i]);
+                neutronVoxels.muon_edep_ids.emplace_back(muonVoxels.muon_edep_ids[i];
             }
         }
         return neutronVoxels;
