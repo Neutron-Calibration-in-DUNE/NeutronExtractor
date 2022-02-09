@@ -204,6 +204,8 @@ namespace neutron
             std::vector<Double_t> val;
             std::vector<std::vector<Int_t>> neutron_ids;
             std::vector<std::vector<Int_t>> muon_ids;
+            std::cout << neutron_edep_ids.size() << std::endl;
+            std::cout << muon_edep_ids.size() << std::endl;
             for (size_t i = 0; i < x_id.size(); i++)
             {
                 bool duplicate = false;
