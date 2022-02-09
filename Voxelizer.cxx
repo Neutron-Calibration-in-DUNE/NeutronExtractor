@@ -21,7 +21,7 @@ namespace neutron
         std::vector<Double_t> y_values,
         std::vector<Double_t> z_values,
         std::vector<Int_t>    edep_ids,
-        Int_t                 label,
+        Int_t                 label
     )
     {
         // set up variables
