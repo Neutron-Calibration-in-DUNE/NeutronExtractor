@@ -42,6 +42,7 @@ namespace neutron
         std::vector<Int_t> z_voxels(z_values.size());
         
         std::vector<std::vector<Int_t>> voxel_edep_ids(x_values.size());
+        std::vector<std::vector<Int_t>> empty_edep_ids(x_values.size());
         // iterate through values
         for (size_t i = 0; i < x_values.size(); i++)
         {
@@ -61,8 +62,10 @@ namespace neutron
             x_voxels, y_voxels, z_voxels);
         if (label == 0) {
             voxels.neutron_edep_ids = voxel_edep_ids;
+            voxels.muon_edep_ids = empty_edep_ids;
         }
         else {
+            voxels.neutron_edep_ids = empty_edep_ids;
             voxels.muon_edep_ids = voxel_edep_ids;
         }
         return voxels;
