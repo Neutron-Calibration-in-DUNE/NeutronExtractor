@@ -20,7 +20,8 @@ namespace neutron
         std::vector<Double_t> x_values,
         std::vector<Double_t> y_values,
         std::vector<Double_t> z_values,
-        std::vector<Int_t>    edep_ids
+        std::vector<Int_t>    edep_ids,
+        Int_t                 label,
     )
     {
         // set up variables
@@ -47,7 +48,7 @@ namespace neutron
             x_voxels[i] = int((x_values[i] - xMin)/voxelSize);
             y_voxels[i] = int((y_values[i] - yMin)/voxelSize);
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
-            voxel_edep_ids[i] = std::vector<Int_t>({edep_ids[i]});
+            voxel_edep_ids[i] = std::vector<Int_t>({i});
         }
         Voxels voxels(
             event,
@@ -56,8 +57,14 @@ namespace neutron
             zMin, fBoundingBox.z_max, 
             voxelSize,
             numXVoxels, numYVoxels, numZVoxels,
-            x_voxels, y_voxels, z_voxels,
-            voxel_edep_ids);
+            x_voxels, y_voxels, z_voxels);
+        if (label == 0) {
+            voxels.neutron_edep_ids = voxel_edep_ids;
+        }
+        else {
+            voxels.muon_edep_ids = voxel_edep_ids;
+        }
+        }
         return voxels;
     }
 
@@ -79,9 +86,9 @@ namespace neutron
     )
     {
         Voxels neutronVoxels = generateVoxels(event, voxelSize,
-            neutron_x, neutron_y, neutron_z, neutron_edep_ids);
+            neutron_x, neutron_y, neutron_z, neutron_edep_ids, 0);
         Voxels muonVoxels = generateVoxels(event, voxelSize,
-            muon_x, muon_y, muon_z, muon_edep_ids);
+            muon_x, muon_y, muon_z, muon_edep_ids, 1);
         
         neutronVoxels.values = neutron_edep_energy;
         muonVoxels.values = muon_edep_energy;
@@ -127,11 +134,7 @@ namespace neutron
                     }
                 }
                 // add the edep ids
-                neutronVoxels.edep_ids[index].insert(
-                    neutronVoxels.edep_ids[index].end(),
-                    muonVoxels.edep_ids[i].begin(),
-                    muonVoxels.edep_ids[i].end()
-                );
+                neutronVoxels.muon_edep_ids[index] = muonVoxels.muon_edep_ids[i]);
             }
             else
             {
@@ -140,7 +143,7 @@ namespace neutron
                 neutronVoxels.z_id.emplace_back(muonVoxels.z_id[i]);
                 neutronVoxels.values.emplace_back(muonVoxels.values[i]);
                 neutronVoxels.labels.emplace_back(1);
-                neutronVoxels.edep_ids.emplace_back(muonVoxels.edep_ids[i]);
+                neutronVoxels.muon_edep_ids.emplace_back(muonVoxels.muon_edep_ids[i]);
             }
         }
         return neutronVoxels;

@@ -56,10 +56,35 @@ namespace neutron
         std::vector<Int_t> labels;
 
         // edep ids
-        std::vector<std::vector<Int_t>> edep_ids;
+        std::vector<std::vector<Int_t>> neutron_edep_ids;
+        std::vector<std::vector<Int_t>> muon_edep_ids;
 
         Voxels(Int_t event) 
         : event_id(event) 
+        {}
+
+        Voxels(Int_t event,
+            Double_t x_min, Double_t x_max, 
+            Double_t y_min, Double_t y_max,
+            Double_t z_min, Double_t z_max,
+            Double_t voxel_size,
+            Int_t num_voxels_x, Int_t num_voxels_y, Int_t num_voxels_z,
+            std::vector<Int_t> x_id, std::vector<Int_t> y_id, std::vector<Int_t> z_id
+        )
+        : event_id(event)
+        , x_min(x_min)
+        , x_max(x_max)
+        , y_min(y_min)
+        , y_max(y_max)
+        , z_min(z_min)
+        , z_max(z_max)
+        , voxel_size(voxel_size)
+        , num_voxels_x(num_voxels_x)
+        , num_voxels_y(num_voxels_y)
+        , num_voxels_z(num_voxels_z)
+        , x_id(x_id)
+        , y_id(y_id)
+        , z_id(z_id)
         {}
 
         Voxels(Int_t event,
@@ -85,7 +110,7 @@ namespace neutron
         , x_id(x_id)
         , y_id(y_id)
         , z_id(z_id)
-        , edep_ids(edep_ids)
+        , neutron_edep_ids(edep_ids)
         {}
 
         // // Generate sub volume number
@@ -177,7 +202,8 @@ namespace neutron
             std::vector<Int_t> y;
             std::vector<Int_t> z;
             std::vector<Double_t> val;
-            std::vector<std::vector<Int_t>> ids;
+            std::vector<std::vector<Int_t>> neutron_ids;
+            std::vector<std::vector<Int_t>> muon_ids;
             for (size_t i = 0; i < x_id.size(); i++)
             {
                 bool duplicate = false;
@@ -190,7 +216,8 @@ namespace neutron
                             val[j] += values[i];
                         }
                         duplicate = true;
-                        ids[j].insert(ids[j].end(), edep_ids[i].begin(), edep_ids[i].end());
+                        neutron_ids[j].insert(neutron_ids[j].end(), neutron_edep_ids[i].begin(), neutron_edep_ids[i].end());
+                        muon_ids[j].insert(muon_ids[j].end(), muon_edep_ids[i].begin(), muon_edep_ids[i].end());
                     }
                 }
                 if (duplicate == false)
@@ -198,7 +225,8 @@ namespace neutron
                     x.emplace_back(x_id[i]);
                     y.emplace_back(y_id[i]);
                     z.emplace_back(z_id[i]);
-                    ids.emplace_back(std::vector<Int_t>({edep_ids[i]}));
+                    neutron_ids.emplace_back(std::vector<Int_t>({neutron_edep_ids[i]}));
+                    muon_ids.emplace_back(std::vector<Int_t>({muon_edep_ids[i]}));
                     if (discretizeFeatures)
                     {
                         val.emplace_back(1);
@@ -213,7 +241,8 @@ namespace neutron
             y_id = y;
             z_id = z;
             values = val;
-            edep_ids = ids;
+            neutron_edep_ids = neutron_ids;
+            muon_edep_ids = muon_ids;
         }
     };
 
