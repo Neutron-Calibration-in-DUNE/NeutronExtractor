@@ -335,7 +335,6 @@ namespace neutron
     : EDAnalyzer(config)
     , fSavePrimaryNeutronTrajectories(config().SavePrimaryNeutronTrajectories())
     , fSavePrimaryNeutrondEdx(config().SavePrimaryNeutrondEdx())
-    , fNeutronTrajectoryFile(config().NeutronTrajectoryFile())
     , fLArGeantProducerLabel(config().LArGeantProducerLabel())
     , fLArGeantEnergyDepositProducerLabel(config().LArGeantEnergyDepositProducerLabel())
     , fIonAndScintProducerLabel(config().IonAndScintProducerLabel())
@@ -492,9 +491,9 @@ namespace neutron
         fNumberOfNeutronsPerEvent.emplace_back(0);
 
         // create a new event list
-        NeutronTrajectory neutronTrajectories(fNumberOfEvents-1);
-        NeutronList       neutronList(fNumberOfEvents-1);
-        MuonList          muonList(fNumberOfEvents-1);
+        NeutronTrajectories neutronTrajectories(fNumberOfEvents-1);
+        NeutronList         neutronList(fNumberOfEvents-1);
+        MuonList            muonList(fNumberOfEvents-1);
         neutronList.primary_neutrons = 0;
         muonList.primary_muons = 0;
 
@@ -551,8 +550,8 @@ namespace neutron
                         std::vector<Double_t> lar_dedx;
                         
                         // statistics helpers
-                        bool entered_lar = False;
-                        bool exited_lar = False;
+                        bool entered_lar = false;
+                        bool exited_lar = false;
 
                         // Iterating over the trajectory points
                         for (size_t i = 0; i < numTrajectoryPoints; i++)
@@ -581,7 +580,7 @@ namespace neutron
                                     (x[i] - x[i-1])*(x[i] - x[i-1])
                                 + (y[i] - y[i-1])*(y[i] - y[i-1])
                                 + (z[i] - z[i-1])*(z[i] - z[i-1])
-                                )  
+                                ); 
                                 dE = energy[i] - energy[i-1];
                             }
                             // calculate dedx
@@ -593,14 +592,14 @@ namespace neutron
                             total_distance += dx;
                             total_dedx[i] = dEdx;
                             // append internal and lar values
-                            if (exited_lar == False)
+                            if (exited_lar == false)
                             {
                                 // if we are in the active volume
                                 if (volume.volume_type == 2)
                                 {
-                                    if (entered_lar == False)
+                                    if (entered_lar == false)
                                     {
-                                        entered_lar = True;
+                                        entered_lar = true;
                                         enter_lar[0] = particle.T(i);
                                         enter_lar[1] = particle.Vx(i);
                                         enter_lar[2] = particle.Vy(i);
@@ -618,9 +617,9 @@ namespace neutron
                                 }
                                 else
                                 {
-                                    if (entered_lar == True)
+                                    if (entered_lar == true)
                                     {
-                                        exited_lar = True;
+                                        exited_lar = true;
                                         exit_lar[0] = particle.T(i);
                                         exit_lar[1] = particle.Vx(i);
                                         exit_lar[2] = particle.Vy(i);
@@ -666,27 +665,27 @@ namespace neutron
                         // otherwise, just save the beginning and end points
                         else
                         {
-                            std::vector<Double_t> t(2) = {particle.T(), particle.EndT()};
-                            std::vector<Double_t> x(2) = {particle.Vx(), particle.EndX()};
-                            std::vector<Double_t> y(2) = {particle.Vy(), particle.EndY()};
-                            std::vector<Double_t> z(2) = {particle.Vz(), particle.EndZ()};
-                            std::vector<Double_t> energy(2) = {particle.E(), particle.EndE()};
-                            std::vector<Double_t> px(2) = {particle.Px(), particle.EndPx()};
-                            std::vector<Double_t> py(2) = {particle.Py(), particle.EndPy()};
-                            std::vector<Double_t> pz(2) = {particle.Pz(), particle.EndPz()};
+                            std::vector<Double_t> t = {particle.T(), particle.EndT()};
+                            std::vector<Double_t> x = {particle.Vx(), particle.EndX()};
+                            std::vector<Double_t> y = {particle.Vy(), particle.EndY()};
+                            std::vector<Double_t> z = {particle.Vz(), particle.EndZ()};
+                            std::vector<Double_t> energy = {particle.E(), particle.EndE()};
+                            std::vector<Double_t> px = {particle.Px(), particle.EndPx()};
+                            std::vector<Double_t> py = {particle.Py(), particle.EndPy()};
+                            std::vector<Double_t> pz = {particle.Pz(), particle.EndPz()};
                             DetectorVolume begin_volume = fGeometry->getVolume(
                                 particle.Vx(), particle.Vy(), particle.Vz()
                             );
                             DetectorVolume end_volume = fGeometry->getVolume(
                                 particle.EndX(), particle.EndY(), particle.EndZ()
                             );
-                            std::vector<std::string> volume_name(2) = {
+                            std::vector<std::string> volume_name = {
                                 begin_volume.volume_name, end_volume.volume_name
                             };
-                            std::vector<std::string> material_name(2) = {
+                            std::vector<std::string> material_name = {
                                 begin_volume.material_name, end_volume.material_name
                             };
-                            std::vector<Double_t> material(2) = {
+                            std::vector<Double_t> material = {
                                 begin_volume.material, end_volume.material
                             };
                             neutronTrajectories.t.emplace_back(t);
