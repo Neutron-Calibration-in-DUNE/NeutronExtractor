@@ -143,7 +143,7 @@ namespace neutron
                 neutronVoxels.z_id.emplace_back(muonVoxels.z_id[i]);
                 neutronVoxels.values.emplace_back(muonVoxels.values[i]);
                 neutronVoxels.labels.emplace_back(1);
-                neutronVoxels.muon_edep_ids.emplace_back(muonVoxels.muon_edep_ids[i];
+                neutronVoxels.muon_edep_ids.emplace_back(muonVoxels.muon_edep_ids[i]);
             }
         }
         return neutronVoxels;
