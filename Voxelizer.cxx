@@ -48,7 +48,7 @@ namespace neutron
             x_voxels[i] = int((x_values[i] - xMin)/voxelSize);
             y_voxels[i] = int((y_values[i] - yMin)/voxelSize);
             z_voxels[i] = int((z_values[i] - zMin)/voxelSize);
-            voxel_edep_ids[i] = std::vector<Int_t>({i});
+            voxel_edep_ids[i] = std::vector<Int_t>({std::static_cast<Int_t>(i)});
         }
         Voxels voxels(
             event,
@@ -63,7 +63,6 @@ namespace neutron
         }
         else {
             voxels.muon_edep_ids = voxel_edep_ids;
-        }
         }
         return voxels;
     }
