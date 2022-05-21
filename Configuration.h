@@ -31,6 +31,11 @@ namespace neutron
      */
     struct Configuration
     {
+        fhicl::Atom<art::InputTag> LArGeantProducerLabel
+        {
+            fhicl::Name("LArGeantProducerLabel"),
+            fhicl::Comment("Tag of the input data product for the largeant side of the simulation.")
+        };
     };
 
     using Parameters = art::EDAnalyzer::Table<Configuration>;

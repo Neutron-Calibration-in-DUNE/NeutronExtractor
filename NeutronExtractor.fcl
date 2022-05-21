@@ -3,6 +3,7 @@ BEGIN_PROLOG
 NeutronExtractor:
 {
     module_type:    "NeutronExtractor"
+    LArGeantProducerLabel:  "largeant"
 }
 
 END_PROLOG

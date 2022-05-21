@@ -68,13 +68,14 @@ namespace neutron
         void endJob() override;
 
     private:
-        Parameters fParameters;
+        Parameters mParameters;
         
     };
 
     // constructor
     NeutronExtractor::NeutronExtractor(Parameters const& config)
     : EDAnalyzer(config)
+    , mParameters(config)
     {
     }
 
