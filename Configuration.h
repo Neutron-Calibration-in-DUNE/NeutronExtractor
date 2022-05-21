@@ -22,7 +22,7 @@
 #include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
-namespace extractor
+namespace neutron
 {
     /**
      * @brief A collection of fhicl parameters for the NeutronExtractor
