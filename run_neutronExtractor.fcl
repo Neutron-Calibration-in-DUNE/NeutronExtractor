@@ -14,7 +14,7 @@ source:
 }
 services:
 {
-    TFileService:   { fileName: "output.root" }
+    TFileService:   { fileName: "hists/extract_output.root" }
     TimeTracker:    {}
     RandomNumberGenerator:  {}
     MemoryTracker:          {}
@@ -33,5 +33,5 @@ physics:
     end_paths: [ analysis ]
 }
 
-source.fileNames:                       ["/dune/data/users/ncarrara/NeutronCalibrationFDSP/fcl/VerticalDrift/g4_output/center_3view/FDVD_1x6x6_center_3view_500_1_1.root"]
+source.fileNames:                       [ ]
 source.maxEvents:                       1

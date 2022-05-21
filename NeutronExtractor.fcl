@@ -2,20 +2,7 @@ BEGIN_PROLOG
 
 NeutronExtractor:
 {
-    module_type:                        "NeutronExtractor"
-    SavePrimaryNeutronTrajectories:     false
-    SavePrimaryNeutrondEdx:             false
-    LArGeantProducerLabel:              "largeant"
-    LArGeantEnergyDepositProducerLabel: "largeant:LArG4DetectorServicevolTPCActive"
-    IonAndScintProducerLabel:           "IonAndScint"
-    FindHits:                           true
-    GenerateNeutronCosmicVoxels:        true
-    VoxelSize:                          4.7
-    DiscretizeVoxelFeatures:            true
-    UseMixedVoxelLabeling:              true
-    HitFinderProducerLabel:             "gaushit"
-    SpacePointProducerLabel:            "spsolve"
-    OutputFile:                         "output.root"
+    module_type:    "NeutronExtractor"
 }
 
 END_PROLOG
