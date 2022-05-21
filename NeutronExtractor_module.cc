@@ -7,8 +7,6 @@
  * @author  Nicholas Carrara (nmcarrara@ucdavis.edu),
  *          Yashwanth Bezawada
 **/
-
-// art framework includes
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
@@ -22,13 +20,9 @@
 #include "canvas/Persistency/Common/FindManyP.h"
 #include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
-
-// special utility includes
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Table.h"
 #include "art_root_io/TFileService.h"
-
-// LArSoft includes
 #include "larcore/Geometry/Geometry.h"
 #include "larcorealg/Geometry/GeometryCore.h"
 #include "larcoreobj/SimpleTypesAndConstants/geo_types.h"
@@ -47,17 +41,14 @@
 #include "nusimdata/SimulationBase/MCParticle.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
 
-// necessary ROOT libraries
 #include <TTree.h>
 #include <TH1.h>
 #include "TH1F.h"
 #include "TGeoMaterial.h"
 #include "TGeoElement.h"
-
-// C includes
 #include <cmath>
 
-// local includes
+#include "Configuration.h"
 #include "DetectorGeometry.h"
 
 namespace neutron
@@ -65,19 +56,19 @@ namespace neutron
     class NeutronExtractor : public art::EDAnalyzer
     {
     public:
-        using Parameters = art::EDAnalyzer::Table<Config>;
-        explicit NeutronExtractor(Parameters const& config);
-        NeutronExtractor(NeutronExtractor const&) = delete;
-        NeutronExtractor(NeutronExtractor&&) = delete;
-        NeutronExtractor& operator=(NeutronExtractor const&) = delete;
-        NeutronExtractor& operator=(NeutronExtractor&&) = delete;
+        explicit ParticleExtractor(const Parameters& config);
+        ParticleExtractor(const ParticleExtractor&) = delete;
+        ParticleExtractor(ParticleExtractor&&) = delete;
+        ParticleExtractor& operator=(const ParticleExtractor&) = delete;
+        ParticleExtractor& operator=(ParticleExtractor&&) = delete;
 
         // required EDAnalyzer functions
-        void analyze(art::Event const& event) override;
+        void analyze(const art::Event& event) override;
         void beginJob() override;
         void endJob() override;
 
     private:
+        Parameters fParameters;
         
     };
 

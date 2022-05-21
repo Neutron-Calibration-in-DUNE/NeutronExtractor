@@ -5,8 +5,6 @@
  * @author  Nicholas Carrara (nmcarrara@ucdavis.edu),
 **/
 #pragma once
-
-// art includes
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Handle.h"
@@ -18,13 +16,9 @@
 #include "canvas/Persistency/Common/FindManyP.h"
 #include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
-
-// special utility includes
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Table.h"
 #include "art_root_io/TFileService.h"
-
-// LArSoft includes
 #include "larcore/Geometry/Geometry.h"
 #include "larcorealg/Geometry/GeometryCore.h"
 #include "larcoreobj/SimpleTypesAndConstants/geo_types.h"
@@ -41,14 +35,12 @@
 #include "nusimdata/SimulationBase/MCParticle.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
 
-// necessary ROOT libraries
 #include <TTree.h>
 #include <TH1.h>
 #include "TH1F.h"
 #include "TGeoMaterial.h"
 #include "TGeoElement.h"
 
-// std includes
 #include <string>
 #include <vector>
 #include <memory>
