@@ -73,7 +73,7 @@ namespace neutron
     };
 
     // constructor
-    NeutronExtractor::NeutronExtractor(Parameters const& config)
+    NeutronExtractor::NeutronExtractor(const Parameters& config)
     : EDAnalyzer(config)
     , mParameters(config)
     {
