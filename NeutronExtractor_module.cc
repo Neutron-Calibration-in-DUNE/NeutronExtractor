@@ -56,11 +56,11 @@ namespace neutron
     class NeutronExtractor : public art::EDAnalyzer
     {
     public:
-        explicit ParticleExtractor(const Parameters& config);
-        ParticleExtractor(const ParticleExtractor&) = delete;
-        ParticleExtractor(ParticleExtractor&&) = delete;
-        ParticleExtractor& operator=(const ParticleExtractor&) = delete;
-        ParticleExtractor& operator=(ParticleExtractor&&) = delete;
+        explicit NeutronExtractor(const Parameters& config);
+        NeutronExtractor(const NeutronExtractor&) = delete;
+        NeutronExtractor(NeutronExtractor&&) = delete;
+        NeutronExtractor& operator=(const NeutronExtractor&) = delete;
+        NeutronExtractor& operator=(NeutronExtractor&&) = delete;
 
         // required EDAnalyzer functions
         void analyze(const art::Event& event) override;
