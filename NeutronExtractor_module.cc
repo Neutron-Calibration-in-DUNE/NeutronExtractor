@@ -59,7 +59,6 @@
 
 // local includes
 #include "DetectorGeometry.h"
-#include "Voxelizer.h"
 
 namespace neutron
 {
