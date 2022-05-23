@@ -74,6 +74,8 @@ namespace neutron
         art::InputTag mLArGeantProducerLabel;
         art::InputTag mIonAndScintProducerLabel;
         art::InputTag mCluster3DProducerLabel;
+        art::InputTag mSimChannelProducerLabel;
+        art::InputTag mSimChannelInstanceProducerLabel;
 
         bool mFillNeutronCapture;
 
@@ -98,13 +100,15 @@ namespace neutron
     {
         mLArGeantProducerLabel =    mParameters().LArGeantProducerLabel();
         mIonAndScintProducerLabel = mParameters().IonAndScintProducerLabel();
-        mCluster3DProducerLabel = mParameters().Cluster3DProducerLabel();
-
+        mCluster3DProducerLabel =   mParameters().Cluster3DProducerLabel();
+        mSimChannelProducerLabel =  mParameters().SimChannelProducerLabel();
+        mSimChannelInstanceProducerLabel = mParameters().SimChannelInstanceProducerLabel();
+        
         mMetaTree = mTFileService->make<TTree>("meta", "meta");
     }
 
     // begin job
-    void ParticleExtractor::beginJob()
+    void NeutronExtractor::beginJob()
     {
         fGeometry->FillTTree();
     }
@@ -123,7 +127,7 @@ namespace neutron
         {
             // if there are no particles for the event truth, then
             // we are in big trouble haha.  throw an exception
-            throw cet::exception("ParticleExtractor")
+            throw cet::exception("NeutronExtractor")
                 << " No simb::MCParticle objects in this event - "
                 << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
         }
@@ -135,7 +139,7 @@ namespace neutron
             auto const clockData(art::ServiceHandle<detinfo::DetectorClocksService const>()->DataFor(event)); 
             auto mcSimChannels = 
                 event.getValidHandle<std::vector<sim::SimChannel>>(
-                    art::InputTag(fSimChannelProducerLabel.label(), fSimChannelInstanceProducerLabel.label())
+                    art::InputTag(mSimChannelProducerLabel.label(), mSimChannelInstanceProducerLabel.label())
                 );
             auto recoSpacePoints = event.getValidHandle<std::vector<recob::SpacePoint>>(mCluster3DPRoducerLabel);
             art::FindManyP<recob::Hit> hitsFromSpsCluster3DAssn(recoSpacePoints, event, mCluster3DPRoducerLabel); 
@@ -156,6 +160,8 @@ namespace neutron
         mMetaTree->Branch("LArGeantProducerLabel",    &mLArGeantProducerLabel);
         mMetaTree->Branch("IonAndScintProducerLabel", &mIonAndScintProducerLabel);
         mMetaTree->Branch("Cluster3DProducerLabel",   &mCluster3DProducerLabel);
+        mMetaTree->Branch("SimChannelProducerLabel",   &mSimChannelProducerLabel);
+        mMetaTree->Branch("SimChannelInstanceProducerLabel", &mSimChannelInstanceProducerLabel);
  
         mMetaTree->Fill();
     }

@@ -6,6 +6,8 @@ NeutronExtractor:
     LArGeantProducerLabel:      "largeant"
     IonAndScintProducerLabel:   "IonAndScint"
     Cluster3DProducerLabel:     "cluster3D"
+    SimChannelProducerLabel:    "tpcrawdecoder"
+    SimChannelInstanceProducerLabel:    "simpleSC"
 
     FillNeutronCapture: true
 }
