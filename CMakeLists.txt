@@ -1,4 +1,11 @@
+set( DUNE_LIB -L$ENV{DUNE_LIB} )
+
+# link_libraries( ${LIB_NAME} -L$ENV{BOOST_LIB} -lboost_system ${ROOTLIB} ${LARCV_LIB}) # All execs need this.
+
 art_make(
+    LIBRARY_NAME
+        dune_NeutronExtractor
+
     LIB_LIBRARIES
         lardataobj_RecoBase
         larsim_MCSTReco
@@ -25,7 +32,7 @@ art_make(
         cetlib cetlib_except
         ${ROOT_BASIC_LIB_LIST}
     MODULE_LIBRARIES
-        duneana_NeutronExtractor
+        dune_NeutronExtractor
         larana_OpticalDetector_OpDigiProperties_service
         larana_OpticalDetector_OpHitFinder
         larana_OpticalDetector
