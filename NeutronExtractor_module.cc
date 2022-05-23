@@ -50,6 +50,7 @@
 
 #include "Configuration.h"
 #include "DetectorGeometry.h"
+#include "NeutronCapture.h"
 
 namespace neutron
 {
@@ -69,7 +70,25 @@ namespace neutron
 
     private:
         Parameters mParameters;
-        
+
+        art::InputTag mLArGeantProducerLabel;
+        art::InputTag mIonAndScintProducerLabel;
+        art::InputTag mCluster3DProducerLabel;
+
+        bool mFillNeutronCapture;
+
+        /// ROOT output through art::TFileService
+        /** We will save different TTrees to different TFiles specified 
+         *  by the directories for each type.
+         */ 
+        art::ServiceHandle<art::TFileService> mTFileService;
+        /// TTrees
+        TTree *mMetaTree;
+
+        // geometry information
+        DetectorGeometry* mGeometry = DetectorGeometry::getInstance("NeutronExtractor");
+        // MC neutron captures
+        NeutronCapture mNeutronCapture;
     };
 
     // constructor
@@ -77,19 +96,68 @@ namespace neutron
     : EDAnalyzer(config)
     , mParameters(config)
     {
+        mLArGeantProducerLabel =    mParameters().LArGeantProducerLabel();
+        mIonAndScintProducerLabel = mParameters().IonAndScintProducerLabel();
+        mCluster3DProducerLabel = mParameters().Cluster3DProducerLabel();
+
+        mMetaTree = mTFileService->make<TTree>("meta", "meta");
+    }
+
+    // begin job
+    void ParticleExtractor::beginJob()
+    {
+        fGeometry->FillTTree();
     }
 
     // analyze function
     void NeutronExtractor::analyze(art::Event const& event)
     {
+        /**
+         * @details For each event, we will look through the various
+         * available data products and send event info to the 
+         * corresponding submodules that process them, starting with MCParticles
+         * 
+         */
+        art::Handle<std::vector<simb::MCParticle>> particleHandle;
+        if (!event.getByLabel(mLArGeantProducerLabel, particleHandle))
+        {
+            // if there are no particles for the event truth, then
+            // we are in big trouble haha.  throw an exception
+            throw cet::exception("ParticleExtractor")
+                << " No simb::MCParticle objects in this event - "
+                << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
+        }
+        // get the list of MC particles from Geant4
+        std::cout << "Collecting MC Particles.." << std::endl;
+        auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(mLArGeantProducerLabel);
+        if (mFillNeutronCapture) 
+        {
+            auto const clockData(art::ServiceHandle<detinfo::DetectorClocksService const>()->DataFor(event)); 
+            auto mcSimChannels = 
+                event.getValidHandle<std::vector<sim::SimChannel>>(
+                    art::InputTag(fSimChannelProducerLabel.label(), fSimChannelInstanceProducerLabel.label())
+                );
+            auto recoSpacePoints = event.getValidHandle<std::vector<recob::SpacePoint>>(mCluster3DPRoducerLabel);
+            art::FindManyP<recob::Hit> hitsFromSpsCluster3DAssn(recoSpacePoints, event, mCluster3DPRoducerLabel); 
+            mNeutronCapture.processEvent(
+                clockData,
+                mcParticles, 
+                mcSimChannels,
+                recoSpacePoints,
+                hitsFromSpsCluster3DAssn
+            );
+        }
     }
-    // begin job
-    void NeutronExtractor::beginJob()
-    {
-    }
+    
     // end job
     void NeutronExtractor::endJob()
     {
+        // save configuration parameters
+        mMetaTree->Branch("LArGeantProducerLabel",    &mLArGeantProducerLabel);
+        mMetaTree->Branch("IonAndScintProducerLabel", &mIonAndScintProducerLabel);
+        mMetaTree->Branch("Cluster3DProducerLabel",   &mCluster3DProducerLabel);
+ 
+        mMetaTree->Fill();
     }
 }
 DEFINE_ART_MODULE(neutron::NeutronExtractor)

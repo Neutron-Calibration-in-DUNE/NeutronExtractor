@@ -3,7 +3,11 @@ BEGIN_PROLOG
 NeutronExtractor:
 {
     module_type:    "NeutronExtractor"
-    LArGeantProducerLabel:  "largeant"
+    LArGeantProducerLabel:      "largeant"
+    IonAndScintProducerLabel:   "IonAndScint"
+    Cluster3DProducerLabel:     "cluster3D"
+
+    FillNeutronCapture: true
 }
 
 END_PROLOG

@@ -36,6 +36,22 @@ namespace neutron
             fhicl::Name("LArGeantProducerLabel"),
             fhicl::Comment("Tag of the input data product for the largeant side of the simulation.")
         };
+        fhicl::Atom<art::InputTag> IonAndScintProducerLabel
+        {
+            fhicl::Name("IonAndScintProducerLabel"),
+            fhicl::Comment("Tag of the input data product for the IonAndScint side of the simulation.")
+        };
+        fhicl::Atom<art::InputTag> Cluster3DProducerLabel
+        {
+            fhicl::Name("Cluster3DProducerLabel"),
+            fhicl::Comment("Tag of the input data product for the Cluster3D side of the simulation.")
+        };
+
+        fhicl::Atom<bool> FillNeutronCapture
+        {
+            fhicl::Name("FillNeutronCapture"),
+            fhicl::Comment("Whether to fill the neutron captures reco product.")
+        };
     };
 
     using Parameters = art::EDAnalyzer::Table<Configuration>;
