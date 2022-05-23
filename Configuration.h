@@ -46,6 +46,16 @@ namespace neutron
             fhicl::Name("Cluster3DProducerLabel"),
             fhicl::Comment("Tag of the input data product for the Cluster3D side of the simulation.")
         };
+        fhicl::Atom<art::InputTag> SimChannelProducerLabel
+        {
+            fhicl::Name("SimChannelProducerLabel"),
+            fhicl::Comment("Tag of the input data product for the SimChannel side of the simulation.")
+        };
+        fhicl::Atom<art::InputTag> SimChannelInstanceProducerLabel
+        {
+            fhicl::Name("SimChannelInstanceProducerLabel"),
+            fhicl::Comment("Tag of the input data product for the SimChannelInstance side of the simulation.")
+        };
 
         fhicl::Atom<bool> FillNeutronCapture
         {

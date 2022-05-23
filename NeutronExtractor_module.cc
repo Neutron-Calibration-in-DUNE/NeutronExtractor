@@ -110,7 +110,7 @@ namespace neutron
     // begin job
     void NeutronExtractor::beginJob()
     {
-        fGeometry->FillTTree();
+        mGeometry->FillTTree();
     }
 
     // analyze function
