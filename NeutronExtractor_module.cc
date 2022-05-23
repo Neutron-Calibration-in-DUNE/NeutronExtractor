@@ -141,8 +141,8 @@ namespace neutron
                 event.getValidHandle<std::vector<sim::SimChannel>>(
                     art::InputTag(mSimChannelProducerLabel.label(), mSimChannelInstanceProducerLabel.label())
                 );
-            auto recoSpacePoints = event.getValidHandle<std::vector<recob::SpacePoint>>(mCluster3DPRoducerLabel);
-            art::FindManyP<recob::Hit> hitsFromSpsCluster3DAssn(recoSpacePoints, event, mCluster3DPRoducerLabel); 
+            auto recoSpacePoints = event.getValidHandle<std::vector<recob::SpacePoint>>(mCluster3DProducerLabel);
+            art::FindManyP<recob::Hit> hitsFromSpsCluster3DAssn(recoSpacePoints, event, mCluster3DProducerLabel); 
             mNeutronCapture.processEvent(
                 clockData,
                 mcParticles, 
