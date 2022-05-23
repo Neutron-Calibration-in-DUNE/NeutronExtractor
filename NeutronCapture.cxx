@@ -103,13 +103,11 @@ namespace neutron
                         {
                             if (neutron_captures[i] == mother)
                             {
-                                std::cout << "Found capture: " << neutron_captures[i] << " for track id: " << particle.TrackId() << std::endl;
                                 neutronMap[particle.TrackId()] = i;
                                 for (size_t j = 0; j < gamma_ids[i].size(); j++)
                                 {
                                     if (gamma_ids[i][j] == track_id)
                                     {
-                                        std::cout << "Found gamma: " << gamma_ids[i][j] << " for track id: " << particle.TrackId() << std::endl;
                                         gammaMap[particle.TrackId()] = j;
                                         neutronCapture[particle.TrackId()] = true;
                                         break;
@@ -154,16 +152,13 @@ namespace neutron
                         DetectorVolume edep_volume = fGeometry->getVolume(
                             xyz[0], xyz[1], xyz[2]
                         );
-                        if (edep_volume.volume_type != fBoundingBoxType) {
-                            continue;
-                        }
                         
                         NeutronCaptureReco.SpacePointX.emplace_back(xyz[0]);
                         NeutronCaptureReco.SpacePointY.emplace_back(xyz[1]);
                         NeutronCaptureReco.SpacePointZ.emplace_back(xyz[2]);
-                        NeutronCaptureReco.SpacePointChiSqX.emplace_back(chisqxyz[0][0]);
-                        NeutronCaptureReco.SpacePointChiSqY.emplace_back(chisqxyz[1][1]);
-                        NeutronCaptureReco.SpacePointChiSqZ.emplace_back(chisqxyz[2][2]);
+                        NeutronCaptureReco.SpacePointChiSqX.emplace_back(chisqxyz[0]);
+                        NeutronCaptureReco.SpacePointChiSqY.emplace_back(chisqxyz[4]);
+                        NeutronCaptureReco.SpacePointChiSqZ.emplace_back(chisqxyz[8]);
                         NeutronCaptureReco.SpacePointChiSq.emplace_back(chisq);
 
                         NeutronCaptureReco.EdepTrackID.emplace_back(track_id);
