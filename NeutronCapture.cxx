@@ -24,7 +24,7 @@ namespace neutron
         mNeutronCaptureRecoTree->Branch("neutron_track_id", &mNeutronCaptureReco.NeutronTrackID);
         mNeutronCaptureRecoTree->Branch("gamma_track_id",   &mNeutronCaptureReco.GammaTrackID);
         mNeutronCaptureRecoTree->Branch("gamma_energy",     &mNeutronCaptureReco.GammaEnergy);
-        mNeutronCaptureRecoTree->Branch("edep_energy",     &mNeutronCaptureReco.EdepEnergy);
+        mNeutronCaptureRecoTree->Branch("edep_energy",      &mNeutronCaptureReco.EdepEnergy);
         mNeutronCaptureRecoTree->Branch("edep_num_electrons",     &mNeutronCaptureReco.EdepNumElectrons);
         mNeutronCaptureRecoTree->Branch("edep_num_photons",     &mNeutronCaptureReco.EdepNumPhotons);
 
