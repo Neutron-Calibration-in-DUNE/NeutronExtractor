@@ -41,10 +41,10 @@ namespace neutron
             fhicl::Name("IonAndScintProducerLabel"),
             fhicl::Comment("Tag of the input data product for the IonAndScint side of the simulation.")
         };
-        fhicl::Atom<art::InputTag> Cluster3DProducerLabel
+        fhicl::Atom<art::InputTag> SpacePointProducerLabel
         {
-            fhicl::Name("Cluster3DProducerLabel"),
-            fhicl::Comment("Tag of the input data product for the Cluster3D side of the simulation.")
+            fhicl::Name("SpacePointProducerLabel"),
+            fhicl::Comment("Tag of the input data product for the SpacePoint side of the simulation.")
         };
         fhicl::Atom<art::InputTag> SimChannelProducerLabel
         {
