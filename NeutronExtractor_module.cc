@@ -163,11 +163,13 @@ namespace neutron
                 hitsFromSpsCluster3DAssn
             );
         }
+        std::cout << "HERE" << std::endl;
     }
     
     // end job
     void NeutronExtractor::endJob()
     {
+        std::cout << "HERE2" << std::endl;
         // save configuration parameters
         mMetaTree->Branch("LArGeantProducerLabel",    &mLArGeantProducerLabel);
         mMetaTree->Branch("IonAndScintProducerLabel", &mIonAndScintProducerLabel);
@@ -176,6 +178,7 @@ namespace neutron
         mMetaTree->Branch("SimChannelInstanceProducerLabel", &mSimChannelInstanceProducerLabel);
  
         mMetaTree->Fill();
+        std::cout << "HERE2" << std::endl;
     }
 }
 DEFINE_ART_MODULE(neutron::NeutronExtractor)
