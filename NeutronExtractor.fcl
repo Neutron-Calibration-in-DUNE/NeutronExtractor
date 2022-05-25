@@ -5,7 +5,7 @@ NeutronExtractor:
     module_type:    "NeutronExtractor"
     LArGeantProducerLabel:      "largeant"
     IonAndScintProducerLabel:   "IonAndScint"
-    Cluster3DProducerLabel:     "cluster3D"
+    SpacePointProducerLabel:    "reco3d"
     SimChannelProducerLabel:    "tpcrawdecoder"
     SimChannelInstanceProducerLabel:    "simpleSC"
 

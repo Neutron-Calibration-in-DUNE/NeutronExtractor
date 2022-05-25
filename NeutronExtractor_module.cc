@@ -73,7 +73,7 @@ namespace neutron
 
         art::InputTag mLArGeantProducerLabel;
         art::InputTag mIonAndScintProducerLabel;
-        art::InputTag mCluster3DProducerLabel;
+        art::InputTag mSpacePointProducerLabel;
         art::InputTag mSimChannelProducerLabel;
         art::InputTag mSimChannelInstanceProducerLabel;
 
@@ -100,7 +100,7 @@ namespace neutron
     {
         mLArGeantProducerLabel =    mParameters().LArGeantProducerLabel();
         mIonAndScintProducerLabel = mParameters().IonAndScintProducerLabel();
-        mCluster3DProducerLabel =   mParameters().Cluster3DProducerLabel();
+        mSpacePointProducerLabel =   mParameters().SpacePointProducerLabel();
         mSimChannelProducerLabel =  mParameters().SimChannelProducerLabel();
         mSimChannelInstanceProducerLabel = mParameters().SimChannelInstanceProducerLabel();
         
@@ -151,8 +151,8 @@ namespace neutron
                 event.getValidHandle<std::vector<sim::SimChannel>>(
                     art::InputTag(mSimChannelProducerLabel.label(), mSimChannelInstanceProducerLabel.label())
                 );
-            auto recoSpacePoints = event.getValidHandle<std::vector<recob::SpacePoint>>(mCluster3DProducerLabel);
-            art::FindManyP<recob::Hit> hitsFromSpsCluster3DAssn(recoSpacePoints, event, mCluster3DProducerLabel); 
+            auto recoSpacePoints = event.getValidHandle<std::vector<recob::SpacePoint>>(mSpacePointProducerLabel);
+            art::FindManyP<recob::Hit> hitsFromSpsSpacePointAssn(recoSpacePoints, event, mSpacePointProducerLabel); 
             std::cout << "Extracting event..." << std::endl;
             mNeutronCapture.processEvent(
                 clockData,
@@ -160,7 +160,7 @@ namespace neutron
                 mcEnergyDeposits,
                 mcSimChannels,
                 recoSpacePoints,
-                hitsFromSpsCluster3DAssn
+                hitsFromSpsSpacePointAssn
             );
         }
     }
@@ -171,7 +171,7 @@ namespace neutron
         // save configuration parameters
         mMetaTree->Branch("LArGeantProducerLabel",    &mLArGeantProducerLabel);
         mMetaTree->Branch("IonAndScintProducerLabel", &mIonAndScintProducerLabel);
-        mMetaTree->Branch("Cluster3DProducerLabel",   &mCluster3DProducerLabel);
+        mMetaTree->Branch("SpacePointProducerLabel",   &mSpacePointProducerLabel);
         mMetaTree->Branch("SimChannelProducerLabel",   &mSimChannelProducerLabel);
         mMetaTree->Branch("SimChannelInstanceProducerLabel", &mSimChannelInstanceProducerLabel);
  
