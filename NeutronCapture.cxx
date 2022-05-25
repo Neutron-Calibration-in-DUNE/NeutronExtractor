@@ -49,10 +49,8 @@ namespace neutron
     )
     {
         NeutronCaptureReco NeutronCaptureReco;
-        std::cout << "HERE" << std::endl;
         if (mcParticles.isValid() and mcChannels.isValid() and recoSpacePoints.isValid())
         {
-            std::cout << "HERE AGAIN" << std::endl;
             /**
              * We first iterate through all particles and create a map of 
              * parent-daughter pairs for track ids.  This way we can search
