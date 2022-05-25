@@ -131,9 +131,19 @@ namespace neutron
                 << " No simb::MCParticle objects in this event - "
                 << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
         }
+        art::Handle<std::vector<sim::SimEnergyDeposit>> energyDepositHandle;
+        if (!event.getByLabel(mIonAndScintProducerLabel, energyDepositHandle))
+        {
+            // if there are no energy deposits for the event truth, then
+            // we are in big trouble haha.  throw an exception
+            throw cet::exception("NeutronExtractor")
+                << " No simb::SimEnergyDeposit objects in this event - "
+                << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
+        }
         // get the list of MC particles from Geant4
-        std::cout << "Collecting MC Particles.." << std::endl;
+        std::cout << "Collecting MC Particles and SimEnergyDeposits.." << std::endl;
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(mLArGeantProducerLabel);
+        auto mcEnergyDeposits = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(mIonAndScintProducerLabel);
         if (mFillNeutronCapture) 
         {
             auto const clockData(art::ServiceHandle<detinfo::DetectorClocksService const>()->DataFor(event)); 
@@ -146,6 +156,7 @@ namespace neutron
             mNeutronCapture.processEvent(
                 clockData,
                 mcParticles, 
+                mcEnergyDeposits,
                 mcSimChannels,
                 recoSpacePoints,
                 hitsFromSpsCluster3DAssn

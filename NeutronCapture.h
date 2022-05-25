@@ -64,6 +64,9 @@ namespace neutron
         std::vector<Int_t>    NeutronTrackID;  
         std::vector<Int_t>    GammaTrackID;
         std::vector<Double_t> GammaEnergy;
+        std::vector<Double_t> EdepEnergy;
+        std::vector<Int_t>    EdepNumElectrons;
+        std::vector<Int_t>    EdepNumPhotons;
 
         std::vector<Double_t> PeakTime;
         std::vector<Double_t> SigmaPeakTime;
@@ -82,6 +85,7 @@ namespace neutron
         void processEvent(
             detinfo::DetectorClocksData const& clockData,
             const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles,
+            const art::ValidHandle<std::vector<sim::SimEnergyDeposit>>& mcEnergyDeposits,
             const art::ValidHandle<std::vector<sim::SimChannel>>& mcChannels,
             const art::ValidHandle<std::vector<recob::SpacePoint>>& recoSpacePoints,
             const art::FindManyP<recob::Hit>& hitSpacePointAssn
