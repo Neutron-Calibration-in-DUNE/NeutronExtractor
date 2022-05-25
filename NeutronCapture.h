@@ -76,6 +76,14 @@ namespace neutron
         std::vector<Double_t> SummedADC;
     };
 
+    struct NeutronCaptureGamma
+    {
+        std::vector<Int_t>    GammaTrackID;
+        std::vector<Double_t> GammaEnergy;
+        std::vector<Int_t>    NumberOfSpacePoints;
+        std::vector<Double_t> GammaExtent;
+    };
+
     class NeutronCapture
     {
     public:
