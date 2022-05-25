@@ -125,7 +125,7 @@ namespace neutron
                     }
                 }
             }
-            
+            std::cout << "HERE" << std::endl;
             std::vector<art::Ptr<recob::SpacePoint>> pointsList;
             art::fill_ptr_vector(pointsList, recoSpacePoints);            
             for (size_t i = 0; i < pointsList.size(); i++)
