@@ -153,6 +153,7 @@ namespace neutron
                 );
             auto recoSpacePoints = event.getValidHandle<std::vector<recob::SpacePoint>>(mCluster3DProducerLabel);
             art::FindManyP<recob::Hit> hitsFromSpsCluster3DAssn(recoSpacePoints, event, mCluster3DProducerLabel); 
+            std::cout << "Extracting event..." << std::endl;
             mNeutronCapture.processEvent(
                 clockData,
                 mcParticles, 
