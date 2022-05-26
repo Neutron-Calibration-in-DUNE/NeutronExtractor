@@ -213,7 +213,7 @@ namespace neutron
                     }
                 }
                 if (space_point) {
-                    mGammas[gamma_index].num_reco_points += 1;
+                    mGammas[mGammaMap[track_id]].num_reco_points += 1;
                 }
             }
             // for (size_t i = 0; i < mGammas.size(); i++)
