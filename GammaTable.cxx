@@ -190,6 +190,7 @@ namespace neutron
                                 // collect results
                                 auto xyz = pointsList[i]->XYZ();
                                 auto xyz_sigma = pointsList[i]->ErrXYZ();
+                                std::cout << mGammas[i].daughter_reco_sp_x.size() << std::endl;
                                 // check if point is in active volume
                                 // Determine if edep is within the desired volume
                                 mGammas[i].daughter_reco_sp_x[j].emplace_back(xyz[0]);
