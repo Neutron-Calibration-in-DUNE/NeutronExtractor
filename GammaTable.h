@@ -1,9 +1,9 @@
 /**
- * @file NeutronCapture.h
+ * @file GammaTable.h
  * @author Nicholas Carrara [nmcarrara@ucdavis.edu]
  * @brief 
  * @version 0.1
- * @date 2022-05-22
+ * @date 2022-05-26
  */
 #pragma once
 #include <string>
@@ -43,45 +43,48 @@
 #include "larsim/Utils/TruthMatchUtils.h"
 
 #include "DetectorGeometry.h"
-#include "GammaTable.h"
 
-namespace detinfo 
-{
-  class DetectorClocksData;
-}
 namespace neutron
 {
-    struct NeutronCaptureReco
+    struct Gamma
     {
-        std::vector<Double_t> SpacePointX;
-        std::vector<Double_t> SpacePointY;
-        std::vector<Double_t> SpacePointZ;
-        std::vector<Double_t> SpacePointChiSqX;
-        std::vector<Double_t> SpacePointChiSqY;
-        std::vector<Double_t> SpacePointChiSqZ;
-        std::vector<Double_t> SpacePointChiSq;
-
-        std::vector<Int_t>    EdepTrackID;
-        std::vector<Int_t>    NeutronTrackID;  
-        std::vector<Int_t>    GammaTrackID;
-        std::vector<Double_t> GammaEnergy;
-        std::vector<Double_t> EdepEnergy;
-        std::vector<Int_t>    EdepNumElectrons;
-        std::vector<Int_t>    EdepNumPhotons;
-
-        std::vector<Double_t> PeakTime;
-        std::vector<Double_t> SigmaPeakTime;
-        std::vector<Double_t> RMS;
-        std::vector<Double_t> PeakAmplitude;
-        std::vector<Double_t> SigmaPeakAmplitude;
-        std::vector<Double_t> SummedADC;
+        Int_t track_id;
+        Int_t neutron_id;
+        Double_t energy;
+        Double_t start_x;
+        Double_t start_y;
+        Double_t stary_z;
+        Double_t end_x;
+        Double_t end_y;
+        Double_t end_z;
+        std::vector<Int_t> daughter_ids = {};
+        std::vector<Double_t> daughter_energy = {};
+        std::vector<Double_t> daughter_start_x = {};
+        std::vector<Double_t> daughter_start_y = {};
+        std::vector<Double_t> daughter_start_z = {};
+        std::vector<Double_t> daughter_edep_energy = {};
+        std::vector<Double_t> daughter_edep_x = {};
+        std::vector<Double_t> daughter_edep_y = {};
+        std::vector<Double_t> daughter_edep_z = {};
+        std::vector<Int_t> daughter_edep_num_electrons = {};
+        std::vector<Int_t> daughter_edep_num_photons = {};
+        
+        std::vector<Double_t> daughter_reco_sp_x = {};
+        std::vector<Double_t> daughter_reco_sp_y = {};
+        std::vector<Double_t> daughter_reco_sp_z = {};
+        std::vector<Double_t> daughter_reco_peak_time = {};
+        std::vector<Double_t> daughter_reco_peak_time_sigma = {};
+        std::vector<Double_t> daughter_reco_rms = {};
+        std::vector<Double_t> daughter_reco_peak_amplitude = {};
+        std::vector<Double_t> daughter_reco_peak_amplitude_sigma = {};
+        std::vector<Double_t> daughter_reco_summed_adc = {};
     };
 
-    class NeutronCapture
+    class GammaTable
     {
     public:
-        NeutronCapture();
-        ~NeutronCapture();
+        GammaTable();
+        ~GammaTable();
 
         void processEvent(
             detinfo::DetectorClocksData const& clockData,
@@ -97,10 +100,11 @@ namespace neutron
          *  by the directories for each type.
          */ 
         art::ServiceHandle<art::TFileService> fTFileService;
-        TTree *mNeutronCaptureRecoTree;
+        TTree *mGammaTableTree;
         // geometry information
-        DetectorGeometry* fGeometry = DetectorGeometry::getInstance("NeutronCapture");
+        DetectorGeometry* fGeometry = DetectorGeometry::getInstance("GammaTable");
 
-        NeutronCaptureReco mNeutronCaptureReco;
+        std::vector<Gamma> mGammas;
+        std::map<Int_t, Int_t> mGammaMap;
     };
 }

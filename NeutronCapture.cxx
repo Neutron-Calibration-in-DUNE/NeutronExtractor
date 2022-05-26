@@ -48,7 +48,7 @@ namespace neutron
         const art::FindManyP<recob::Hit>& hitPandoraSPsAssn //to associate space points from pandora to hits
     )
     {
-        NeutronCaptureReco NeutronCaptureReco;
+        NeutronCaptureReco neutronCaptureReco;
         if (mcParticles.isValid() and mcChannels.isValid() and recoSpacePoints.isValid())
         {
             /**
@@ -156,41 +156,41 @@ namespace neutron
                             xyz[0], xyz[1], xyz[2]
                         );
                         
-                        NeutronCaptureReco.SpacePointX.emplace_back(xyz[0]);
-                        NeutronCaptureReco.SpacePointY.emplace_back(xyz[1]);
-                        NeutronCaptureReco.SpacePointZ.emplace_back(xyz[2]);
-                        NeutronCaptureReco.SpacePointChiSqX.emplace_back(chisqxyz[0]);
-                        NeutronCaptureReco.SpacePointChiSqY.emplace_back(chisqxyz[4]);
-                        NeutronCaptureReco.SpacePointChiSqZ.emplace_back(chisqxyz[8]);
-                        NeutronCaptureReco.SpacePointChiSq.emplace_back(chisq);
+                        neutronCaptureReco.SpacePointX.emplace_back(xyz[0]);
+                        neutronCaptureReco.SpacePointY.emplace_back(xyz[1]);
+                        neutronCaptureReco.SpacePointZ.emplace_back(xyz[2]);
+                        neutronCaptureReco.SpacePointChiSqX.emplace_back(chisqxyz[0]);
+                        neutronCaptureReco.SpacePointChiSqY.emplace_back(chisqxyz[4]);
+                        neutronCaptureReco.SpacePointChiSqZ.emplace_back(chisqxyz[8]);
+                        neutronCaptureReco.SpacePointChiSq.emplace_back(chisq);
 
-                        NeutronCaptureReco.EdepTrackID.emplace_back(track_id);
-                        NeutronCaptureReco.NeutronTrackID.emplace_back(neutron_captures[neutronMap[track_id]]);
-                        NeutronCaptureReco.GammaTrackID.emplace_back(gamma_ids[neutronMap[track_id]][gammaMap[track_id]]);
-                        NeutronCaptureReco.GammaEnergy.emplace_back(gamma_energy[neutronMap[track_id]][gammaMap[track_id]]);
+                        neutronCaptureReco.EdepTrackID.emplace_back(track_id);
+                        neutronCaptureReco.NeutronTrackID.emplace_back(neutron_captures[neutronMap[track_id]]);
+                        neutronCaptureReco.GammaTrackID.emplace_back(gamma_ids[neutronMap[track_id]][gammaMap[track_id]]);
+                        neutronCaptureReco.GammaEnergy.emplace_back(gamma_energy[neutronMap[track_id]][gammaMap[track_id]]);
                         for (auto energyDeposit : *mcEnergyDeposits)
                         {
                             if (energyDeposit.TrackID() == track_id)
                             {
-                                NeutronCaptureReco.EdepEnergy.emplace_back(energyDeposit.Energy());
-                                NeutronCaptureReco.EdepNumElectrons.emplace_back(energyDeposit.NumElectrons());
-                                NeutronCaptureReco.EdepNumPhotons.emplace_back(energyDeposit.NumPhotons());
+                                neutronCaptureReco.EdepEnergy.emplace_back(energyDeposit.Energy());
+                                neutronCaptureReco.EdepNumElectrons.emplace_back(energyDeposit.NumElectrons());
+                                neutronCaptureReco.EdepNumPhotons.emplace_back(energyDeposit.NumPhotons());
                             }   
                             break;
                         }
-                        NeutronCaptureReco.PeakTime.emplace_back(hit->PeakTime());
-                        NeutronCaptureReco.SigmaPeakTime.emplace_back(hit->SigmaPeakTime());
-                        NeutronCaptureReco.RMS.emplace_back(hit->RMS());
-                        NeutronCaptureReco.PeakAmplitude.emplace_back(hit->PeakAmplitude());
-                        NeutronCaptureReco.SigmaPeakAmplitude.emplace_back(hit->SigmaPeakAmplitude());
-                        NeutronCaptureReco.SummedADC.emplace_back(hit->SummedADC());
+                        neutronCaptureReco.PeakTime.emplace_back(hit->PeakTime());
+                        neutronCaptureReco.SigmaPeakTime.emplace_back(hit->SigmaPeakTime());
+                        neutronCaptureReco.RMS.emplace_back(hit->RMS());
+                        neutronCaptureReco.PeakAmplitude.emplace_back(hit->PeakAmplitude());
+                        neutronCaptureReco.SigmaPeakAmplitude.emplace_back(hit->SigmaPeakAmplitude());
+                        neutronCaptureReco.SummedADC.emplace_back(hit->SummedADC());
 
                         break;
                     }
                 }
             }
         }
-        mNeutronCaptureReco = NeutronCaptureReco;
+        mNeutronCaptureReco = neutronCaptureReco;
         mNeutronCaptureRecoTree->Fill();
     }
 }

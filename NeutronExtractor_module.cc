@@ -51,6 +51,7 @@
 #include "Configuration.h"
 #include "DetectorGeometry.h"
 #include "NeutronCapture.h"
+#include "GammaTable.h"
 
 namespace neutron
 {
@@ -91,6 +92,8 @@ namespace neutron
         DetectorGeometry* mGeometry = DetectorGeometry::getInstance("NeutronExtractor");
         // MC neutron captures
         NeutronCapture mNeutronCapture;
+        // Gamma table
+        GammaTable mGammaTable;
     };
 
     // constructor
@@ -155,6 +158,14 @@ namespace neutron
             art::FindManyP<recob::Hit> hitsFromSpsSpacePointAssn(recoSpacePoints, event, mSpacePointProducerLabel); 
             std::cout << "Extracting event..." << std::endl;
             mNeutronCapture.processEvent(
+                clockData,
+                mcParticles, 
+                mcEnergyDeposits,
+                mcSimChannels,
+                recoSpacePoints,
+                hitsFromSpsSpacePointAssn
+            );
+            mGammaTable.processEvent(
                 clockData,
                 mcParticles, 
                 mcEnergyDeposits,
