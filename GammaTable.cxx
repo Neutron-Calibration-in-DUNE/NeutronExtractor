@@ -186,30 +186,27 @@ namespace neutron
                         {
                             if (track_id == mGammas[gamma_index].daughter_ids[j])
                             {
-                                std::cout << track_id << ", " << gamma_index << ", " << j << std::endl;
                                 // collect results
                                 auto xyz = pointsList[i]->XYZ();
                                 auto xyz_sigma = pointsList[i]->ErrXYZ();
-                                std::cout << mGammas[i].daughter_reco_sp_x.size() << std::endl;
                                 // check if point is in active volume
                                 // Determine if edep is within the desired volume
-                                mGammas[i].daughter_reco_sp_x[j].emplace_back(xyz[0]);
-                                mGammas[i].daughter_reco_sp_y[j].emplace_back(xyz[1]);
-                                mGammas[i].daughter_reco_sp_z[j].emplace_back(xyz[2]);
-                                mGammas[i].daughter_reco_sp_x_sigma[j].emplace_back(xyz_sigma[0]);
-                                mGammas[i].daughter_reco_sp_y_sigma[j].emplace_back(xyz_sigma[4]);
-                                mGammas[i].daughter_reco_sp_z_sigma[j].emplace_back(xyz_sigma[8]);
-                                mGammas[i].daughter_reco_sp_chisq[j].emplace_back(pointsList[i]->Chisq());
+                                mGammas[gamma_index].daughter_reco_sp_x[j].emplace_back(xyz[0]);
+                                mGammas[gamma_index].daughter_reco_sp_y[j].emplace_back(xyz[1]);
+                                mGammas[gamma_index].daughter_reco_sp_z[j].emplace_back(xyz[2]);
+                                mGammas[gamma_index].daughter_reco_sp_x_sigma[j].emplace_back(xyz_sigma[0]);
+                                mGammas[gamma_index].daughter_reco_sp_y_sigma[j].emplace_back(xyz_sigma[4]);
+                                mGammas[gamma_index].daughter_reco_sp_z_sigma[j].emplace_back(xyz_sigma[8]);
+                                mGammas[gamma_index].daughter_reco_sp_chisq[j].emplace_back(pointsList[i]->Chisq());
 
-                                mGammas[i].daughter_reco_peak_time[j].emplace_back(hit->PeakTime());
-                                mGammas[i].daughter_reco_peak_time_sigma[j].emplace_back(hit->SigmaPeakTime());
-                                mGammas[i].daughter_reco_rms[j].emplace_back(hit->RMS());
-                                mGammas[i].daughter_reco_peak_amplitude[j].emplace_back(hit->PeakAmplitude());
-                                mGammas[i].daughter_reco_peak_amplitude_sigma[j].emplace_back(hit->SigmaPeakAmplitude());
-                                mGammas[i].daughter_reco_summed_adc[j].emplace_back(hit->SummedADC());
+                                mGammas[gamma_index].daughter_reco_peak_time[j].emplace_back(hit->PeakTime());
+                                mGammas[gamma_index].daughter_reco_peak_time_sigma[j].emplace_back(hit->SigmaPeakTime());
+                                mGammas[gamma_index].daughter_reco_rms[j].emplace_back(hit->RMS());
+                                mGammas[gamma_index].daughter_reco_peak_amplitude[j].emplace_back(hit->PeakAmplitude());
+                                mGammas[gamma_index].daughter_reco_peak_amplitude_sigma[j].emplace_back(hit->SigmaPeakAmplitude());
+                                mGammas[gamma_index].daughter_reco_summed_adc[j].emplace_back(hit->SummedADC());
                             }
                         }
-                        std::cout << "here" << std::endl;
                     }
                 }
             }
