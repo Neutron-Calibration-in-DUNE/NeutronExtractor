@@ -95,6 +95,11 @@ namespace neutron
                             mGammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
                             mGammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
                             mGammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_sp_x_sigma.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_sp_y_sigma.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_sp_z_sigma.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_sp_chisq.emplace_back(std::vector<Double_t>());
+
                             mGammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
                             mGammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
                             mGammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
@@ -124,6 +129,11 @@ namespace neutron
                                 mGammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
                                 mGammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
                                 mGammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_sp_x_sigma.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_sp_y_sigma.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_sp_z_sigma.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_sp_chisq.emplace_back(std::vector<Double_t>());
+
                                 mGammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
                                 mGammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
                                 mGammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
@@ -154,6 +164,47 @@ namespace neutron
                                 mGammas[gamma_index].daughter_edep_z[j].emplace_back(energyDeposit.StartZ());
                                 mGammas[gamma_index].daughter_edep_num_electrons[j].emplace_back(energyDeposit.NumElectrons());
                                 mGammas[gamma_index].daughter_edep_num_photons[j].emplace_back(energyDeposit.NumPhotons());
+                            }
+                        }
+                    }
+                }
+            }
+            td::vector<art::Ptr<recob::SpacePoint>> pointsList;
+            art::fill_ptr_vector(pointsList, recoSpacePoints);            
+            for (size_t i = 0; i < pointsList.size(); i++)
+            {
+                auto& spsHit = hitPandoraSPsAssn.at(i);
+                for (auto hit : spsHit)
+                {  
+                    Int_t track_id = TruthMatchUtils::TrueParticleID(
+                        clockData, hit, false
+                    );
+                    if (mGammaMap.find(track_id) != mGammaMap.end())
+                    {
+                        auto gamma_index = mGammaMap[track_id];
+                        for (size_t j = 0; j < mGammas[gamma_index].daughter_ids.size(); j++)
+                        {
+                            if (track_id == mGammas[gamma_index].daughter_ids[j])
+                            {
+                                // collect results
+                                auto xyz = pointsList[i]->XYZ();
+                                auto xyz_sigma = pointsList[i]->ErrXYZ();
+                                // check if point is in active volume
+                                // Determine if edep is within the desired volume
+                                mGammas[i].daughter_reco_sp_x[j].emplace_back(xyz[0]);
+                                mGammas[i].daughter_reco_sp_y[j].emplace_back(xyz[1]);
+                                mGammas[i].daughter_reco_sp_z[j].emplace_back(xyz[2]);
+                                mGammas[i].daughter_reco_sp_x_sigma[j].emplace_back(xyz_sigma[0]);
+                                mGammas[i].daughter_reco_sp_y_sigma[j].emplace_back(xyz_sigma[4]);
+                                mGammas[i].daughter_reco_sp_z_sigma[j].emplace_back(xyz_sigma[8]);
+                                mGammas[i].daughter_reco_sp_chisq[j].emplace_back(pointsList[i]->Chisq());
+
+                                mGammas[i].daughter_reco_peak_time[j].emplace_back(hit->PeakTime());
+                                mGammas[i].daughter_reco_peak_time_sigma[j].emplace_back(hit->SigmaPeakTime());
+                                mGammas[i].daughter_reco_rms[j].emplace_back(hit->RMS());
+                                mGammas[i].daughter_reco_peak_amplitude[j].emplace_back(hit->PeakAmplitude());
+                                mGammas[i].daughter_reco_peak_amplitude_sigma[j].emplace_back(hit->SigmaPeakAmplitude());
+                                mGammas[i].daughter_reco_summed_adc[j].emplace_back(hit->SummedADC());
                             }
                         }
                     }
@@ -190,6 +241,24 @@ namespace neutron
                         std::cout << "\t\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j][k] << "\n";
                         std::cout << "\t\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j][k] << "\n";
                         std::cout << "\t\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j][k] << "\n";
+                    }
+                    for (size_t k = 0; k < mGammas[i].daughter_reco_sp_x[j].size(); k++)
+                    {
+                        std::cout << "\t\tspace point: " << k << "\n";
+                        std::cout << "\t\t\tdaughter_reco_sp_x: " << mGammas[i].daughter_reco_sp_x[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_sp_y: " << mGammas[i].daughter_reco_sp_y[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_sp_z: " << mGammas[i].daughter_reco_sp_z[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_sp_x_sigma: " << mGammas[i].daughter_reco_sp_x_sigma[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_sp_y_sigma: " << mGammas[i].daughter_reco_sp_y_sigma[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_sp_z_sigma: " << mGammas[i].daughter_reco_sp_z_sigma[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_sp_chisq: " << mGammas[i].daughter_reco_sp_chisq[j][k] << "\n";
+
+                        std::cout << "\t\t\tdaughter_reco_peak_time: " << mGammas[i].daughter_reco_peak_time[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_peak_time_sigma: " << mGammas[i].daughter_reco_peak_time_sigma[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_rms: " << mGammas[i].daughter_reco_rms[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_peak_amplitude: " << mGammas[i].daughter_reco_peak_amplitude[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_peak_amplitude_sigma: " << mGammas[i].daughter_reco_peak_amplitude_sigma[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_reco_summed_adc: " << mGammas[i].daughter_reco_summed_adc[j][k] << "\n";
                     }
                     energy += mGammas[i].daughter_energy[j];
                 }

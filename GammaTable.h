@@ -73,6 +73,11 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_sp_x = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_y = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_z = {};
+        std::vector<std::vector<Double_t>> daughter_reco_sp_x_sigma = {};
+        std::vector<std::vector<Double_t>> daughter_reco_sp_y_sigma = {};
+        std::vector<std::vector<Double_t>> daughter_reco_sp_z_sigma = {};
+        std::vector<std::vector<Double_t>> daughter_reco_sp_chisq = {};
+
         std::vector<std::vector<Double_t>> daughter_reco_peak_time = {};
         std::vector<std::vector<Double_t>> daughter_reco_peak_time_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_rms = {};
