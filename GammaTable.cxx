@@ -152,24 +152,35 @@ namespace neutron
                     std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
                     std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
                 }
+                std::cout << "\tdaughter_total_energy: " << std::accumulate(mGammas[i].daughter_energy.begin(), mGammas[i].daughter_energy.end(), 0) << "\n";
             }
-            // for (auto energyDeposit : *mcEnergyDeposits)
-            // {
-            //     if (energyDeposit.PdgCode() == 11)
-            //     {
-            //         auto particle_exists = std::find(
-            //             mGammaMap.begin(), 
-            //             mGammaMap.end(), 
-            //             energyDeposit.TrackID()
-            //         );
-            //         if (particle_exists != mGammaMap.end())
-            //         {
-            //             auto gamma_index = mGammaMap[energyDeposit.TrackID()];
-            //             Int_t daughter_index = 0;
-            //             for (size_t )
-            //         }
-            //     }
-            // }
+            for (auto energyDeposit : *mcEnergyDeposits)
+            {
+                if (energyDeposit.PdgCode() == 11)
+                {
+                    auto particle_exists = std::find(
+                        mGammaMap.begin(), 
+                        mGammaMap.end(), 
+                        energyDeposit.TrackID()
+                    );
+                    if (particle_exists != mGammaMap.end())
+                    {
+                        auto gamma_index = mGammaMap[energyDeposit.TrackID()];
+                        for (size_t j = 0; j < mGammas[gamma_index].daughter_ids.size(); j++)
+                        {
+                            if (energyDeposit.TrackID() == mGammas[gamma_index].daughter_ids[j])
+                            {
+                                mGammas[gamma_index].daughter_edep_energy[j] = energyDeposit.Energy();
+                                mGammas[gamma_index].daughter_edep_x[j] = energyDeposit.StartX();
+                                mGammas[gamma_index].daughter_edep_y[j] = energyDeposit.StartY();
+                                mGammas[gamma_index].daughter_edep_z[j] = energyDeposit.StartZ();
+                                mGammas[gamma_index].daughter_edep_num_electrons[j] = energyDeposit.NumElectrons();
+                                mGammas[gamma_index].daughter_edep_num_photons[j] = energyDeposit.NumPhotons();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
