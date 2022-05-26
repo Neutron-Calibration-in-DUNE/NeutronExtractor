@@ -290,6 +290,7 @@ namespace neutron
                     if (mGammas[i].num_reco_points > 0) {
                         mGammaStatistics.num_gammas_reco[j] += 1;
                     }
+                    energy_exists = true;
                 }
             }
             if (!energy_exists)
