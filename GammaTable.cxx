@@ -186,6 +186,7 @@ namespace neutron
                         {
                             if (track_id == mGammas[gamma_index].daughter_ids[j])
                             {
+                                std::cout << track_id << ", " << gamma_index << std::endl;
                                 // collect results
                                 auto xyz = pointsList[i]->XYZ();
                                 auto xyz_sigma = pointsList[i]->ErrXYZ();
