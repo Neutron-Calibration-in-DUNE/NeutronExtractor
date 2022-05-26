@@ -137,13 +137,7 @@ namespace neutron
             {
                 if (energyDeposit.PdgCode() == 11)
                 {
-                    Int_t edep_id = energyDeposit.TrackID();
-                    auto particle_exists = std::find(
-                        mGammaMap.begin(), 
-                        mGammaMap.end(), 
-                        edep_id
-                    );
-                    if (particle_exists != mGammaMap.end())
+                    if (mGammaMap.find(energyDeposit.TrackID()) != mGammaMap.end())
                     {
                         auto gamma_index = mGammaMap[energyDeposit.TrackID()];
                         for (size_t j = 0; j < mGammas[gamma_index].daughter_ids.size(); j++)
