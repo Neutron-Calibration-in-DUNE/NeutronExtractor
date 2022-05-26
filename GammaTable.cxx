@@ -170,6 +170,7 @@ namespace neutron
                 std::cout << "\tend_x: " << mGammas[i].end_x << "\n";
                 std::cout << "\tend_y: " << mGammas[i].end_y << "\n";
                 std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
+                double energy = 0;
                 for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
                 {
                     std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
@@ -184,8 +185,9 @@ namespace neutron
                     std::cout << "\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j] << "\n";
                     std::cout << "\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j] << "\n";
                     std::cout << "\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j] << "\n";
+                    energy += mGammas[i].daughter_energy[j];
                 }
-                std::cout << "\tdaughter_total_energy: " << std::accumulate(mGammas[i].daughter_energy.begin(), mGammas[i].daughter_energy.end(), 0) << "\n";
+                std::cout << "\tdaughter_total_energy: " << energy << "\n";
             }
         }
     }
