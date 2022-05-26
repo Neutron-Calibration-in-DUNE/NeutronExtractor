@@ -132,28 +132,7 @@ namespace neutron
                     }
                 }
             }
-            for (size_t i = 0; i < mGammas.size(); i++)
-            {
-                std::cout << "\ngamma: " << i << "\n";
-                std::cout << "\tneutron_id: " << mGammas[i].neutron_id << "\n";
-                std::cout << "\ttrack_id: " << mGammas[i].track_id << "\n";
-                std::cout << "\tenergy: " << mGammas[i].energy << "\n";
-                std::cout << "\tstart_x: " << mGammas[i].start_x << "\n";
-                std::cout << "\tstart_y: " << mGammas[i].start_y << "\n";
-                std::cout << "\tstart_z: " << mGammas[i].start_z << "\n";
-                std::cout << "\tend_x: " << mGammas[i].end_x << "\n";
-                std::cout << "\tend_y: " << mGammas[i].end_y << "\n";
-                std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
-                for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
-                {
-                    std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
-                    std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
-                    std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
-                    std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
-                    std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
-                }
-                std::cout << "\tdaughter_total_energy: " << std::accumulate(mGammas[i].daughter_energy.begin(), mGammas[i].daughter_energy.end(), 0) << "\n";
-            }
+            
             for (auto energyDeposit : *mcEnergyDeposits)
             {
                 if (energyDeposit.PdgCode() == 11)
@@ -180,6 +159,34 @@ namespace neutron
                         }
                     }
                 }
+            }
+            for (size_t i = 0; i < mGammas.size(); i++)
+            {
+                std::cout << "\ngamma: " << i << "\n";
+                std::cout << "\tneutron_id: " << mGammas[i].neutron_id << "\n";
+                std::cout << "\ttrack_id: " << mGammas[i].track_id << "\n";
+                std::cout << "\tenergy: " << mGammas[i].energy << "\n";
+                std::cout << "\tstart_x: " << mGammas[i].start_x << "\n";
+                std::cout << "\tstart_y: " << mGammas[i].start_y << "\n";
+                std::cout << "\tstart_z: " << mGammas[i].start_z << "\n";
+                std::cout << "\tend_x: " << mGammas[i].end_x << "\n";
+                std::cout << "\tend_y: " << mGammas[i].end_y << "\n";
+                std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
+                for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
+                {
+                    std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
+                    std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
+                    std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
+                    std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
+                    std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
+                    std::cout << "\t\tdaughter_edep_energy: " << mGammas[i].daughter_edep_energy[j] << "\n";
+                    std::cout << "\t\tdaughter_edep_x: " << mGammas[i].daughter_edep_x[j] << "\n";
+                    std::cout << "\t\tdaughter_edep_y: " << mGammas[i].daughter_edep_y[j] << "\n";
+                    std::cout << "\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j] << "\n";
+                    std::cout << "\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j] << "\n";
+                    std::cout << "\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j] << "\n";
+                }
+                std::cout << "\tdaughter_total_energy: " << std::accumulate(mGammas[i].daughter_energy.begin(), mGammas[i].daughter_energy.end(), 0) << "\n";
             }
         }
     }
