@@ -78,6 +78,16 @@ namespace neutron
         std::vector<Double_t> daughter_reco_peak_amplitude = {};
         std::vector<Double_t> daughter_reco_peak_amplitude_sigma = {};
         std::vector<Double_t> daughter_reco_summed_adc = {};
+
+        Gamma(
+            Int_t track_id, Int_t neutron_id, Double_t energy,
+            Double_t start_x, Double_t start_y, Double_t start_z,
+            Double_t end_x, Double_t end_y, Double_t end_z
+        )
+        : track_id(track_id), neutron_id(neutron_id), energy(energy)
+        , start_x(start_x), start_y(start_y), start_z(start_z)
+        , end_x(end_x), end_y(end_y), end_z(end_z)
+        {}
     };
 
     class GammaTable
