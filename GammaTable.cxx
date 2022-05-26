@@ -144,16 +144,30 @@ namespace neutron
                 std::cout << "\tend_x: " << mGammas[i].end_x << "\n";
                 std::cout << "\tend_y: " << mGammas[i].end_y << "\n";
                 std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
-
-                std::cout << "\tdaughter_ids: " << mGammas[i].daughter_ids.size() << "\n";
-                double energy = std::accumulate(mGammas[i].daughter_ids.begin(), mGammas[i].daughter_ids.end(), 0);
-                std::cout << "\tdaughter_energy: " << energy << "\n";
+                for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
+                {
+                    std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
+                    std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
+                    std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
+                    std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
+                    std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
+                }
             }
             // for (auto energyDeposit : *mcEnergyDeposits)
             // {
-            //     // check the list of electrons
-            //     for (size_t i = 0; i < neutronStatistics.electron_ids.size(); i++)
+            //     if (energyDeposit.PdgCode() == 11)
             //     {
+            //         auto particle_exists = std::find(
+            //             mGammaMap.begin(), 
+            //             mGammaMap.end(), 
+            //             energyDeposit.TrackID()
+            //         );
+            //         if (particle_exists != mGammaMap.end())
+            //         {
+            //             auto gamma_index = mGammaMap[energyDeposit.TrackID()];
+            //             Int_t daughter_index = 0;
+            //             for (size_t )
+            //         }
             //     }
             // }
         }
