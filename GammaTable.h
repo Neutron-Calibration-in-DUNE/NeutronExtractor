@@ -62,6 +62,7 @@ namespace neutron
         std::vector<Double_t> daughter_start_x = {};
         std::vector<Double_t> daughter_start_y = {};
         std::vector<Double_t> daughter_start_z = {};
+        std::vector<Int_t>    daughter_num_edeps = {};
         std::vector<Double_t> daughter_edep_energy = {};
         std::vector<Double_t> daughter_edep_x = {};
         std::vector<Double_t> daughter_edep_y = {};

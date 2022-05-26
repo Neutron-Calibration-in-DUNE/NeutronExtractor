@@ -83,6 +83,7 @@ namespace neutron
                             mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                             mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                             mGammas[i].daughter_start_z.emplace_back(particle.Vz());
+                            mGammas[i].daughter_num_edeps.emplace_back(0);
                             mGammas[i].daughter_edep_energy.emplace_back(0);
                             mGammas[i].daughter_edep_x.emplace_back(-999);
                             mGammas[i].daughter_edep_y.emplace_back(-999);
@@ -110,6 +111,7 @@ namespace neutron
                                 mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                                 mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                                 mGammas[i].daughter_start_z.emplace_back(particle.Vz());
+                                mGammas[i].daughter_num_edeps.emplace_back(0);
                                 mGammas[i].daughter_edep_energy.emplace_back(0);
                                 mGammas[i].daughter_edep_x.emplace_back(-999);
                                 mGammas[i].daughter_edep_y.emplace_back(-999);
@@ -144,6 +146,7 @@ namespace neutron
                         {
                             if (energyDeposit.TrackID() == mGammas[gamma_index].daughter_ids[j])
                             {
+                                mGammas[gamma_index].daughter_num_edeps[j] += 1;
                                 mGammas[gamma_index].daughter_edep_energy[j] = energyDeposit.Energy();
                                 mGammas[gamma_index].daughter_edep_x[j] = energyDeposit.StartX();
                                 mGammas[gamma_index].daughter_edep_y[j] = energyDeposit.StartY();
@@ -174,6 +177,7 @@ namespace neutron
                     std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
                     std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
                     std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
+                    std::cout << "\t\tdaughter_num_edeps: " << mGammas[i].daughter_num_edeps[j] << "\n";
                     std::cout << "\t\tdaughter_edep_energy: " << mGammas[i].daughter_edep_energy[j] << "\n";
                     std::cout << "\t\tdaughter_edep_x: " << mGammas[i].daughter_edep_x[j] << "\n";
                     std::cout << "\t\tdaughter_edep_y: " << mGammas[i].daughter_edep_y[j] << "\n";
