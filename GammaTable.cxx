@@ -63,7 +63,7 @@ namespace neutron
                         {
                             mGammas.emplace_back(
                                 Gamma(
-                                    particle.TrackId(), particle.Mother(), round(particle.E(),7), 
+                                    particle.TrackId(), particle.Mother(), round(particle.E()*10e7)/10e7, 
                                     particle.Vx(), particle.Vy(), particle.Vz(),
                                     particle.EndX(), particle.EndY(), particle.EndZ()
                                 )
@@ -80,7 +80,7 @@ namespace neutron
                         {
                             mGammas[i].daughter_ids.emplace_back(particle.TrackId());
                             mGammas[i].daughter_level.emplace_back(0);
-                            mGammas[i].daughter_energy.emplace_back(round(particle.E(),7));
+                            mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e7)/10e7);
                             mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                             mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                             mGammas[i].daughter_start_z.emplace_back(particle.Vz());
@@ -114,7 +114,7 @@ namespace neutron
                             {
                                 mGammas[i].daughter_ids.emplace_back(particle.TrackId());
                                 mGammas[i].daughter_level.emplace_back(mGammas[i].daughter_level[j]+1);
-                                mGammas[i].daughter_energy.emplace_back(round(particle.E(),7));
+                                mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e7)/10e7);
                                 mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                                 mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                                 mGammas[i].daughter_start_z.emplace_back(particle.Vz());
