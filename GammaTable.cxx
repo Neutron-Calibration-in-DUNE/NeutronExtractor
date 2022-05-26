@@ -22,7 +22,7 @@ namespace neutron
         const art::ValidHandle<std::vector<sim::SimEnergyDeposit>>& mcEnergyDeposits,
         const art::ValidHandle<std::vector<sim::SimChannel>>& mcChannels,
         const art::ValidHandle<std::vector<recob::SpacePoint>>& recoSpacePoints,
-        const art::FindManyP<recob::Hit>& hitPandoraSPsAssn //to associate space points from pandora to hits
+        const art::FindManyP<recob::Hit>& hitPandoraSPsAssn 
     )
     {
         if (mcParticles.isValid() and mcChannels.isValid() and recoSpacePoints.isValid())
@@ -164,6 +164,7 @@ namespace neutron
                                 mGammas[gamma_index].daughter_edep_z[j].emplace_back(energyDeposit.StartZ());
                                 mGammas[gamma_index].daughter_edep_num_electrons[j].emplace_back(energyDeposit.NumElectrons());
                                 mGammas[gamma_index].daughter_edep_num_photons[j].emplace_back(energyDeposit.NumPhotons());
+                                mGammas[gamma_index].num_edep_points += 1;
                             }
                         }
                     }
@@ -174,6 +175,7 @@ namespace neutron
             for (size_t i = 0; i < pointsList.size(); i++)
             {
                 auto& spsHit = hitPandoraSPsAssn.at(i);
+                bool space_point = false;
                 for (auto hit : spsHit)
                 {  
                     Int_t track_id = TruthMatchUtils::TrueParticleID(
@@ -186,6 +188,7 @@ namespace neutron
                         {
                             if (track_id == mGammas[gamma_index].daughter_ids[j])
                             {
+                                space_point = true;
                                 // collect results
                                 auto xyz = pointsList[i]->XYZ();
                                 auto xyz_sigma = pointsList[i]->ErrXYZ();
@@ -209,61 +212,108 @@ namespace neutron
                         }
                     }
                 }
-            }
-            for (size_t i = 0; i < mGammas.size(); i++)
-            {
-                std::cout << "\ngamma: " << i << "\n";
-                std::cout << "\tneutron_id: " << mGammas[i].neutron_id << "\n";
-                std::cout << "\ttrack_id: " << mGammas[i].track_id << "\n";
-                std::cout << "\tenergy: " << mGammas[i].energy << "\n";
-                std::cout << "\tstart_x: " << mGammas[i].start_x << "\n";
-                std::cout << "\tstart_y: " << mGammas[i].start_y << "\n";
-                std::cout << "\tstart_z: " << mGammas[i].start_z << "\n";
-                std::cout << "\tend_x: " << mGammas[i].end_x << "\n";
-                std::cout << "\tend_y: " << mGammas[i].end_y << "\n";
-                std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
-                double energy = 0;
-                for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
-                {   
-                    std::cout << "\tdaughter: " << j << "\n";
-                    std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
-                    std::cout << "\t\tdaughter_level: " << mGammas[i].daughter_level[j] << "\n";
-                    std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
-                    std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
-                    std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
-                    std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
-                    for (size_t k = 0; k < mGammas[i].daughter_edep_energy[j].size(); k++)
-                    {
-                        std::cout << "\t\tedep: " << k << "\n";
-                        std::cout << "\t\t\tdaughter_edep_energy: " << mGammas[i].daughter_edep_energy[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_edep_x: " << mGammas[i].daughter_edep_x[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_edep_y: " << mGammas[i].daughter_edep_y[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j][k] << "\n";
-                    }
-                    for (size_t k = 0; k < mGammas[i].daughter_reco_sp_x[j].size(); k++)
-                    {
-                        std::cout << "\t\tspace point: " << k << "\n";
-                        std::cout << "\t\t\tdaughter_reco_sp_x: " << mGammas[i].daughter_reco_sp_x[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_sp_y: " << mGammas[i].daughter_reco_sp_y[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_sp_z: " << mGammas[i].daughter_reco_sp_z[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_sp_x_sigma: " << mGammas[i].daughter_reco_sp_x_sigma[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_sp_y_sigma: " << mGammas[i].daughter_reco_sp_y_sigma[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_sp_z_sigma: " << mGammas[i].daughter_reco_sp_z_sigma[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_sp_chisq: " << mGammas[i].daughter_reco_sp_chisq[j][k] << "\n";
-
-                        std::cout << "\t\t\tdaughter_reco_peak_time: " << mGammas[i].daughter_reco_peak_time[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_peak_time_sigma: " << mGammas[i].daughter_reco_peak_time_sigma[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_rms: " << mGammas[i].daughter_reco_rms[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_peak_amplitude: " << mGammas[i].daughter_reco_peak_amplitude[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_peak_amplitude_sigma: " << mGammas[i].daughter_reco_peak_amplitude_sigma[j][k] << "\n";
-                        std::cout << "\t\t\tdaughter_reco_summed_adc: " << mGammas[i].daughter_reco_summed_adc[j][k] << "\n";
-                    }
-                    energy += mGammas[i].daughter_energy[j];
+                if (space_point) {
+                    mGammas[gamma_index].num_reco_points += 1;
                 }
-                std::cout << "\tdaughter_total_energy: " << energy << "\n";
             }
+            // for (size_t i = 0; i < mGammas.size(); i++)
+            // {
+            //     std::cout << "\ngamma: " << i << "\n";
+            //     std::cout << "\tneutron_id: " << mGammas[i].neutron_id << "\n";
+            //     std::cout << "\ttrack_id: " << mGammas[i].track_id << "\n";
+            //     std::cout << "\tenergy: " << mGammas[i].energy << "\n";
+            //     std::cout << "\tstart_x: " << mGammas[i].start_x << "\n";
+            //     std::cout << "\tstart_y: " << mGammas[i].start_y << "\n";
+            //     std::cout << "\tstart_z: " << mGammas[i].start_z << "\n";
+            //     std::cout << "\tend_x: " << mGammas[i].end_x << "\n";
+            //     std::cout << "\tend_y: " << mGammas[i].end_y << "\n";
+            //     std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
+            //     double energy = 0;
+            //     for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
+            //     {   
+            //         std::cout << "\tdaughter: " << j << "\n";
+            //         std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
+            //         std::cout << "\t\tdaughter_level: " << mGammas[i].daughter_level[j] << "\n";
+            //         std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
+            //         std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
+            //         std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
+            //         std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
+            //         for (size_t k = 0; k < mGammas[i].daughter_edep_energy[j].size(); k++)
+            //         {
+            //             std::cout << "\t\tedep: " << k << "\n";
+            //             std::cout << "\t\t\tdaughter_edep_energy: " << mGammas[i].daughter_edep_energy[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_edep_x: " << mGammas[i].daughter_edep_x[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_edep_y: " << mGammas[i].daughter_edep_y[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j][k] << "\n";
+            //         }
+            //         for (size_t k = 0; k < mGammas[i].daughter_reco_sp_x[j].size(); k++)
+            //         {
+            //             std::cout << "\t\tspace point: " << k << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_sp_x: " << mGammas[i].daughter_reco_sp_x[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_sp_y: " << mGammas[i].daughter_reco_sp_y[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_sp_z: " << mGammas[i].daughter_reco_sp_z[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_sp_x_sigma: " << mGammas[i].daughter_reco_sp_x_sigma[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_sp_y_sigma: " << mGammas[i].daughter_reco_sp_y_sigma[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_sp_z_sigma: " << mGammas[i].daughter_reco_sp_z_sigma[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_sp_chisq: " << mGammas[i].daughter_reco_sp_chisq[j][k] << "\n";
+
+            //             std::cout << "\t\t\tdaughter_reco_peak_time: " << mGammas[i].daughter_reco_peak_time[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_peak_time_sigma: " << mGammas[i].daughter_reco_peak_time_sigma[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_rms: " << mGammas[i].daughter_reco_rms[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_peak_amplitude: " << mGammas[i].daughter_reco_peak_amplitude[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_peak_amplitude_sigma: " << mGammas[i].daughter_reco_peak_amplitude_sigma[j][k] << "\n";
+            //             std::cout << "\t\t\tdaughter_reco_summed_adc: " << mGammas[i].daughter_reco_summed_adc[j][k] << "\n";
+            //         }
+            //         energy += mGammas[i].daughter_energy[j];
+            //     }
+            //     std::cout << "\tdaughter_total_energy: " << energy << "\n";
+            // }
+            analyzeEvent();
+        }
+    }
+
+    void GammaTable::analyzeEvent()
+    {
+        for(size_t i = 0; i < mGammas.size(); i++)
+        {
+            bool energy_exists = false;
+            for (size_t j = 0; j < mGammaStatistics.energy.size(); j++)
+            {
+                if (mGammaStatistics.energy[j] == mGammas[i].energy)
+                {
+                    if (mGammas[i].num_edep_points > 0) {
+                        mGammaStatistics.num_gammas_mc[j] += 1;
+                    }
+                    if (mGammas[i].num_reco_points > 0) {
+                        mGammaStatistics.num_gammas_reco[j] += 1;
+                    }
+                }
+            }
+            if (!energy_exists)
+            {
+                mGammaStatistics.energy.emplace_back(mGammas[i].energy);
+                if (mGammas[i].num_edep_points > 0) {
+                    mGammaStatistics.num_gammas_mc.emplace_back(1);
+                }
+                else {
+                    mGammaStatistics.num_gammas_mc.emplace_back(0);
+                }
+                if (mGammas[i].num_reco_points > 0) {
+                    mGammaStatistics.num_gammas_reco.emplace_back(1);
+                }
+                else {
+                    mGammaStatistics.num_gammas_reco.emplace_back(0);
+                }
+            }
+        }
+        mGammaStatistics.total_num_gammas = mGammas.size();
+        for (size_t i = 0; i < mGammaStatistics.energy.size(); i++)
+        {
+            std::cout << i << ":\n\tEnergy - " << mGammaStatistics.energy[i] << "\n";
+            std::cout << "\t#MC: " << mGammaStatistics.num_gammas_mc[i] << "\n";
+            std::cout << "\t#Reco: " << mGammaStatistics.num_gammas_reco[i] << "\n";
         }
     }
 }

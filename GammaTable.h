@@ -69,6 +69,7 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_edep_z = {};
         std::vector<std::vector<Int_t>> daughter_edep_num_electrons = {};
         std::vector<std::vector<Int_t>> daughter_edep_num_photons = {};
+        Int_t num_edep_points = 0;
         
         std::vector<std::vector<Double_t>> daughter_reco_sp_x = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_y = {};
@@ -77,6 +78,7 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_sp_y_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_z_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_chisq = {};
+        Int_t num_reco_points = 0;
 
         std::vector<std::vector<Double_t>> daughter_reco_peak_time = {};
         std::vector<std::vector<Double_t>> daughter_reco_peak_time_sigma = {};
@@ -96,6 +98,14 @@ namespace neutron
         {}
     };
 
+    struct GammaStatistics
+    {
+        Int_t total_num_gammas;
+        std::vector<Double_t> energy;
+        std::vector<Int_t> num_gammas_mc;
+        std::vector<Int_t> num_gammas_reco;
+    };
+
     class GammaTable
     {
     public:
@@ -110,6 +120,9 @@ namespace neutron
             const art::ValidHandle<std::vector<recob::SpacePoint>>& recoSpacePoints,
             const art::FindManyP<recob::Hit>& hitSpacePointAssn
         );
+
+        void analyzeEvent();
+
     private:
         /// ROOT output through art::TFileService
         /** We will save different TTrees to different TFiles specified 
@@ -122,5 +135,7 @@ namespace neutron
 
         std::vector<Gamma> mGammas;
         std::map<int, int> mGammaMap;
+
+        GammaStatistics mGammaStatistics;
     };
 }
