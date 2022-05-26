@@ -108,7 +108,7 @@ namespace neutron
                             if (mGammas[i].daughter_ids[j] == particle.Mother())
                             {
                                 mGammas[i].daughter_ids.emplace_back(particle.TrackId());
-                                mGammas[i].daughter_level.emplace_back(mGammas.daughter_level[j]+1);
+                                mGammas[i].daughter_level.emplace_back(mGammas[i].daughter_level[j]+1);
                                 mGammas[i].daughter_energy.emplace_back(particle.E());
                                 mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                                 mGammas[i].daughter_start_y.emplace_back(particle.Vy());
