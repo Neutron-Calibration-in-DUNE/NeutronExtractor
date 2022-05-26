@@ -63,7 +63,7 @@ namespace neutron
                         {
                             mGammas.emplace_back(
                                 Gamma(
-                                    particle.TrackId(), particle.Mother(), round(particle.E()*10e7)/10e7, 
+                                    particle.TrackId(), particle.Mother(), round(particle.E()*10e6)/10e6, 
                                     particle.Vx(), particle.Vy(), particle.Vz(),
                                     particle.EndX(), particle.EndY(), particle.EndZ()
                                 )
@@ -80,7 +80,7 @@ namespace neutron
                         {
                             mGammas[i].daughter_ids.emplace_back(particle.TrackId());
                             mGammas[i].daughter_level.emplace_back(0);
-                            mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e7)/10e7);
+                            mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e6)/10e6);
                             mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                             mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                             mGammas[i].daughter_start_z.emplace_back(particle.Vz());
@@ -114,7 +114,7 @@ namespace neutron
                             {
                                 mGammas[i].daughter_ids.emplace_back(particle.TrackId());
                                 mGammas[i].daughter_level.emplace_back(mGammas[i].daughter_level[j]+1);
-                                mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e7)/10e7);
+                                mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e6)/10e6);
                                 mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                                 mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                                 mGammas[i].daughter_start_z.emplace_back(particle.Vz());
@@ -217,60 +217,6 @@ namespace neutron
                     mGammas[mGammaMap[track_id]].num_reco_points += 1;
                 }
             }
-            // for (size_t i = 0; i < mGammas.size(); i++)
-            // {
-            //     std::cout << "\ngamma: " << i << "\n";
-            //     std::cout << "\tneutron_id: " << mGammas[i].neutron_id << "\n";
-            //     std::cout << "\ttrack_id: " << mGammas[i].track_id << "\n";
-            //     std::cout << "\tenergy: " << mGammas[i].energy << "\n";
-            //     std::cout << "\tstart_x: " << mGammas[i].start_x << "\n";
-            //     std::cout << "\tstart_y: " << mGammas[i].start_y << "\n";
-            //     std::cout << "\tstart_z: " << mGammas[i].start_z << "\n";
-            //     std::cout << "\tend_x: " << mGammas[i].end_x << "\n";
-            //     std::cout << "\tend_y: " << mGammas[i].end_y << "\n";
-            //     std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
-            //     double energy = 0;
-            //     for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
-            //     {   
-            //         std::cout << "\tdaughter: " << j << "\n";
-            //         std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
-            //         std::cout << "\t\tdaughter_level: " << mGammas[i].daughter_level[j] << "\n";
-            //         std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
-            //         std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
-            //         std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
-            //         std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
-            //         for (size_t k = 0; k < mGammas[i].daughter_edep_energy[j].size(); k++)
-            //         {
-            //             std::cout << "\t\tedep: " << k << "\n";
-            //             std::cout << "\t\t\tdaughter_edep_energy: " << mGammas[i].daughter_edep_energy[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_edep_x: " << mGammas[i].daughter_edep_x[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_edep_y: " << mGammas[i].daughter_edep_y[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j][k] << "\n";
-            //         }
-            //         for (size_t k = 0; k < mGammas[i].daughter_reco_sp_x[j].size(); k++)
-            //         {
-            //             std::cout << "\t\tspace point: " << k << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_sp_x: " << mGammas[i].daughter_reco_sp_x[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_sp_y: " << mGammas[i].daughter_reco_sp_y[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_sp_z: " << mGammas[i].daughter_reco_sp_z[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_sp_x_sigma: " << mGammas[i].daughter_reco_sp_x_sigma[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_sp_y_sigma: " << mGammas[i].daughter_reco_sp_y_sigma[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_sp_z_sigma: " << mGammas[i].daughter_reco_sp_z_sigma[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_sp_chisq: " << mGammas[i].daughter_reco_sp_chisq[j][k] << "\n";
-
-            //             std::cout << "\t\t\tdaughter_reco_peak_time: " << mGammas[i].daughter_reco_peak_time[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_peak_time_sigma: " << mGammas[i].daughter_reco_peak_time_sigma[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_rms: " << mGammas[i].daughter_reco_rms[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_peak_amplitude: " << mGammas[i].daughter_reco_peak_amplitude[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_peak_amplitude_sigma: " << mGammas[i].daughter_reco_peak_amplitude_sigma[j][k] << "\n";
-            //             std::cout << "\t\t\tdaughter_reco_summed_adc: " << mGammas[i].daughter_reco_summed_adc[j][k] << "\n";
-            //         }
-            //         energy += mGammas[i].daughter_energy[j];
-            //     }
-            //     std::cout << "\tdaughter_total_energy: " << energy << "\n";
-            // }
             analyzeEvent();
         }
     }
