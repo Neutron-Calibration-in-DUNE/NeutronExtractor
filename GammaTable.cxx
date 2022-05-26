@@ -63,11 +63,11 @@ namespace neutron
                         {
                             std::cout << "Gamma: " << particle.TrackId() << ", " << particle.E() << std::endl;
                             mGammas.emplace_back(
-                                {
+                                Gamma(
                                     particle.TrackId(), particle.Mother(), particle.E(), 
                                     particle.Vx(), particle.Vy(), particle.Vz(),
                                     particle.EndX(), particle.EndY(), particle.EndZ()
-                                }
+                                )
                             );
                         }
                     }
