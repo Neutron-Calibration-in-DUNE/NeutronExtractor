@@ -176,9 +176,10 @@ namespace neutron
             {
                 auto& spsHit = hitPandoraSPsAssn.at(i);
                 bool space_point = false;
+                Int_t track_id;
                 for (auto hit : spsHit)
                 {  
-                    Int_t track_id = TruthMatchUtils::TrueParticleID(
+                    track_id = TruthMatchUtils::TrueParticleID(
                         clockData, hit, false
                     );
                     if (mGammaMap.find(track_id) != mGammaMap.end())
