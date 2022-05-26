@@ -136,7 +136,7 @@ namespace neutron
             {
                 std::cout << "\ngamma: " << i << "\n";
                 std::cout << "\tneutron_id: " << mGammas[i].neutron_id << "\n";
-                std::cout << "\tgamma_id: " << mGammas[i].gamma_id << "\n";
+                std::cout << "\ttrack_id: " << mGammas[i].track_id << "\n";
                 std::cout << "\tenergy: " << mGammas[i].energy << "\n";
                 std::cout << "\tstart_x: " << mGammas[i].start_x << "\n";
                 std::cout << "\tstart_y: " << mGammas[i].start_y << "\n";
@@ -149,6 +149,13 @@ namespace neutron
                 double energy = std::accumulate(mGammas[i].daughter_ids.begin(), mGammas[i].daughter_ids.end(), 0);
                 std::cout << "\tdaughter_energy: " << energy << "\n";
             }
+            // for (auto energyDeposit : *mcEnergyDeposits)
+            // {
+            //     // check the list of electrons
+            //     for (size_t i = 0; i < neutronStatistics.electron_ids.size(); i++)
+            //     {
+            //     }
+            // }
         }
     }
 }
