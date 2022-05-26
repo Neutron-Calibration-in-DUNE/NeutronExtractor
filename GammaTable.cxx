@@ -79,6 +79,7 @@ namespace neutron
                         if (mGammas[i].track_id == particle.Mother())
                         {
                             mGammas[i].daughter_ids.emplace_back(particle.TrackId());
+                            mGammas[i].daughter_level.emplace_back(0);
                             mGammas[i].daughter_energy.emplace_back(particle.E());
                             mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                             mGammas[i].daughter_start_y.emplace_back(particle.Vy());
@@ -107,6 +108,7 @@ namespace neutron
                             if (mGammas[i].daughter_ids[j] == particle.Mother())
                             {
                                 mGammas[i].daughter_ids.emplace_back(particle.TrackId());
+                                mGammas[i].daughter_level.emplace_back(mGammas.daughter_level[j]+1);
                                 mGammas[i].daughter_energy.emplace_back(particle.E());
                                 mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                                 mGammas[i].daughter_start_y.emplace_back(particle.Vy());
@@ -174,6 +176,7 @@ namespace neutron
                 {   
                     std::cout << "\tdaughter: " << j << "\n";
                     std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
+                    std::cout << "\t\tdaughter_level: " << mGammas[i].daughter_level[j] << "\n";
                     std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
                     std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
                     std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";

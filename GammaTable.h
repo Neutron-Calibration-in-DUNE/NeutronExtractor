@@ -58,6 +58,7 @@ namespace neutron
         Double_t end_y;
         Double_t end_z;
         std::vector<Int_t> daughter_ids = {};
+        std::vector<Int_t> daughter_level = {};
         std::vector<Double_t> daughter_energy = {};
         std::vector<Double_t> daughter_start_x = {};
         std::vector<Double_t> daughter_start_y = {};
