@@ -62,23 +62,22 @@ namespace neutron
         std::vector<Double_t> daughter_start_x = {};
         std::vector<Double_t> daughter_start_y = {};
         std::vector<Double_t> daughter_start_z = {};
-        std::vector<Int_t>    daughter_num_edeps = {};
-        std::vector<Double_t> daughter_edep_energy = {};
-        std::vector<Double_t> daughter_edep_x = {};
-        std::vector<Double_t> daughter_edep_y = {};
-        std::vector<Double_t> daughter_edep_z = {};
-        std::vector<Int_t> daughter_edep_num_electrons = {};
-        std::vector<Int_t> daughter_edep_num_photons = {};
+        std::vector<std::vector<Double_t>> daughter_edep_energy = {};
+        std::vector<std::vector<Double_t>> daughter_edep_x = {};
+        std::vector<std::vector<Double_t>> daughter_edep_y = {};
+        std::vector<std::vector<Double_t>> daughter_edep_z = {};
+        std::vector<std::vector<Int_t>> daughter_edep_num_electrons = {};
+        std::vector<std::vector<Int_t>> daughter_edep_num_photons = {};
         
-        std::vector<Double_t> daughter_reco_sp_x = {};
-        std::vector<Double_t> daughter_reco_sp_y = {};
-        std::vector<Double_t> daughter_reco_sp_z = {};
-        std::vector<Double_t> daughter_reco_peak_time = {};
-        std::vector<Double_t> daughter_reco_peak_time_sigma = {};
-        std::vector<Double_t> daughter_reco_rms = {};
-        std::vector<Double_t> daughter_reco_peak_amplitude = {};
-        std::vector<Double_t> daughter_reco_peak_amplitude_sigma = {};
-        std::vector<Double_t> daughter_reco_summed_adc = {};
+        std::vector<std::vector<Double_t>> daughter_reco_sp_x = {};
+        std::vector<std::vector<Double_t>> daughter_reco_sp_y = {};
+        std::vector<std::vector<Double_t>> daughter_reco_sp_z = {};
+        std::vector<std::vector<Double_t>> daughter_reco_peak_time = {};
+        std::vector<std::vector<Double_t>> daughter_reco_peak_time_sigma = {};
+        std::vector<std::vector<Double_t>> daughter_reco_rms = {};
+        std::vector<std::vector<Double_t>> daughter_reco_peak_amplitude = {};
+        std::vector<std::vector<Double_t>> daughter_reco_peak_amplitude_sigma = {};
+        std::vector<std::vector<Double_t>> daughter_reco_summed_adc = {};
 
         Gamma(
             Int_t track_id, Int_t neutron_id, Double_t energy,

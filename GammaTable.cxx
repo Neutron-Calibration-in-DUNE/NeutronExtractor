@@ -83,23 +83,23 @@ namespace neutron
                             mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                             mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                             mGammas[i].daughter_start_z.emplace_back(particle.Vz());
-                            mGammas[i].daughter_num_edeps.emplace_back(0);
-                            mGammas[i].daughter_edep_energy.emplace_back(0);
-                            mGammas[i].daughter_edep_x.emplace_back(-999);
-                            mGammas[i].daughter_edep_y.emplace_back(-999);
-                            mGammas[i].daughter_edep_z.emplace_back(-999);
-                            mGammas[i].daughter_edep_num_electrons.emplace_back(0);
-                            mGammas[i].daughter_edep_num_photons.emplace_back(0);
+
+                            mGammas[i].daughter_edep_energy.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_edep_x.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_edep_y.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_edep_z.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_edep_num_electrons.emplace_back(std::vector<Int_t>());
+                            mGammas[i].daughter_edep_num_photons.emplace_back(std::vector<Int_t>());
                             
-                            mGammas[i].daughter_reco_sp_x.emplace_back(-999);
-                            mGammas[i].daughter_reco_sp_y.emplace_back(-999);
-                            mGammas[i].daughter_reco_sp_z.emplace_back(-999);
-                            mGammas[i].daughter_reco_peak_time.emplace_back(0);
-                            mGammas[i].daughter_reco_peak_time_sigma.emplace_back(0);
-                            mGammas[i].daughter_reco_rms.emplace_back(0);
-                            mGammas[i].daughter_reco_peak_amplitude.emplace_back(0);
-                            mGammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(0);
-                            mGammas[i].daughter_reco_summed_adc.emplace_back(0);
+                            mGammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
+                            mGammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
                             mGammaMap[particle.TrackId()] = i;
                         }
                         for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
@@ -111,23 +111,23 @@ namespace neutron
                                 mGammas[i].daughter_start_x.emplace_back(particle.Vx());
                                 mGammas[i].daughter_start_y.emplace_back(particle.Vy());
                                 mGammas[i].daughter_start_z.emplace_back(particle.Vz());
-                                mGammas[i].daughter_num_edeps.emplace_back(0);
-                                mGammas[i].daughter_edep_energy.emplace_back(0);
-                                mGammas[i].daughter_edep_x.emplace_back(-999);
-                                mGammas[i].daughter_edep_y.emplace_back(-999);
-                                mGammas[i].daughter_edep_z.emplace_back(-999);
-                                mGammas[i].daughter_edep_num_electrons.emplace_back(0);
-                                mGammas[i].daughter_edep_num_photons.emplace_back(0);
+
+                                mGammas[i].daughter_edep_energy.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_edep_x.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_edep_y.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_edep_z.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_edep_num_electrons.emplace_back(std::vector<Int_t>());
+                                mGammas[i].daughter_edep_num_photons.emplace_back(std::vector<Int_t>());
                                 
-                                mGammas[i].daughter_reco_sp_x.emplace_back(-999);
-                                mGammas[i].daughter_reco_sp_y.emplace_back(-999);
-                                mGammas[i].daughter_reco_sp_z.emplace_back(-999);
-                                mGammas[i].daughter_reco_peak_time.emplace_back(0);
-                                mGammas[i].daughter_reco_peak_time_sigma.emplace_back(0);
-                                mGammas[i].daughter_reco_rms.emplace_back(0);
-                                mGammas[i].daughter_reco_peak_amplitude.emplace_back(0);
-                                mGammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(0);
-                                mGammas[i].daughter_reco_summed_adc.emplace_back(0);
+                                mGammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
+                                mGammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
                                 mGammaMap[particle.TrackId()] = i;
                             }
                         }
@@ -146,13 +146,12 @@ namespace neutron
                         {
                             if (energyDeposit.TrackID() == mGammas[gamma_index].daughter_ids[j])
                             {
-                                mGammas[gamma_index].daughter_num_edeps[j] += 1;
-                                mGammas[gamma_index].daughter_edep_energy[j] = energyDeposit.Energy();
-                                mGammas[gamma_index].daughter_edep_x[j] = energyDeposit.StartX();
-                                mGammas[gamma_index].daughter_edep_y[j] = energyDeposit.StartY();
-                                mGammas[gamma_index].daughter_edep_z[j] = energyDeposit.StartZ();
-                                mGammas[gamma_index].daughter_edep_num_electrons[j] = energyDeposit.NumElectrons();
-                                mGammas[gamma_index].daughter_edep_num_photons[j] = energyDeposit.NumPhotons();
+                                mGammas[gamma_index].daughter_edep_energy[j].emplace_back(energyDeposit.Energy());
+                                mGammas[gamma_index].daughter_edep_x[j].emplace_back(energyDeposit.StartX());
+                                mGammas[gamma_index].daughter_edep_y[j].emplace_back(energyDeposit.StartY());
+                                mGammas[gamma_index].daughter_edep_z[j].emplace_back(energyDeposit.StartZ());
+                                mGammas[gamma_index].daughter_edep_num_electrons[j].emplace_back(energyDeposit.NumElectrons());
+                                mGammas[gamma_index].daughter_edep_num_photons[j].emplace_back(energyDeposit.NumPhotons());
                             }
                         }
                     }
@@ -172,19 +171,23 @@ namespace neutron
                 std::cout << "\tend_z: " << mGammas[i].end_z << "\n";
                 double energy = 0;
                 for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
-                {
+                {   
+                    std::cout << "\tdaughter: " << j << "\n";
                     std::cout << "\t\tdaughter_id: " << mGammas[i].daughter_ids[j] << "\n";
                     std::cout << "\t\tdaughter_energy: " << mGammas[i].daughter_energy[j] << "\n";
                     std::cout << "\t\tdaughter_start_x: " << mGammas[i].daughter_start_x[j] << "\n";
                     std::cout << "\t\tdaughter_start_y: " << mGammas[i].daughter_start_y[j] << "\n";
                     std::cout << "\t\tdaughter_start_z: " << mGammas[i].daughter_start_z[j] << "\n";
-                    std::cout << "\t\tdaughter_num_edeps: " << mGammas[i].daughter_num_edeps[j] << "\n";
-                    std::cout << "\t\tdaughter_edep_energy: " << mGammas[i].daughter_edep_energy[j] << "\n";
-                    std::cout << "\t\tdaughter_edep_x: " << mGammas[i].daughter_edep_x[j] << "\n";
-                    std::cout << "\t\tdaughter_edep_y: " << mGammas[i].daughter_edep_y[j] << "\n";
-                    std::cout << "\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j] << "\n";
-                    std::cout << "\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j] << "\n";
-                    std::cout << "\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j] << "\n";
+                    for (size_t k = 0; k < mGammas[i].daughter_edep_energy[j].size(); k++)
+                    {
+                        std::cout << "\t\tedep: " << k << "\n";
+                        std::cout << "\t\t\tdaughter_edep_energy: " << mGammas[i].daughter_edep_energy[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_edep_x: " << mGammas[i].daughter_edep_x[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_edep_y: " << mGammas[i].daughter_edep_y[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_edep_z: " << mGammas[i].daughter_edep_z[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_edep_num_electrons: " << mGammas[i].daughter_edep_num_electrons[j][k] << "\n";
+                        std::cout << "\t\t\tdaughter_edep_num_photons: " << mGammas[i].daughter_edep_num_photons[j][k] << "\n";
+                    }
                     energy += mGammas[i].daughter_energy[j];
                 }
                 std::cout << "\tdaughter_total_energy: " << energy << "\n";
