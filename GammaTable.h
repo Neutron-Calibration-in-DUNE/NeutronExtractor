@@ -53,7 +53,7 @@ namespace neutron
         Double_t energy;
         Double_t start_x;
         Double_t start_y;
-        Double_t stary_z;
+        Double_t start_z;
         Double_t end_x;
         Double_t end_y;
         Double_t end_z;
