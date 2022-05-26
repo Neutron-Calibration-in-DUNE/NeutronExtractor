@@ -115,6 +115,6 @@ namespace neutron
         DetectorGeometry* fGeometry = DetectorGeometry::getInstance("GammaTable");
 
         std::vector<Gamma> mGammas;
-        std::map<Int_t, Int_t> mGammaMap;
+        std::map<int, int> mGammaMap;
     };
 }
