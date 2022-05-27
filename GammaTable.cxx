@@ -50,10 +50,10 @@ namespace neutron
         mGammaTree->Branch("daughter_reco_summed_adc", &mGamma.daughter_reco_summed_adc);
 
         mGammaStatisticsTree = mTFileService->make<TTree>("gamma_statistics", "gamma_statistics");
-        mGammaStatisticsTree->("total_num_gammas", &mGammaStatistics.total_num_gammas);
-        mGammaStatisticsTree->("energy", &mGammaStatistics.energy);
-        mGammaStatisticsTree->("num_gammas_mc", &mGammaStatistics.num_gammas_mc);
-        mGammaStatisticsTree->("num_gammas_reco", &mGammaStatistics.num_gammas_reco);
+        mGammaStatisticsTree->Branch("total_num_gammas", &mGammaStatistics.total_num_gammas);
+        mGammaStatisticsTree->Branch("energy", &mGammaStatistics.energy);
+        mGammaStatisticsTree->Branch("num_gammas_mc", &mGammaStatistics.num_gammas_mc);
+        mGammaStatisticsTree->Branch("num_gammas_reco", &mGammaStatistics.num_gammas_reco);
     }
 
     GammaTable::~GammaTable()
