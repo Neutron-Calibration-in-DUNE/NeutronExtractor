@@ -48,15 +48,15 @@ namespace neutron
 {
     struct Gamma
     {
-        Int_t track_id;
-        Int_t neutron_id;
-        Double_t energy;
-        Double_t start_x;
-        Double_t start_y;
-        Double_t start_z;
-        Double_t end_x;
-        Double_t end_y;
-        Double_t end_z;
+        Int_t track_id = 0;
+        Int_t neutron_id = 0;
+        Double_t energy = 0;
+        Double_t start_x = 0;
+        Double_t start_y = 0;
+        Double_t start_z = 0;
+        Double_t end_x = 0;
+        Double_t end_y = 0;
+        Double_t end_z = 0;
         std::vector<Int_t> daughter_ids = {};
         std::vector<Int_t> daughter_level = {};
         std::vector<Double_t> daughter_energy = {};
@@ -87,6 +87,7 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_peak_amplitude_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_summed_adc = {};
 
+        Gamma(){}
         Gamma(
             Int_t track_id, Int_t neutron_id, Double_t energy,
             Double_t start_x, Double_t start_y, Double_t start_z,
