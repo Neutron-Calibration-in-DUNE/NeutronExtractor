@@ -11,7 +11,7 @@ namespace neutron
 {
     GammaTable::GammaTable()
     {
-        mGammaTree = fTFileService->make<TTree>("gammas", "gammas");
+        mGammaTree = mTFileService->make<TTree>("gammas", "gammas");
         mGammaTree->Branch("track_id", &mGamma.track_id);
         mGammaTree->Branch("neutron_id", &mGamma.neutron_id);
         mGammaTree->Branch("energy", &mGamma.energy);
