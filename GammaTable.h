@@ -123,7 +123,6 @@ namespace neutron
         );
 
         void analyzeEvent();
-        void endJob();
 
     private:
         /// ROOT output through art::TFileService

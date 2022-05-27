@@ -304,11 +304,7 @@ namespace neutron
                 }
             }
         }
-        mGammaStatistics.total_num_gammas += mGammas.size();
-    }
-
-    void GammaTable::endJob()
-    {
+        mGammaStatistics.total_num_gammas = mGammas.size();
         mGammaStatisticsTree->Fill();
     }
 }
