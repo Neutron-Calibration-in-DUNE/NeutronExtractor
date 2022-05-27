@@ -267,17 +267,17 @@ namespace neutron
                 mGammaTree->Fill();
             }
             GammaStatistics gamma_statistics;
-            for(size_t i = 0; i < mGammas.size(); i++)
+            for(size_t i = 0; i < gammas.size(); i++)
             {
                 bool energy_exists = false;
                 for (size_t j = 0; j < gamma_statistics.energy.size(); j++)
                 {
-                    if (gamma_statistics.energy[j] == mGammas[i].energy)
+                    if (gamma_statistics.energy[j] == gammas[i].energy)
                     {
-                        if (mGammas[i].num_edep_points > 0) {
+                        if (gammas[i].num_edep_points > 0) {
                             gamma_statistics.num_gammas_mc[j] += 1;
                         }
-                        if (mGammas[i].num_reco_points > 0) {
+                        if (gammas[i].num_reco_points > 0) {
                             gamma_statistics.num_gammas_reco[j] += 1;
                         }
                         energy_exists = true;
@@ -285,14 +285,14 @@ namespace neutron
                 }
                 if (!energy_exists)
                 {
-                    gamma_statistics.energy.emplace_back(mGammas[i].energy);
-                    if (mGammas[i].num_edep_points > 0) {
+                    gamma_statistics.energy.emplace_back(gammas[i].energy);
+                    if (gammas[i].num_edep_points > 0) {
                         gamma_statistics.num_gammas_mc.emplace_back(1);
                     }
                     else {
                         gamma_statistics.num_gammas_mc.emplace_back(0);
                     }
-                    if (mGammas[i].num_reco_points > 0) {
+                    if (gammas[i].num_reco_points > 0) {
                         gamma_statistics.num_gammas_reco.emplace_back(1);
                     }
                     else {
@@ -300,7 +300,7 @@ namespace neutron
                     }
                 }
             }
-            gamma_statistics.total_num_gammas = mGammas.size();
+            gamma_statistics.total_num_gammas = gammas.size();
             mGammaStatistics = gamma_statistics;
             mGammaStatisticsTree->Fill();
         }
