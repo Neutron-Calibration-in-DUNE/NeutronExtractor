@@ -100,10 +100,10 @@ namespace neutron
 
     struct GammaStatistics
     {
-        Int_t total_num_gammas;
-        std::vector<Double_t> energy;
-        std::vector<Int_t> num_gammas_mc;
-        std::vector<Int_t> num_gammas_reco;
+        Int_t total_num_gammas = 0;
+        std::vector<Double_t> energy = {};
+        std::vector<Int_t> num_gammas_mc = {};
+        std::vector<Int_t> num_gammas_reco = {};
     };
 
     class GammaTable
@@ -122,17 +122,20 @@ namespace neutron
         );
 
         void analyzeEvent();
+        void endJob();
 
     private:
         /// ROOT output through art::TFileService
         /** We will save different TTrees to different TFiles specified 
          *  by the directories for each type.
          */ 
-        art::ServiceHandle<art::TFileService> fTFileService;
-        TTree *mGammaTableTree;
+        art::ServiceHandle<art::TFileService> mTFileService;
+        TTree *mGammaTree;
+        TTree *mGammaStatisticsTree;
         // geometry information
         DetectorGeometry* fGeometry = DetectorGeometry::getInstance("GammaTable");
 
+        Gamma mGamma;
         std::vector<Gamma> mGammas;
         std::map<int, int> mGammaMap;
 

@@ -11,6 +11,49 @@ namespace neutron
 {
     GammaTable::GammaTable()
     {
+        mGammaTree = fTFileService->make<TTree>("gammas", "gammas");
+        mGammaTree->Branch("track_id", &mGamma.track_id);
+        mGammaTree->Branch("neutron_id", &mGamma.neutron_id);
+        mGammaTree->Branch("energy", &mGamma.energy);
+        mGammaTree->Branch("start_x", &mGamma.start_x);
+        mGammaTree->Branch("start_y", &mGamma.start_y);
+        mGammaTree->Branch("start_z", &mGamma.start_z);
+        mGammaTree->Branch("end_x", &mGamma.end_x);
+        mGammaTree->Branch("end_y", &mGamma.end_y);
+        mGammaTree->Branch("end_z", &mGamma.end_z);
+        mGammaTree->Branch("daughter_ids", &mGamma.daughter_ids);
+        mGammaTree->Branch("daughter_level", &mGamma.daughter_level);
+        mGammaTree->Branch("daughter_energy", &mGamma.daughter_energy);
+        mGammaTree->Branch("daughter_start_x", &mGamma.daughter_start_x);
+        mGammaTree->Branch("daughter_start_y", &mGamma.daughter_start_y);
+        mGammaTree->Branch("daughter_start_z", &mGamma.daughter_start_z);
+        mGammaTree->Branch("daughter_edep_energy", &mGamma.daughter_edep_energy);
+        mGammaTree->Branch("daughter_edep_x", &mGamma.daughter_edep_x);
+        mGammaTree->Branch("daughter_edep_y", &mGamma.daughter_edep_y);
+        mGammaTree->Branch("daughter_edep_z", &mGamma.daughter_edep_z);
+        mGammaTree->Branch("daughter_edep_num_electrons", &mGamma.daughter_edep_num_electrons);
+        mGammaTree->Branch("daughter_edep_num_photons", &mGamma.daughter_edep_num_photons);
+
+        mGammaTree->Branch("daughter_reco_sp_x", &mGamma.daughter_reco_sp_x);
+        mGammaTree->Branch("daughter_reco_sp_y", &mGamma.daughter_reco_sp_y);
+        mGammaTree->Branch("daughter_reco_sp_z", &mGamma.daughter_reco_sp_z);
+        mGammaTree->Branch("daughter_reco_sp_x_sigma", &mGamma.daughter_reco_sp_x_sigma);
+        mGammaTree->Branch("daughter_reco_sp_y_sigma", &mGamma.daughter_reco_sp_y_sigma);
+        mGammaTree->Branch("daughter_reco_sp_z_sigma", &mGamma.daughter_reco_sp_z_sigma);
+        mGammaTree->Branch("daughter_reco_sp_chisq", &mGamma.daughter_reco_sp_chisq);
+
+        mGammaTree->Branch("daughter_reco_peak_time", &mGamma.daughter_reco_peak_time);
+        mGammaTree->Branch("daughter_reco_peak_time_sigma", &mGamma.daughter_reco_peak_time_sigma);
+        mGammaTree->Branch("daughter_reco_rms", &mGamma.daughter_reco_rms);
+        mGammaTree->Branch("daughter_reco_peak_amplitude", &mGamma.daughter_reco_peak_amplitude);
+        mGammaTree->Branch("daughter_reco_peak_amplitude_sigma", &mGamma.daughter_reco_peak_amplitude_sigma);
+        mGammaTree->Branch("daughter_reco_summed_adc", &mGamma.daughter_reco_summed_adc);
+
+        mGammaStatisticsTree = mTFileService->make<TTree>("gamma_statistics", "gamma_statistics");
+        mGammaStatisticsTree->("total_num_gammas", &mGammaStatistics.total_num_gammas);
+        mGammaStatisticsTree->("energy", &mGammaStatistics.energy);
+        mGammaStatisticsTree->("num_gammas_mc", &mGammaStatistics.num_gammas_mc);
+        mGammaStatisticsTree->("num_gammas_reco", &mGammaStatistics.num_gammas_reco);
     }
 
     GammaTable::~GammaTable()
@@ -217,6 +260,11 @@ namespace neutron
                     mGammas[mGammaMap[track_id]].num_reco_points += 1;
                 }
             }
+            for (size_t i = 0; i < mGammas.size(); i++)
+            {
+                mGamma = mGammas[i];
+                mGammaTree->Fill();
+            }
             analyzeEvent();
         }
     }
@@ -256,12 +304,11 @@ namespace neutron
                 }
             }
         }
-        mGammaStatistics.total_num_gammas = mGammas.size();
-        for (size_t i = 0; i < mGammaStatistics.energy.size(); i++)
-        {
-            std::cout << i << ":\n\tEnergy - " << mGammaStatistics.energy[i] << "\n";
-            std::cout << "\t#MC: " << mGammaStatistics.num_gammas_mc[i] << "\n";
-            std::cout << "\t#Reco: " << mGammaStatistics.num_gammas_reco[i] << "\n";
-        }
+        mGammaStatistics.total_num_gammas += mGammas.size();
+    }
+
+    void GammaTable::endJob()
+    {
+        mGammaStatisticsTree->Fill();
     }
 }

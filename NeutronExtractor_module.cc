@@ -179,6 +179,8 @@ namespace neutron
     // end job
     void NeutronExtractor::endJob()
     {
+        mGammaTable.endJob();
+        
         // save configuration parameters
         mMetaTree->Branch("LArGeantProducerLabel",    &mLArGeantProducerLabel);
         mMetaTree->Branch("IonAndScintProducerLabel", &mIonAndScintProducerLabel);
