@@ -122,8 +122,6 @@ namespace neutron
             const art::FindManyP<recob::Hit>& hitSpacePointAssn
         );
 
-        void analyzeEvent();
-
     private:
         /// ROOT output through art::TFileService
         /** We will save different TTrees to different TFiles specified 
@@ -136,9 +134,6 @@ namespace neutron
         DetectorGeometry* fGeometry = DetectorGeometry::getInstance("GammaTable");
 
         Gamma mGamma;
-        std::vector<Gamma> mGammas;
-        std::map<int, int> mGammaMap;
-
         GammaStatistics mGammaStatistics;
     };
 }

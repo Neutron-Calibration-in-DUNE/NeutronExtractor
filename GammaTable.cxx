@@ -70,7 +70,8 @@ namespace neutron
     {
         if (mcParticles.isValid() and mcChannels.isValid() and recoSpacePoints.isValid())
         {
-            mGammas.clear();
+            std::vector<Gamma> gammas;
+            std::map<int, int> gamma_map;
             /**
              * We first iterate through all particles and create a map of 
              * parent-daughter pairs for track ids.  This way we can search
@@ -104,86 +105,86 @@ namespace neutron
                     {
                         if (neutron_captures[i] == particle.Mother())
                         {
-                            mGammas.emplace_back(
+                            gammas.emplace_back(
                                 Gamma(
                                     particle.TrackId(), particle.Mother(), round(particle.E()*10e6)/10e6, 
                                     particle.Vx(), particle.Vy(), particle.Vz(),
                                     particle.EndX(), particle.EndY(), particle.EndZ()
                                 )
                             );
-                            mGammaMap[particle.TrackId()] = mGammas.size()-1;
+                            gamma_map[particle.TrackId()] = gammas.size()-1;
                         }
                     }
                 }
                 else if (particle.PdgCode() == 11)
                 {
-                    for(size_t i = 0; i < mGammas.size(); i++)
+                    for(size_t i = 0; i < gammas.size(); i++)
                     {
-                        if (mGammas[i].track_id == particle.Mother())
+                        if (gammas[i].track_id == particle.Mother())
                         {
-                            mGammas[i].daughter_ids.emplace_back(particle.TrackId());
-                            mGammas[i].daughter_level.emplace_back(0);
-                            mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e6)/10e6);
-                            mGammas[i].daughter_start_x.emplace_back(particle.Vx());
-                            mGammas[i].daughter_start_y.emplace_back(particle.Vy());
-                            mGammas[i].daughter_start_z.emplace_back(particle.Vz());
+                            gammas[i].daughter_ids.emplace_back(particle.TrackId());
+                            gammas[i].daughter_level.emplace_back(0);
+                            gammas[i].daughter_energy.emplace_back(round(particle.E()*10e6)/10e6);
+                            gammas[i].daughter_start_x.emplace_back(particle.Vx());
+                            gammas[i].daughter_start_y.emplace_back(particle.Vy());
+                            gammas[i].daughter_start_z.emplace_back(particle.Vz());
 
-                            mGammas[i].daughter_edep_energy.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_edep_x.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_edep_y.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_edep_z.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_edep_num_electrons.emplace_back(std::vector<Int_t>());
-                            mGammas[i].daughter_edep_num_photons.emplace_back(std::vector<Int_t>());
+                            gammas[i].daughter_edep_energy.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_edep_x.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_edep_y.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_edep_z.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_edep_num_electrons.emplace_back(std::vector<Int_t>());
+                            gammas[i].daughter_edep_num_photons.emplace_back(std::vector<Int_t>());
                             
-                            mGammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_sp_x_sigma.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_sp_y_sigma.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_sp_z_sigma.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_sp_chisq.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_sp_x_sigma.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_sp_y_sigma.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_sp_z_sigma.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_sp_chisq.emplace_back(std::vector<Double_t>());
 
-                            mGammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
-                            mGammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
-                            mGammaMap[particle.TrackId()] = i;
+                            gammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
+                            gamma_map[particle.TrackId()] = i;
                         }
-                        for (size_t j = 0; j < mGammas[i].daughter_ids.size(); j++)
+                        for (size_t j = 0; j < gammas[i].daughter_ids.size(); j++)
                         {
-                            if (mGammas[i].daughter_ids[j] == particle.Mother())
+                            if (gammas[i].daughter_ids[j] == particle.Mother())
                             {
-                                mGammas[i].daughter_ids.emplace_back(particle.TrackId());
-                                mGammas[i].daughter_level.emplace_back(mGammas[i].daughter_level[j]+1);
-                                mGammas[i].daughter_energy.emplace_back(round(particle.E()*10e6)/10e6);
-                                mGammas[i].daughter_start_x.emplace_back(particle.Vx());
-                                mGammas[i].daughter_start_y.emplace_back(particle.Vy());
-                                mGammas[i].daughter_start_z.emplace_back(particle.Vz());
+                                gammas[i].daughter_ids.emplace_back(particle.TrackId());
+                                gammas[i].daughter_level.emplace_back(gammas[i].daughter_level[j]+1);
+                                gammas[i].daughter_energy.emplace_back(round(particle.E()*10e6)/10e6);
+                                gammas[i].daughter_start_x.emplace_back(particle.Vx());
+                                gammas[i].daughter_start_y.emplace_back(particle.Vy());
+                                gammas[i].daughter_start_z.emplace_back(particle.Vz());
 
-                                mGammas[i].daughter_edep_energy.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_edep_x.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_edep_y.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_edep_z.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_edep_num_electrons.emplace_back(std::vector<Int_t>());
-                                mGammas[i].daughter_edep_num_photons.emplace_back(std::vector<Int_t>());
+                                gammas[i].daughter_edep_energy.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_edep_x.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_edep_y.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_edep_z.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_edep_num_electrons.emplace_back(std::vector<Int_t>());
+                                gammas[i].daughter_edep_num_photons.emplace_back(std::vector<Int_t>());
                                 
-                                mGammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_sp_x_sigma.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_sp_y_sigma.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_sp_z_sigma.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_sp_chisq.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_sp_x.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_sp_y.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_sp_z.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_sp_x_sigma.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_sp_y_sigma.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_sp_z_sigma.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_sp_chisq.emplace_back(std::vector<Double_t>());
 
-                                mGammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
-                                mGammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
-                                mGammaMap[particle.TrackId()] = i;
+                                gammas[i].daughter_reco_peak_time.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_peak_time_sigma.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_rms.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
+                                gamma_map[particle.TrackId()] = i;
                             }
                         }
                     }
@@ -194,20 +195,20 @@ namespace neutron
             {
                 if (energyDeposit.PdgCode() == 11)
                 {
-                    if (mGammaMap.find(energyDeposit.TrackID()) != mGammaMap.end())
+                    if (gamma_map.find(energyDeposit.TrackID()) != gamma_map.end())
                     {
-                        auto gamma_index = mGammaMap[energyDeposit.TrackID()];
-                        for (size_t j = 0; j < mGammas[gamma_index].daughter_ids.size(); j++)
+                        auto gamma_index = gamma_map[energyDeposit.TrackID()];
+                        for (size_t j = 0; j < gammas[gamma_index].daughter_ids.size(); j++)
                         {
-                            if (energyDeposit.TrackID() == mGammas[gamma_index].daughter_ids[j])
+                            if (energyDeposit.TrackID() == gammas[gamma_index].daughter_ids[j])
                             {
-                                mGammas[gamma_index].daughter_edep_energy[j].emplace_back(energyDeposit.Energy());
-                                mGammas[gamma_index].daughter_edep_x[j].emplace_back(energyDeposit.StartX());
-                                mGammas[gamma_index].daughter_edep_y[j].emplace_back(energyDeposit.StartY());
-                                mGammas[gamma_index].daughter_edep_z[j].emplace_back(energyDeposit.StartZ());
-                                mGammas[gamma_index].daughter_edep_num_electrons[j].emplace_back(energyDeposit.NumElectrons());
-                                mGammas[gamma_index].daughter_edep_num_photons[j].emplace_back(energyDeposit.NumPhotons());
-                                mGammas[gamma_index].num_edep_points += 1;
+                                gammas[gamma_index].daughter_edep_energy[j].emplace_back(energyDeposit.Energy());
+                                gammas[gamma_index].daughter_edep_x[j].emplace_back(energyDeposit.StartX());
+                                gammas[gamma_index].daughter_edep_y[j].emplace_back(energyDeposit.StartY());
+                                gammas[gamma_index].daughter_edep_z[j].emplace_back(energyDeposit.StartZ());
+                                gammas[gamma_index].daughter_edep_num_electrons[j].emplace_back(energyDeposit.NumElectrons());
+                                gammas[gamma_index].daughter_edep_num_photons[j].emplace_back(energyDeposit.NumPhotons());
+                                gammas[gamma_index].num_edep_points += 1;
                             }
                         }
                     }
@@ -225,12 +226,12 @@ namespace neutron
                     track_id = TruthMatchUtils::TrueParticleID(
                         clockData, hit, false
                     );
-                    if (mGammaMap.find(track_id) != mGammaMap.end())
+                    if (gamma_map.find(track_id) != gamma_map.end())
                     {
-                        auto gamma_index = mGammaMap[track_id];
-                        for (size_t j = 0; j < mGammas[gamma_index].daughter_ids.size(); j++)
+                        auto gamma_index = gamma_map[track_id];
+                        for (size_t j = 0; j < gammas[gamma_index].daughter_ids.size(); j++)
                         {
-                            if (track_id == mGammas[gamma_index].daughter_ids[j])
+                            if (track_id == gammas[gamma_index].daughter_ids[j])
                             {
                                 space_point = true;
                                 // collect results
@@ -238,73 +239,70 @@ namespace neutron
                                 auto xyz_sigma = pointsList[i]->ErrXYZ();
                                 // check if point is in active volume
                                 // Determine if edep is within the desired volume
-                                mGammas[gamma_index].daughter_reco_sp_x[j].emplace_back(xyz[0]);
-                                mGammas[gamma_index].daughter_reco_sp_y[j].emplace_back(xyz[1]);
-                                mGammas[gamma_index].daughter_reco_sp_z[j].emplace_back(xyz[2]);
-                                mGammas[gamma_index].daughter_reco_sp_x_sigma[j].emplace_back(xyz_sigma[0]);
-                                mGammas[gamma_index].daughter_reco_sp_y_sigma[j].emplace_back(xyz_sigma[4]);
-                                mGammas[gamma_index].daughter_reco_sp_z_sigma[j].emplace_back(xyz_sigma[8]);
-                                mGammas[gamma_index].daughter_reco_sp_chisq[j].emplace_back(pointsList[i]->Chisq());
+                                gammas[gamma_index].daughter_reco_sp_x[j].emplace_back(xyz[0]);
+                                gammas[gamma_index].daughter_reco_sp_y[j].emplace_back(xyz[1]);
+                                gammas[gamma_index].daughter_reco_sp_z[j].emplace_back(xyz[2]);
+                                gammas[gamma_index].daughter_reco_sp_x_sigma[j].emplace_back(xyz_sigma[0]);
+                                gammas[gamma_index].daughter_reco_sp_y_sigma[j].emplace_back(xyz_sigma[4]);
+                                gammas[gamma_index].daughter_reco_sp_z_sigma[j].emplace_back(xyz_sigma[8]);
+                                gammas[gamma_index].daughter_reco_sp_chisq[j].emplace_back(pointsList[i]->Chisq());
 
-                                mGammas[gamma_index].daughter_reco_peak_time[j].emplace_back(hit->PeakTime());
-                                mGammas[gamma_index].daughter_reco_peak_time_sigma[j].emplace_back(hit->SigmaPeakTime());
-                                mGammas[gamma_index].daughter_reco_rms[j].emplace_back(hit->RMS());
-                                mGammas[gamma_index].daughter_reco_peak_amplitude[j].emplace_back(hit->PeakAmplitude());
-                                mGammas[gamma_index].daughter_reco_peak_amplitude_sigma[j].emplace_back(hit->SigmaPeakAmplitude());
-                                mGammas[gamma_index].daughter_reco_summed_adc[j].emplace_back(hit->SummedADC());
+                                gammas[gamma_index].daughter_reco_peak_time[j].emplace_back(hit->PeakTime());
+                                gammas[gamma_index].daughter_reco_peak_time_sigma[j].emplace_back(hit->SigmaPeakTime());
+                                gammas[gamma_index].daughter_reco_rms[j].emplace_back(hit->RMS());
+                                gammas[gamma_index].daughter_reco_peak_amplitude[j].emplace_back(hit->PeakAmplitude());
+                                gammas[gamma_index].daughter_reco_peak_amplitude_sigma[j].emplace_back(hit->SigmaPeakAmplitude());
+                                gammas[gamma_index].daughter_reco_summed_adc[j].emplace_back(hit->SummedADC());
                             }
                         }
                     }
                 }
                 if (space_point) {
-                    mGammas[mGammaMap[track_id]].num_reco_points += 1;
+                    gammas[gamma_map[track_id]].num_reco_points += 1;
                 }
             }
-            for (size_t i = 0; i < mGammas.size(); i++)
+            for (size_t i = 0; i < gammas.size(); i++)
             {
-                mGamma = mGammas[i];
+                mGamma = gammas[i];
                 mGammaTree->Fill();
             }
-            analyzeEvent();
-        }
-    }
-
-    void GammaTable::analyzeEvent()
-    {
-        for(size_t i = 0; i < mGammas.size(); i++)
-        {
-            bool energy_exists = false;
-            for (size_t j = 0; j < mGammaStatistics.energy.size(); j++)
+            GammaStatistics gamma_statistics;
+            for(size_t i = 0; i < mGammas.size(); i++)
             {
-                if (mGammaStatistics.energy[j] == mGammas[i].energy)
+                bool energy_exists = false;
+                for (size_t j = 0; j < gamma_statistics.energy.size(); j++)
                 {
+                    if (gamma_statistics.energy[j] == mGammas[i].energy)
+                    {
+                        if (mGammas[i].num_edep_points > 0) {
+                            gamma_statistics.num_gammas_mc[j] += 1;
+                        }
+                        if (mGammas[i].num_reco_points > 0) {
+                            gamma_statistics.num_gammas_reco[j] += 1;
+                        }
+                        energy_exists = true;
+                    }
+                }
+                if (!energy_exists)
+                {
+                    gamma_statistics.energy.emplace_back(mGammas[i].energy);
                     if (mGammas[i].num_edep_points > 0) {
-                        mGammaStatistics.num_gammas_mc[j] += 1;
+                        gamma_statistics.num_gammas_mc.emplace_back(1);
+                    }
+                    else {
+                        gamma_statistics.num_gammas_mc.emplace_back(0);
                     }
                     if (mGammas[i].num_reco_points > 0) {
-                        mGammaStatistics.num_gammas_reco[j] += 1;
+                        gamma_statistics.num_gammas_reco.emplace_back(1);
                     }
-                    energy_exists = true;
+                    else {
+                        gamma_statistics.num_gammas_reco.emplace_back(0);
+                    }
                 }
             }
-            if (!energy_exists)
-            {
-                mGammaStatistics.energy.emplace_back(mGammas[i].energy);
-                if (mGammas[i].num_edep_points > 0) {
-                    mGammaStatistics.num_gammas_mc.emplace_back(1);
-                }
-                else {
-                    mGammaStatistics.num_gammas_mc.emplace_back(0);
-                }
-                if (mGammas[i].num_reco_points > 0) {
-                    mGammaStatistics.num_gammas_reco.emplace_back(1);
-                }
-                else {
-                    mGammaStatistics.num_gammas_reco.emplace_back(0);
-                }
-            }
+            gamma_statistics.total_num_gammas = mGammas.size();
+            mGammaStatistics = gamma_statistics;
+            mGammaStatisticsTree->Fill();
         }
-        mGammaStatistics.total_num_gammas = mGammas.size();
-        mGammaStatisticsTree->Fill();
     }
 }
