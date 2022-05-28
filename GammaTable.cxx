@@ -21,6 +21,9 @@ namespace neutron
         mGammaTree->Branch("end_x", &mGamma.end_x);
         mGammaTree->Branch("end_y", &mGamma.end_y);
         mGammaTree->Branch("end_z", &mGamma.end_z);
+        mGammaTree->Branch("gamma_x", &mGamma.gamma_x);
+        mGammaTree->Branch("gamma_y", &mGamma.gamma_y);
+        mGammaTree->Branch("gamma_z", &mGamma.gamma_z);
         mGammaTree->Branch("daughter_ids", &mGamma.daughter_ids);
         mGammaTree->Branch("daughter_level", &mGamma.daughter_level);
         mGammaTree->Branch("daughter_energy", &mGamma.daughter_energy);
@@ -112,6 +115,12 @@ namespace neutron
                                     particle.EndX(), particle.EndY(), particle.EndZ()
                                 )
                             );
+                            for(size_t k = 0; k < particle.NumberTrajectoryPoints(); k++)
+                            {
+                                gammas[-1].gamma_x.emplace_back(particle.Vx(k));
+                                gammas[-1].gamma_y.emplace_back(particle.Vy(k));
+                                gammas[-1].gamma_z.emplace_back(particle.Vz(k));
+                            }
                             gamma_map[particle.TrackId()] = gammas.size()-1;
                         }
                     }

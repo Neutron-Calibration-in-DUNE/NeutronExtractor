@@ -57,6 +57,9 @@ namespace neutron
         Double_t end_x = 0;
         Double_t end_y = 0;
         Double_t end_z = 0;
+        std::vector<Double_t> gamma_x = {};
+        std::vector<Double_t> gamma_y = {};
+        std::vector<Double_t> gamma_z = {};
         std::vector<Int_t> daughter_ids = {};
         std::vector<Int_t> daughter_level = {};
         std::vector<Double_t> daughter_energy = {};
