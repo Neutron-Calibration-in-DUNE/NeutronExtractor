@@ -117,9 +117,9 @@ namespace neutron
                             );
                             for(size_t k = 0; k < particle.NumberTrajectoryPoints(); k++)
                             {
-                                gammas[-1].gamma_x.emplace_back(particle.Vx(k));
-                                gammas[-1].gamma_y.emplace_back(particle.Vy(k));
-                                gammas[-1].gamma_z.emplace_back(particle.Vz(k));
+                                gammas.back().gamma_x.emplace_back(particle.Vx(k));
+                                gammas.back().gamma_y.emplace_back(particle.Vy(k));
+                                gammas.back().gamma_z.emplace_back(particle.Vz(k));
                             }
                             gamma_map[particle.TrackId()] = gammas.size()-1;
                         }
