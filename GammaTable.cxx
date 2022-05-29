@@ -51,12 +51,15 @@ namespace neutron
         mGammaTree->Branch("daughter_reco_peak_amplitude", &mGamma.daughter_reco_peak_amplitude);
         mGammaTree->Branch("daughter_reco_peak_amplitude_sigma", &mGamma.daughter_reco_peak_amplitude_sigma);
         mGammaTree->Branch("daughter_reco_summed_adc", &mGamma.daughter_reco_summed_adc);
+        mGammaTree->Branch("daughter_reco_view", &mGamma.daughter_reco_view);
 
         mGammaStatisticsTree = mTFileService->make<TTree>("gamma_statistics", "gamma_statistics");
         mGammaStatisticsTree->Branch("total_num_gammas", &mGammaStatistics.total_num_gammas);
         mGammaStatisticsTree->Branch("energy", &mGammaStatistics.energy);
         mGammaStatisticsTree->Branch("num_gammas_mc", &mGammaStatistics.num_gammas_mc);
         mGammaStatisticsTree->Branch("num_gammas_reco", &mGammaStatistics.num_gammas_reco);
+        mGammaStatisticsTree->Branch("num_mc_points", &mGammaStatistics.num_mc_points);
+        mGammaStatisticsTree->Branch("num_reco_points", &mGammaStatistics.num_reco_points);
     }
 
     GammaTable::~GammaTable()
@@ -159,6 +162,7 @@ namespace neutron
                             gammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
                             gammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
                             gammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
+                            gammas[i].daughter_reco_view.emplace_back(std::vector<Int_t>());
                             gamma_map[particle.TrackId()] = i;
                         }
                         for (size_t j = 0; j < gammas[i].daughter_ids.size(); j++)
@@ -193,6 +197,7 @@ namespace neutron
                                 gammas[i].daughter_reco_peak_amplitude.emplace_back(std::vector<Double_t>());
                                 gammas[i].daughter_reco_peak_amplitude_sigma.emplace_back(std::vector<Double_t>());
                                 gammas[i].daughter_reco_summed_adc.emplace_back(std::vector<Double_t>());
+                                gammas[i].daughter_reco_view.emplace_back(std::vector<Int_t>());
                                 gamma_map[particle.TrackId()] = i;
                             }
                         }
@@ -262,6 +267,7 @@ namespace neutron
                                 gammas[gamma_index].daughter_reco_peak_amplitude[j].emplace_back(hit->PeakAmplitude());
                                 gammas[gamma_index].daughter_reco_peak_amplitude_sigma[j].emplace_back(hit->SigmaPeakAmplitude());
                                 gammas[gamma_index].daughter_reco_summed_adc[j].emplace_back(hit->SummedADC());
+                                gammas[gamma_index].daughter_reco_view[j].emplace_back(hit->View());
                             }
                         }
                     }
@@ -285,9 +291,11 @@ namespace neutron
                     {
                         if (gammas[i].num_edep_points > 0) {
                             gamma_statistics.num_gammas_mc[j] += 1;
+                            gamma_statistics.num_mc_points[j].emplace_back(gammas[i].num_edep_points);
                         }
                         if (gammas[i].num_reco_points > 0) {
                             gamma_statistics.num_gammas_reco[j] += 1;
+                            gamma_statistics.num_reco_points[j].emplace_back(gammas[i].num_reco_points);
                         }
                         energy_exists = true;
                     }
@@ -297,15 +305,19 @@ namespace neutron
                     gamma_statistics.energy.emplace_back(gammas[i].energy);
                     if (gammas[i].num_edep_points > 0) {
                         gamma_statistics.num_gammas_mc.emplace_back(1);
+                        gamma_statistics.num_mc_points.emplace_back(std::vector<Int_t>({gammas[i].num_edep_points}));
                     }
                     else {
                         gamma_statistics.num_gammas_mc.emplace_back(0);
+                        gamma_statistics.num_mc_points.emplace_back(std::vector<Int_t>({gammas[i].num_edep_points}));
                     }
                     if (gammas[i].num_reco_points > 0) {
                         gamma_statistics.num_gammas_reco.emplace_back(1);
+                        gamma_statistics.num_reco_points.emplace_back(std::vector<Int_t>({gammas[i].num_reco_points}));
                     }
                     else {
                         gamma_statistics.num_gammas_reco.emplace_back(0);
+                        gamma_statistics.num_reco_points.emplace_back(std::vector<Int_t>({gammas[i].num_reco_points}));
                     }
                 }
             }

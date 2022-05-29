@@ -89,6 +89,7 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_peak_amplitude = {};
         std::vector<std::vector<Double_t>> daughter_reco_peak_amplitude_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_summed_adc = {};
+        std::vector<std::vector<Int_t>> daughter_reco_view = {};
 
         Gamma(){}
         Gamma(
@@ -108,6 +109,8 @@ namespace neutron
         std::vector<Double_t> energy = {};
         std::vector<Int_t> num_gammas_mc = {};
         std::vector<Int_t> num_gammas_reco = {};
+        std::vector<std::vector<Int_t>> num_mc_points = {};
+        std::vector<std::vector<Int_t>> num_reco_points = {};
     };
 
     class GammaTable
