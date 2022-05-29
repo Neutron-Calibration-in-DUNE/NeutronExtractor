@@ -291,9 +291,9 @@ namespace neutron
             {
                 mGamma = gammas[i];
                 // find the extent for each gamma
-                for (size_t j = 0; j < gammas[i].num_reco_points; j++)
+                for (auto j = 0; j < gammas[i].num_reco_points; j++)
                 {
-                    for (size_t k = 0; k < gammas[i].num_reco_points; k++)
+                    for (auto k = 0; k < gammas[i].num_reco_points; k++)
                     {
                         Double_t distance = EuclideanDistance(
                             gammas[i].daughter_reco_sp_x[j],gammas[i].daughter_reco_sp_y[j],gammas[i].daughter_reco_sp_z[j],
