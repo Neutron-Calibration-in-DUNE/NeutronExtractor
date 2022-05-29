@@ -291,13 +291,13 @@ namespace neutron
             {
                 mGamma = gammas[i];
                 // find the extent for each gamma
-                for (auto j = 0; j < gammas[i].daughter_reco_sp_x.size(); j++)
+                for (size_t j = 0; j < gammas[i].daughter_reco_sp_x.size(); j++)
                 {
-                    for (auto k = 0; k < gammas[i].daughter_reco_sp_x.size(); k++)
+                    for (size_t k = 0; k < gammas[i].daughter_reco_sp_x.size(); k++)
                     {
-                        for (auto l = 0; l < gammas[i].daughter_reco_sp_x[j].size(); l++)
+                        for (size_t l = 0; l < gammas[i].daughter_reco_sp_x[j].size(); l++)
                         {
-                            for (auto m = 0; m < gammas[i].daughter_reco_sp_x[k].size(); m++)
+                            for (size_t m = 0; m < gammas[i].daughter_reco_sp_x[k].size(); m++)
                             {
                                 Double_t distance = EuclideanDistance(
                                     gammas[i].daughter_reco_sp_x[j][l],gammas[i].daughter_reco_sp_y[j][l],gammas[i].daughter_reco_sp_z[j][l],
