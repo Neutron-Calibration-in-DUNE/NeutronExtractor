@@ -60,6 +60,7 @@ namespace neutron
         mGammaStatisticsTree->Branch("num_gammas_reco", &mGammaStatistics.num_gammas_reco);
         mGammaStatisticsTree->Branch("num_mc_points", &mGammaStatistics.num_mc_points);
         mGammaStatisticsTree->Branch("num_reco_points", &mGammaStatistics.num_reco_points);
+        mGammaStatisticsTree->Branch("reco_extents", &mGammaStatistics.reco_extents);
     }
 
     GammaTable::~GammaTable()
@@ -320,6 +321,7 @@ namespace neutron
                         if (gammas[i].num_reco_points > 0) {
                             gamma_statistics.num_gammas_reco[j] += 1;
                             gamma_statistics.num_reco_points[j].emplace_back(gammas[i].num_reco_points);
+                            gamma_statistics.reco_extents[j].emplace_back(gammas[i].daughter_reco_extent);
                         }
                         energy_exists = true;
                     }
@@ -338,10 +340,12 @@ namespace neutron
                     if (gammas[i].num_reco_points > 0) {
                         gamma_statistics.num_gammas_reco.emplace_back(1);
                         gamma_statistics.num_reco_points.emplace_back(std::vector<Int_t>({gammas[i].num_reco_points}));
+                        gamma_statistics.reco_extents[j].emplace_back(std::vector<Double_t>({gammas[i].daughter_reco_extent}));
                     }
                     else {
                         gamma_statistics.num_gammas_reco.emplace_back(0);
                         gamma_statistics.num_reco_points.emplace_back(std::vector<Int_t>({gammas[i].num_reco_points}));
+                        gamma_statistics.reco_extents[j].emplace_back(std::vector<Double_t>({gammas[i].daughter_reco_extent}));
                     }
                 }
             }

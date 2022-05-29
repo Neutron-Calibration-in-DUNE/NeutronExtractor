@@ -81,7 +81,7 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_sp_y_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_z_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_chisq = {};
-        std::vector<Double_t> daughter_reco_extent = 0;
+        std::vector<Double_t> daughter_reco_extent = 0.0;
         Int_t num_reco_points = 0;
 
         std::vector<std::vector<Double_t>> daughter_reco_peak_time = {};
@@ -112,6 +112,7 @@ namespace neutron
         std::vector<Int_t> num_gammas_reco = {};
         std::vector<std::vector<Int_t>> num_mc_points = {};
         std::vector<std::vector<Int_t>> num_reco_points = {};
+        std::vector<std::vector<Double_t>> reco_extents = {};
     };
 
     class GammaTable
