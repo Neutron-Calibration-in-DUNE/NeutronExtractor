@@ -340,12 +340,12 @@ namespace neutron
                     if (gammas[i].num_reco_points > 0) {
                         gamma_statistics.num_gammas_reco.emplace_back(1);
                         gamma_statistics.num_reco_points.emplace_back(std::vector<Int_t>({gammas[i].num_reco_points}));
-                        gamma_statistics.reco_extents[j].emplace_back(std::vector<Double_t>({gammas[i].daughter_reco_extent}));
+                        gamma_statistics.reco_extents.emplace_back(std::vector<Double_t>({gammas[i].daughter_reco_extent}));
                     }
                     else {
                         gamma_statistics.num_gammas_reco.emplace_back(0);
                         gamma_statistics.num_reco_points.emplace_back(std::vector<Int_t>({gammas[i].num_reco_points}));
-                        gamma_statistics.reco_extents[j].emplace_back(std::vector<Double_t>({gammas[i].daughter_reco_extent}));
+                        gamma_statistics.reco_extents.emplace_back(std::vector<Double_t>({gammas[i].daughter_reco_extent}));
                     }
                 }
             }
