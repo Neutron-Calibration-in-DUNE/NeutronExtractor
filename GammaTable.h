@@ -81,6 +81,7 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_sp_y_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_z_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_chisq = {};
+        std::vector<Double_t> daughter_reco_extent = 0;
         Int_t num_reco_points = 0;
 
         std::vector<std::vector<Double_t>> daughter_reco_peak_time = {};
@@ -126,6 +127,11 @@ namespace neutron
             const art::ValidHandle<std::vector<sim::SimChannel>>& mcChannels,
             const art::ValidHandle<std::vector<recob::SpacePoint>>& recoSpacePoints,
             const art::FindManyP<recob::Hit>& hitSpacePointAssn
+        );
+
+        Double_t EuclideanDistance(
+            Double_t x1, Double_t y1, Double_t z1, 
+            Double_t x2, Double_t y2, Double_t z2
         );
 
     private:

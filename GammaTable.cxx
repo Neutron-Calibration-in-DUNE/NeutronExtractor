@@ -65,6 +65,16 @@ namespace neutron
     GammaTable::~GammaTable()
     {}
 
+    Double_t GammaTable::EuclideanDistance(
+        Double_t x1, Double_t y1, Double_t z1, 
+        Double_t x2, Double_t y2, Double_t z2
+    )
+    {
+        return sqrt(
+            (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) + (z1 - z2)*(z1 - z2)
+        );
+    }
+
     void GammaTable::processEvent(
         detinfo::DetectorClocksData const& clockData,
         const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles,
@@ -279,6 +289,20 @@ namespace neutron
             for (size_t i = 0; i < gammas.size(); i++)
             {
                 mGamma = gammas[i];
+                // find the extent for each gamma
+                for (size_t j = 0; j < gammas[i].num_reco_points; j++)
+                {
+                    for (size_t k = 0; k < gammas[i].num_reco_points; k++)
+                    {
+                        Double_t distance = EuclideanDistance(
+                            gammas[i].daughter_reco_sp_x[j],gammas[i].daughter_reco_sp_y[j],gammas[i].daughter_reco_sp_z[j],
+                            gammas[i].daughter_reco_sp_x[k],gammas[i].daughter_reco_sp_y[k],gammas[i].daughter_reco_sp_z[k]
+                        );
+                        if (distance >= gammas[i].daughter_reco_extent) {
+                            gammas[i].daughter_reco_extent = distance;
+                        }
+                    }
+                }
                 mGammaTree->Fill();
             }
             GammaStatistics gamma_statistics;
