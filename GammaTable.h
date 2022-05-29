@@ -81,7 +81,7 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_sp_y_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_z_sigma = {};
         std::vector<std::vector<Double_t>> daughter_reco_sp_chisq = {};
-        std::vector<Double_t> daughter_reco_extent = 0.0;
+        Double_t daughter_reco_extent = 0.0;
         Int_t num_reco_points = 0;
 
         std::vector<std::vector<Double_t>> daughter_reco_peak_time = {};
