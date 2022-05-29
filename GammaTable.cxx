@@ -291,16 +291,22 @@ namespace neutron
             {
                 mGamma = gammas[i];
                 // find the extent for each gamma
-                for (auto j = 0; j < gammas[i].num_reco_points; j++)
+                for (auto j = 0; j < gammas[i].daughter_reco_sp_x.size(); j++)
                 {
-                    for (auto k = 0; k < gammas[i].num_reco_points; k++)
+                    for (auto k = 0; k < gammas[i].daughter_reco_sp_x.size(); k++)
                     {
-                        Double_t distance = EuclideanDistance(
-                            gammas[i].daughter_reco_sp_x[j],gammas[i].daughter_reco_sp_y[j],gammas[i].daughter_reco_sp_z[j],
-                            gammas[i].daughter_reco_sp_x[k],gammas[i].daughter_reco_sp_y[k],gammas[i].daughter_reco_sp_z[k]
-                        );
-                        if (distance >= gammas[i].daughter_reco_extent) {
-                            gammas[i].daughter_reco_extent = distance;
+                        for (auto l = 0; l < gammas[i].daughter_reco_sp_x[j].size(); l++)
+                        {
+                            for (auto m = 0; m < gammas[i].daughter_reco_sp_x[k].size(); m++)
+                            {
+                                Double_t distance = EuclideanDistance(
+                                    gammas[i].daughter_reco_sp_x[j][l],gammas[i].daughter_reco_sp_y[j][l],gammas[i].daughter_reco_sp_z[j][l],
+                                    gammas[i].daughter_reco_sp_x[k][m],gammas[i].daughter_reco_sp_y[k][m],gammas[i].daughter_reco_sp_z[k][m]
+                                );
+                                if (distance >= gammas[i].daughter_reco_extent) {
+                                    gammas[i].daughter_reco_extent = distance;
+                                }
+                            }
                         }
                     }
                 }
