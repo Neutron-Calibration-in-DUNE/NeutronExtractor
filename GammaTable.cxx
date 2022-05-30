@@ -331,7 +331,7 @@ namespace neutron
                                     gammas[gamma_index].reco_view1_summed_adc.emplace_back(hit->SummedADC());
                                     view1 = true;
                                 }
-                                else
+                                else if (hit->View() == 2)
                                 {
                                     gammas[gamma_index].reco_view2_peak_time.emplace_back(hit->PeakTime());
                                     gammas[gamma_index].reco_view2_peak_time_sigma.emplace_back(hit->SigmaPeakTime());
