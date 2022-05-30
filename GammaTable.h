@@ -92,6 +92,33 @@ namespace neutron
         std::vector<std::vector<Double_t>> daughter_reco_summed_adc = {};
         std::vector<std::vector<Int_t>> daughter_reco_view = {};
 
+        // specific space point info
+        std::vector<Double_t> reco_sp_x = {};
+        std::vector<Double_t> reco_sp_y = {};
+        std::vector<Double_t> reco_sp_z = {};
+        std::vector<Double_t> reco_sp_x_sigma = {};
+        std::vector<Double_t> reco_sp_y_sigma = {};
+        std::vector<Double_t> reco_sp_z_sigma = {};
+        std::vector<Double_t> reco_sp_chisq = {};
+        std::vector<Double_t> reco_view0_peak_time = {};
+        std::vector<Double_t> reco_view1_peak_time = {};
+        std::vector<Double_t> reco_view2_peak_time = {};
+        std::vector<Double_t> reco_view0_peak_time_sigma = {};
+        std::vector<Double_t> reco_view1_peak_time_sigma = {};
+        std::vector<Double_t> reco_view2_peak_time_sigma = {};
+        std::vector<Double_t> reco_view0_rms = {};
+        std::vector<Double_t> reco_view1_rms = {};
+        std::vector<Double_t> reco_view2_rms = {};
+        std::vector<Double_t> reco_view0_peak_amplitude = {};
+        std::vector<Double_t> reco_view1_peak_amplitude = {};
+        std::vector<Double_t> reco_view2_peak_amplitude = {};
+        std::vector<Double_t> reco_view0_peak_amplitude_sigma = {};
+        std::vector<Double_t> reco_view1_peak_amplitude_sigma = {};
+        std::vector<Double_t> reco_view2_peak_amplitude_sigma = {};
+        std::vector<Double_t> reco_view0_summed_adc = {};
+        std::vector<Double_t> reco_view1_summed_adc = {};
+        std::vector<Double_t> reco_view2_summed_adc = {};
+        
         Gamma(){}
         Gamma(
             Int_t track_id, Int_t neutron_id, Double_t energy,

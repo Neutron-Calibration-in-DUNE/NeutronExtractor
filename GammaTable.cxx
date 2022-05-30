@@ -53,6 +53,32 @@ namespace neutron
         mGammaTree->Branch("daughter_reco_summed_adc", &mGamma.daughter_reco_summed_adc);
         mGammaTree->Branch("daughter_reco_view", &mGamma.daughter_reco_view);
 
+        mGammaTree->Branch("reco_sp_x", &mGamma.reco_sp_x);
+        mGammaTree->Branch("reco_sp_y", &mGamma.reco_sp_y);
+        mGammaTree->Branch("reco_sp_z", &mGamma.reco_sp_z);
+        mGammaTree->Branch("reco_sp_x_sigma", &mGamma.reco_sp_x_sigma);
+        mGammaTree->Branch("reco_sp_y_sigma", &mGamma.reco_sp_y_sigma);
+        mGammaTree->Branch("reco_sp_z_sigma", &mGamma.reco_sp_z_sigma);
+        mGammaTree->Branch("reco_sp_chisq", &mGamma.reco_sp_chisq);
+        mGammaTree->Branch("reco_view0_peak_time", &mGamma.reco_view0_peak_time);
+        mGammaTree->Branch("reco_view1_peak_time", &mGamma.reco_view0_peak_time);
+        mGammaTree->Branch("reco_view2_peak_time", &mGamma.reco_view0_peak_time);
+        mGammaTree->Branch("reco_view0_peak_time_sigma", &mGamma.reco_view0_peak_time_sigma);
+        mGammaTree->Branch("reco_view1_peak_time_sigma", &mGamma.reco_view0_peak_time_sigma);
+        mGammaTree->Branch("reco_view2_peak_time_sigma", &mGamma.reco_view0_peak_time_sigma);
+        mGammaTree->Branch("reco_view0_rms", &mGamma.reco_view0_rms);
+        mGammaTree->Branch("reco_view1_rms", &mGamma.reco_view0_rms);
+        mGammaTree->Branch("reco_view2_rms", &mGamma.reco_view0_rms);
+        mGammaTree->Branch("reco_view0_peak_amplitude", &mGamma.reco_view0_peak_amplitude);
+        mGammaTree->Branch("reco_view1_peak_amplitude", &mGamma.reco_view0_peak_amplitude);
+        mGammaTree->Branch("reco_view2_peak_amplitude", &mGamma.reco_view0_peak_amplitude);
+        mGammaTree->Branch("reco_view0_peak_amplitude_sigma", &mGamma.reco_view0_peak_amplitude_sigma);
+        mGammaTree->Branch("reco_view1_peak_amplitude_sigma", &mGamma.reco_view0_peak_amplitude_sigma);
+        mGammaTree->Branch("reco_view2_peak_amplitude_sigma", &mGamma.reco_view0_peak_amplitude_sigma);
+        mGammaTree->Branch("reco_view0_summed_adc", &mGamma.reco_view0_summed_adc);
+        mGammaTree->Branch("reco_view1_summed_adc", &mGamma.reco_view0_summed_adc);
+        mGammaTree->Branch("reco_view2_summed_adc", &mGamma.reco_view0_summed_adc);
+        
         mGammaStatisticsTree = mTFileService->make<TTree>("gamma_statistics", "gamma_statistics");
         mGammaStatisticsTree->Branch("total_num_gammas", &mGammaStatistics.total_num_gammas);
         mGammaStatisticsTree->Branch("energy", &mGammaStatistics.energy);
@@ -61,6 +87,8 @@ namespace neutron
         mGammaStatisticsTree->Branch("num_mc_points", &mGammaStatistics.num_mc_points);
         mGammaStatisticsTree->Branch("num_reco_points", &mGammaStatistics.num_reco_points);
         mGammaStatisticsTree->Branch("reco_extents", &mGammaStatistics.reco_extents);
+
+
     }
 
     GammaTable::~GammaTable()
@@ -245,6 +273,9 @@ namespace neutron
             {
                 auto& spsHit = hitPandoraSPsAssn.at(i);
                 bool space_point = false;
+                bool view0 = false;
+                bool view1 = false;
+                bool view2 = false;
                 Int_t track_id;
                 for (auto hit : spsHit)
                 {  
@@ -279,12 +310,80 @@ namespace neutron
                                 gammas[gamma_index].daughter_reco_peak_amplitude_sigma[j].emplace_back(hit->SigmaPeakAmplitude());
                                 gammas[gamma_index].daughter_reco_summed_adc[j].emplace_back(hit->SummedADC());
                                 gammas[gamma_index].daughter_reco_view[j].emplace_back(hit->View());
+
+                                if (hit->View() == 0) 
+                                {
+                                    gammas[gamma_index].reco_view0_peak_time.emplace_back(hit->PeakTime());
+                                    gammas[gamma_index].reco_view0_peak_time_sigma.emplace_back(hit->SigmaPeakTime());
+                                    gammas[gamma_index].reco_view0_rms.emplace_back(hit->RMS());
+                                    gammas[gamma_index].reco_view0_peak_amplitude.emplace_back(hit->PeakAmplitude());
+                                    gammas[gamma_index].reco_view0_peak_amplitude_sigma.emplace_back(hit->SigmaPeakAmplitude());
+                                    gammas[gamma_index].reco_view0_summed_adc.emplace_back(hit->SummedADC());
+                                    view0 = true;
+                                }
+                                else if (hit->View() == 1) 
+                                {
+                                    gammas[gamma_index].reco_view1_peak_time.emplace_back(hit->PeakTime());
+                                    gammas[gamma_index].reco_view1_peak_time_sigma.emplace_back(hit->SigmaPeakTime());
+                                    gammas[gamma_index].reco_view1_rms.emplace_back(hit->RMS());
+                                    gammas[gamma_index].reco_view1_peak_amplitude.emplace_back(hit->PeakAmplitude());
+                                    gammas[gamma_index].reco_view1_peak_amplitude_sigma.emplace_back(hit->SigmaPeakAmplitude());
+                                    gammas[gamma_index].reco_view1_summed_adc.emplace_back(hit->SummedADC());
+                                    view1 = true;
+                                }
+                                else
+                                {
+                                    gammas[gamma_index].reco_view2_peak_time.emplace_back(hit->PeakTime());
+                                    gammas[gamma_index].reco_view2_peak_time_sigma.emplace_back(hit->SigmaPeakTime());
+                                    gammas[gamma_index].reco_view2_rms.emplace_back(hit->RMS());
+                                    gammas[gamma_index].reco_view2_peak_amplitude.emplace_back(hit->PeakAmplitude());
+                                    gammas[gamma_index].reco_view2_peak_amplitude_sigma.emplace_back(hit->SigmaPeakAmplitude());
+                                    gammas[gamma_index].reco_view2_summed_adc.emplace_back(hit->SummedADC());
+                                    view2 = true;
+                                }
                             }
                         }
                     }
                 }
-                if (space_point) {
+                if (space_point) 
+                {
+                    auto xyz = pointsList[i]->XYZ();
+                    auto xyz_sigma = pointsList[i]->ErrXYZ();
                     gammas[gamma_map[track_id]].num_reco_points += 1;
+                    gammas[gamma_map[track_id]].reco_sp_x.emplace_back(xyz[0]);
+                    gammas[gamma_map[track_id]].reco_sp_y.emplace_back(xyz[1]);
+                    gammas[gamma_map[track_id]].reco_sp_z.emplace_back(xyz[2]);
+                    gammas[gamma_map[track_id]].reco_sp_x_sigma.emplace_back(xyz_sigma[0]);
+                    gammas[gamma_map[track_id]].reco_sp_y_sigma.emplace_back(xyz_sigma[4]);
+                    gammas[gamma_map[track_id]].reco_sp_z_sigma.emplace_back(xyz_sigma[8]);
+                    gammas[gamma_map[track_id]].reco_sp_chisq.emplace_back(pointsList[i]->Chisq());
+                    if (view0 == false)
+                    {
+                        gammas[gamma_map[track_id]].reco_view0_peak_time.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view0_peak_time_sigma.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view0_rms.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view0_peak_amplitude.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view0_peak_amplitude_sigma.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view0_summed_adc.emplace_back(0);
+                    }
+                    if (view1 == false)
+                    {
+                        gammas[gamma_map[track_id]].reco_view1_peak_time.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view1_peak_time_sigma.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view1_rms.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view1_peak_amplitude.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view1_peak_amplitude_sigma.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view1_summed_adc.emplace_back(0);
+                    }
+                    if (view2 == false)
+                    {
+                        gammas[gamma_map[track_id]].reco_view2_peak_time.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view2_peak_time_sigma.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view2_rms.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view2_peak_amplitude.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view2_peak_amplitude_sigma.emplace_back(0);
+                        gammas[gamma_map[track_id]].reco_view2_summed_adc.emplace_back(0);
+                    }
                 }
             }
             for (size_t i = 0; i < gammas.size(); i++)
