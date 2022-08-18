@@ -32,6 +32,7 @@ namespace neutron
 
     private:
         Parameters mParameters;
+        DetectorGeometry mDetectorGeometry;
         ParticleMap mParticleMap;
         SingleNeutronCaptures mSingleNeutronCaptures;
     };
@@ -46,6 +47,7 @@ namespace neutron
     // begin job
     void NeutronExtractor::beginJob()
     {
+        mDetectorGeometry->FillTTree();
     }
 
     // analyze function
