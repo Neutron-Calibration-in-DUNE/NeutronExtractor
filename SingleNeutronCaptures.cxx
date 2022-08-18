@@ -11,7 +11,7 @@ namespace neutron
 {
     SingleNeutronCaptures::SingleNeutronCaptures()
     {
-        mSingleNeutronCaptureTTree = sTFileService->make<TTree>("single_neutron_capture", "single_neutron_capture");
+        mSingleNeutronCaptureTTree = mTFileService->make<TTree>("single_neutron_capture", "single_neutron_capture");
 
         mSingleNeutronCaptureTTree->Branch("track_id", &mSingleNeutronCapture.track_id);
         mSingleNeutronCaptureTTree->Branch("parent_track_id", &mSingleNeutronCapture.parent_track_id);
@@ -53,7 +53,7 @@ namespace neutron
                 if (particle.PdgCode() == 2112)
                 {
                     // set basic quantities
-                    ResetSingleNeutronCapture(particle.NumberTrajectoryPoints);
+                    ResetSingleNeutronCapture(particle.NumberTrajectoryPoints());
                     mSingleNeutronCapture.track_id = particle.TrackId();
                     mSingleNeutronCapture.parent_track_id = particle.Mother();
                     mSingleNeutronCapture.parent_pdg = particleMap.GetParticleParentPDG(particle.TrackId());
