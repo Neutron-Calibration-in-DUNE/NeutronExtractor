@@ -68,7 +68,7 @@ namespace neutron
                     // get all trajectory info
                     for (size_t ii = 0; ii < particle.NumberTrajectoryPoints(); ii++)
                     {
-                        mSingleNeutronCapture.mc_t[ii] = particle.Vt(ii);
+                        mSingleNeutronCapture.mc_t[ii] = particle.T(ii);
                         mSingleNeutronCapture.mc_x[ii] = particle.Vx(ii);
                         mSingleNeutronCapture.mc_y[ii] = particle.Vy(ii);
                         mSingleNeutronCapture.mc_z[ii] = particle.Vz(ii);
