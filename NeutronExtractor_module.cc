@@ -32,7 +32,7 @@ namespace neutron
 
     private:
         Parameters mParameters;
-        DetectorGeometry mDetectorGeometry;
+        DetectorGeometry* mDetectorGeometry = DetectorGeometry::getInstance("NeutronExtractor");
         ParticleMap mParticleMap;
         SingleNeutronCaptures mSingleNeutronCaptures;
     };

@@ -52,7 +52,6 @@ namespace neutron
     : sName(name)
     {
         sGeometryCore = lar::providerFrom<geo::Geometry>();
-        sGeometryTTree = sTFileService->make<TTree>("detector_geometry", "detector_geometry");
         auto const clock_data = 
             art::ServiceHandle<detinfo::DetectorClocksService const>()->DataForJob();
         sTriggerOffset = trigger_offset(clock_data);
@@ -149,6 +148,7 @@ namespace neutron
     void DetectorGeometry::FillTTree()
     {
         // add geometry info
+        sGeometryTTree = sTFileService->make<TTree>("detector_geometry", "detector_geometry");
         sGeometryTTree->Branch("world_name", &sWorldName);
         sGeometryTTree->Branch("world_box_ranges", &(sWorldBox), "x_min/D:x_max/D:y_min/D:y_max/D:z_min/D:z_max/D");
         sGeometryTTree->Branch("detector_name", &sDetectorName);
