@@ -92,7 +92,10 @@ namespace neutron
                     else {
                         singleNeutronCapture.capture_tpc = false;
                     }
-                    if (ending_volume.material_name == "LAr") {
+                    if (
+                        ending_volume.volume_type == 2 && 
+                        ending_volume.material_name == "LAr"
+                    ) {
                         singleNeutronCapture.capture_tpc_lar = true;
                     }
                     else {
