@@ -75,7 +75,7 @@ namespace neutron
                         mSingleNeutronCapture.mc_energy[ii] = particle.E(ii);
                     }
 
-                    for (size_t jj = 0; jj < particle.NumberDaughters(); jj++)
+                    for (Int_t jj = 0; jj < particle.NumberDaughters(); jj++)
                     {
                         mSingleNeutronCapture.mc_daughter_track_ids.emplace_back(particle.Daughter(jj));
                         mSingleNeutronCapture.mc_daughter_pdgs.emplace_back(particleMap.GetParticlePDG(particle.Daughter(jj)));
