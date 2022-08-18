@@ -41,8 +41,10 @@ namespace neutron
         std::vector<std::string> edep_volume;
         std::vector<std::string> edep_material;
         std::vector<Int_t> edep_track_id;
-        std::vector<Int_t> edep_track_pdg;
+        std::vector<Int_t> edep_pdg;
 
+        SingleNeutronCapture()
+        {}
         SingleNeutronCapture(Int_t number_trajectory_points)
         {
             mc_t.resize(number_trajectory_points);
@@ -75,5 +77,6 @@ namespace neutron
 
         SingleNeutronCapture mSingleNeutronCapture;
         std::vector<SingleNeutronCapture> mSingleNeutronCaptureList;
+        std::map<Int_t, Int_t> mSingleNeutronCaptureMap;
     };
 }
