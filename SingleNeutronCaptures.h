@@ -38,7 +38,7 @@ namespace neutron
         std::vector<Double_t> edep_y;
         std::vector<Double_t> edep_z;
         std::vector<Double_t> edep_energy;
-        std::vector<std::string> edep_material;
+        std::vector<std::string> edep_volume;
         std::vector<std::string> edep_material;
         std::vector<Int_t> edep_track_id;
         std::vector<Int_t> edep_track_pdg;
