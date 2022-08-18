@@ -121,15 +121,15 @@ namespace neutron
         int GetNumberOfTPCs()           { return sNumberOfTPCs; }
 
         std::vector<std::string> GetTPCNames()      { return sTPCNames; }
-        std::vector<double> GetTPCMasses();         { return sTPCMasses; }
+        std::vector<double> GetTPCMasses()          { return sTPCMasses; }
         std::vector<double> GetTPCDriftDistances()  { return sTPCDriftDistances; }
         BoundingBox GetTotalTPCBox()                { return sTotalTPCBox; }
         BoundingBox GetTotalActiveTPCBox()          { return sTotalActiveTPCBox; }
         double GetTotalTPCMass()                    { return sTotalTPCMass; }
 
-        std::string GetTPCName(const size_t i)      
-        BoundingBox GetTPCBox(const size_t i)       
-        BoundingBox GetActiveTPCBox(const size_t i)
+        std::string GetTPCName(const size_t i);      
+        BoundingBox GetTPCBox(const size_t i);       
+        BoundingBox GetActiveTPCBox(const size_t i);
         double GetTPCMass(const size_t i);     
         double GetTPCDriftDistance(const size_t i);
         

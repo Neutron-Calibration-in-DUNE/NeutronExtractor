@@ -11,7 +11,7 @@ namespace neutron
 {
     ParticleMap::ParticleMap()
     {
-        mParticleMapTTree = sTFileService->make<TTree>("particle_map", "particle_map");
+        mParticleMapTTree = mTFileService->make<TTree>("particle_map", "particle_map");
         mParticleMapTTree->Branch("pdg", &mParticlePDG);
         mParticleMapTTree->Branch("parent_pdg", &mParticleParentPDG);
         mParticleMapTTree->Branch("ancestor_pdg", &mParticleAncestorPDG);
@@ -52,7 +52,7 @@ namespace neutron
             for (auto particle : *mcParticles)
             {
                 mParticlePDG[particle.TrackId()] = particle.PdgCode();
-                mParticlePDG[particle.Mother()] = mParticlePDG[particle.Mother()]
+                mParticlePDG[particle.Mother()] = mParticlePDG[particle.Mother()];
                 mParticleParentTrackID[particle.TrackId()] = particle.Mother();
 
                 if (particle.Mother() == 0) 
