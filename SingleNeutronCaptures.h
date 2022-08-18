@@ -16,13 +16,17 @@ namespace neutron
         Int_t track_id;
         Int_t parent_track_id;
         Int_t parent_pdg;
+        std::string mc_creation_process;
+        std::string mc_ending_process;
 
         std::vector<Double_t> mc_t;
         std::vector<Double_t> mc_x;
         std::vector<Double_t> mc_y;
         std::vector<Double_t> mc_z;
         std::vector<Double_t> mc_energy;
-        std::vector<std::string> mc_process;
+
+        std::vector<Int_t> mc_daughter_track_ids;
+        std::vector<Int_t> mc_daughter_pdgs;
 
         std::vector<Int_t> gamma_indices;
     };
