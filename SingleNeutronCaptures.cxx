@@ -132,7 +132,7 @@ namespace neutron
                     mSingleNeutronCaptureList[neutronIndex].edep_z.emplace_back(energyDeposit.StartZ());
                     mSingleNeutronCaptureList[neutronIndex].edep_energy.emplace_back(energyDeposit.E());
                     DetectorVolume volume = mGeometry->getVolume(
-                        particle.Vx(ii), particle.Vy(ii), particle.Vz(ii)
+                        energyDeposit.StartX(ii), energyDeposit.StartY(ii), energyDeposit.StartZ(ii)
                     );
                     mSingleNeutronCaptureList[neutronIndex].edep_volume.emplace_back(volume.volume_name);
                     mSingleNeutronCaptureList[neutronIndex].edep_material.emplace_back(volume.material_name);
