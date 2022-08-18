@@ -13,76 +13,115 @@ namespace neutron
     {
         mSingleNeutronCaptureTTree = mTFileService->make<TTree>("single_neutron_capture", "single_neutron_capture");
 
+        mSingleNeutronCaptureTTree->Branch("event", &mSingleNeutronCapture.event);
         mSingleNeutronCaptureTTree->Branch("track_id", &mSingleNeutronCapture.track_id);
         mSingleNeutronCaptureTTree->Branch("parent_track_id", &mSingleNeutronCapture.parent_track_id);
         mSingleNeutronCaptureTTree->Branch("parent_pdg", &mSingleNeutronCapture.parent_pdg);
         mSingleNeutronCaptureTTree->Branch("mc_creation_process", &mSingleNeutronCapture.mc_creation_process);
         mSingleNeutronCaptureTTree->Branch("mc_ending_process", &mSingleNeutronCapture.mc_ending_process);
+        mSingleNeutronCaptureTTree->Branch("capture_tpc", &mSingleNeutronCapture.capture_tpc);
+        mSingleNeutronCaptureTTree->Branch("capture_tpc_lar", &mSingleNeutronCapture.capture_tpc_lar);
 
         mSingleNeutronCaptureTTree->Branch("mc_t", &mSingleNeutronCapture.mc_t);
         mSingleNeutronCaptureTTree->Branch("mc_x", &mSingleNeutronCapture.mc_x);
         mSingleNeutronCaptureTTree->Branch("mc_y", &mSingleNeutronCapture.mc_y);
         mSingleNeutronCaptureTTree->Branch("mc_z", &mSingleNeutronCapture.mc_z);
         mSingleNeutronCaptureTTree->Branch("mc_energy", &mSingleNeutronCapture.mc_energy);
+        mSingleNeutronCaptureTTree->Branch("mc_volume", &mSingleNeutronCapture.mc_volume);
+        mSingleNeutronCaptureTTree->Branch("mc_material", &mSingleNeutronCapture.mc_material);
         
         mSingleNeutronCaptureTTree->Branch("mc_daughter_track_ids", &mSingleNeutronCapture.mc_daughter_track_ids);
         mSingleNeutronCaptureTTree->Branch("mc_daughter_pdgs", &mSingleNeutronCapture.mc_daughter_pdgs);
+
+        mSingleNeutronCaptureTTree->Branch("edep_x", &mSingleNeutronCapture.edep_x);
+        mSingleNeutronCaptureTTree->Branch("edep_y", &mSingleNeutronCapture.edep_y);
+        mSingleNeutronCaptureTTree->Branch("edep_z", &mSingleNeutronCapture.edep_z);
+        mSingleNeutronCaptureTTree->Branch("edep_energy", &mSingleNeutronCapture.edep_energy);
+        mSingleNeutronCaptureTTree->Branch("edep_volume", &mSingleNeutronCapture.edep_volume);
+        mSingleNeutronCaptureTTree->Branch("edep_material", &mSingleNeutronCapture.edep_material);
+        mSingleNeutronCaptureTTree->Branch("edep_track_id", &mSingleNeutronCapture.edep_track_id);
+        mSingleNeutronCaptureTTree->Branch("edep_pdg", &mSingleNeutronCapture.edep_pdg);
     }
 
     SingleNeutronCaptures::~SingleNeutronCaptures()
     {
     }
 
-    void SingleNeutronCaptures::ResetSingleNeutronCapture(Int_t number_trajectory_points)
-    {
-        mSingleNeutronCapture.mc_t.resize(number_trajectory_points);
-        mSingleNeutronCapture.mc_x.resize(number_trajectory_points);
-        mSingleNeutronCapture.mc_y.resize(number_trajectory_points);
-        mSingleNeutronCapture.mc_z.resize(number_trajectory_points);
-        mSingleNeutronCapture.mc_energy.resize(number_trajectory_points);
-
-        mSingleNeutronCapture.mc_daughter_track_ids.clear();
-        mSingleNeutronCapture.mc_daughter_pdgs.clear();
-        mSingleNeutronCapture.gamma_indices.clear();
-    }
-
     void SingleNeutronCaptures::processEvent(
         ParticleMap particleMap,
-        const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles
+        const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles,
+        const art::ValidHandle<std::vector<sim::SimEnergyDeposit>>& mcEnergyDeposits
     )
     {
         if (mcParticles.isValid())
         {
+            mSingleNeutronCaptureList.clear();
             for (auto particle : *mcParticles)
             {
                 if (particle.PdgCode() == 2112)
                 {
                     // set basic quantities
-                    ResetSingleNeutronCapture(particle.NumberTrajectoryPoints());
-                    mSingleNeutronCapture.track_id = particle.TrackId();
-                    mSingleNeutronCapture.parent_track_id = particle.Mother();
-                    mSingleNeutronCapture.parent_pdg = particleMap.GetParticleParentPDG(particle.TrackId());
-                    mSingleNeutronCapture.mc_creation_process = particle.Process();
-                    mSingleNeutronCapture.mc_ending_process = particle.EndProcess();
+                    SingleNeutronCapture singleNeutronCapture(particle.NumberTrajectoryPoints());
+                    singleNeutronCapture.track_id = particle.TrackId();
+                    singleNeutronCapture.parent_track_id = particle.Mother();
+                    singleNeutronCapture.parent_pdg = particleMap.GetParticleParentPDG(particle.TrackId());
+                    singleNeutronCapture.mc_creation_process = particle.Process();
+                    singleNeutronCapture.mc_ending_process = particle.EndProcess();
                     
                     // get all trajectory info
                     for (size_t ii = 0; ii < particle.NumberTrajectoryPoints(); ii++)
                     {
-                        mSingleNeutronCapture.mc_t[ii] = particle.T(ii);
-                        mSingleNeutronCapture.mc_x[ii] = particle.Vx(ii);
-                        mSingleNeutronCapture.mc_y[ii] = particle.Vy(ii);
-                        mSingleNeutronCapture.mc_z[ii] = particle.Vz(ii);
-                        mSingleNeutronCapture.mc_energy[ii] = particle.E(ii);
+                        singleNeutronCapture.mc_t[ii] = particle.T(ii);
+                        singleNeutronCapture.mc_x[ii] = particle.Vx(ii);
+                        singleNeutronCapture.mc_y[ii] = particle.Vy(ii);
+                        singleNeutronCapture.mc_z[ii] = particle.Vz(ii);
+                        singleNeutronCapture.mc_energy[ii] = particle.E(ii);
+
+                        DetectorVolume volume = mGeometry->getVolume(
+                            particle.EndX(), particle.EndY(), particle.EndZ()
+                        );
+                        singleNeutronCapture.mc_volume[ii] = volume.volume_name;
+                        singleNeutronCapture.mc_material[ii] = volume.material_name;
+                    }
+                    DetectorVolume ending_volume = mGeometry->getVolume(
+                        particle.EndX(), particle.EndY(), particle.EndZ()
+                    );
+                    if (ending_volume.volume_type == 2) {
+                        singleNeutronCapture.capture_tpc = true;
+                    }
+                    else {
+                        singleNeutronCapture.capture_tpc = false;
+                    }
+                    if (ending_volume.material_name == "LAr") {
+                        singleNeutronCapture.capture_tpc_lar = true;
+                    }
+                    else {
+                        singleNeutronCapture.capture_tpc_lar = false;
                     }
 
                     for (Int_t jj = 0; jj < particle.NumberDaughters(); jj++)
                     {
-                        mSingleNeutronCapture.mc_daughter_track_ids.emplace_back(particle.Daughter(jj));
-                        mSingleNeutronCapture.mc_daughter_pdgs.emplace_back(particleMap.GetParticlePDG(particle.Daughter(jj)));
+                        singleNeutronCapture.mc_daughter_track_ids.emplace_back(particle.Daughter(jj));
+                        singleNeutronCapture.mc_daughter_pdgs.emplace_back(particleMap.GetParticlePDG(particle.Daughter(jj)));
                     }
 
-                    mSingleNeutronCaptureTTree->Fill();
+                    mSingleNeutronCaptureList.emplace_back(singleNeutronCapture);
+                    mSingleNeutronCaptureMap[particle.TrackId()] = mSingleNeutronCaptureList.size() - 1;
                 }
+                else if (particle.PdgCode() == 22)
+                {
+                    
+                }
+                else if (particle.PdgCode() == 11)
+                {
+
+                }
+            }
+
+            for (size_t ii = 0; ii < mSingleNeutronCaptureList.size(); ii++)
+            {
+                mSingleNeutronCapture = mSingleNeutronCaptureList[ii];
+                mSingleNeutronCaptureTTree->Fill();
             }
         }
     }

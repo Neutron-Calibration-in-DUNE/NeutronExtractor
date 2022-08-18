@@ -7,33 +7,52 @@
  */
 #pragma once
 #include "Core.h"
+#include "DetectorGeometry.h"
 #include "ParticleMap.h"
 
 namespace neutron
 {
     struct SingleNeutronCapture
     {
+        Int_t event;
         Int_t track_id;
         Int_t parent_track_id;
         Int_t parent_pdg;
         std::string mc_creation_process;
         std::string mc_ending_process;
+        bool capture_tpc;
+        bool capture_tpc_lar;
 
         std::vector<Double_t> mc_t;
         std::vector<Double_t> mc_x;
         std::vector<Double_t> mc_y;
         std::vector<Double_t> mc_z;
         std::vector<Double_t> mc_energy;
+        std::vector<std::string> mc_volume;
+        std::vector<std::string> mc_material;
 
         std::vector<Int_t> mc_daughter_track_ids;
         std::vector<Int_t> mc_daughter_pdgs;
 
-        std::vector<Int_t> gamma_indices;
-    };
+        std::vector<Double_t> edep_x;
+        std::vector<Double_t> edep_y;
+        std::vector<Double_t> edep_z;
+        std::vector<Double_t> edep_energy;
+        std::vector<std::string> edep_material;
+        std::vector<std::string> edep_material;
+        std::vector<Int_t> edep_track_id;
+        std::vector<Int_t> edep_track_pdg;
 
-    struct SingleNeutronCaptureGamma
-    {
-
+        SingleNeutronCapture(Int_t number_trajectory_points)
+        {
+            mc_t.resize(number_trajectory_points);
+            mc_x.resize(number_trajectory_points);
+            mc_y.resize(number_trajectory_points);
+            mc_z.resize(number_trajectory_points);
+            mc_energy.resize(number_trajectory_points);
+            mc_volume.resize(number_trajectory_points);
+            mc_material.resize(number_trajectory_points);
+        }
     };
 
     class SingleNeutronCaptures
@@ -42,16 +61,19 @@ namespace neutron
         SingleNeutronCaptures();
         ~SingleNeutronCaptures();
 
-        void ResetSingleNeutronCapture(Int_t number_trajectory_points);
-
         void processEvent(
             ParticleMap particleMap,
-            const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles
+            const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles,
+            const art::ValidHandle<std::vector<sim::SimEnergyDeposit>>& mcEnergyDeposits
         );
 
     private:
         art::ServiceHandle<art::TFileService> mTFileService;
         TTree *mSingleNeutronCaptureTTree;
+
+        DetectorGeometry* mGeometry = DetectorGeometry::getInstance("SingleNeutronCaptures");
+
         SingleNeutronCapture mSingleNeutronCapture;
+        std::vector<SingleNeutronCapture> mSingleNeutronCaptureList;
     };
 }

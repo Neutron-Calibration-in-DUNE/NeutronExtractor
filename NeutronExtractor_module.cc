@@ -77,7 +77,7 @@ namespace neutron
         {
             std::cout << "Filling Single Neutron Captures..." << std::endl;
             auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(mParameters().IonAndScintProducerLabel());
-            mSingleNeutronCaptures.processEvent(mParticleMap, mcParticles);
+            mSingleNeutronCaptures.processEvent(mParticleMap, mcParticles, mcEnergyDeposit);
         }
     }
     
