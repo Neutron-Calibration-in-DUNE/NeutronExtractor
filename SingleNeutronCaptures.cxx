@@ -53,7 +53,7 @@ namespace neutron
         const art::ValidHandle<std::vector<sim::SimEnergyDeposit>>& mcEnergyDeposits
     )
     {
-        if (mcParticles.isValid())
+        if (mcParticles.isValid() && mcEnergyDeposits.isValid())
         {
             mSingleNeutronCaptureList.clear();
             for (auto particle : *mcParticles)
@@ -78,7 +78,7 @@ namespace neutron
                         singleNeutronCapture.mc_energy[ii] = particle.E(ii);
 
                         DetectorVolume volume = mGeometry->getVolume(
-                            particle.EndX(), particle.EndY(), particle.EndZ()
+                            particle.Vx(ii), particle.Vy(ii), particle.Vz(ii)
                         );
                         singleNeutronCapture.mc_volume[ii] = volume.volume_name;
                         singleNeutronCapture.mc_material[ii] = volume.material_name;
@@ -118,6 +118,28 @@ namespace neutron
                 else if (particle.PdgCode() == 11)
                 {
 
+                }
+            }
+            for (auto energyDeposit : *mcEnergyDeposits)
+            {
+                if (particleMap.GetParticleAncestorPDG(energyDeposit.TrackID()) == 2112)
+                {
+                    Int_t neutronIndex = mSingleNeutronCaptureMap[
+                        particleMap.GetParticleAncestorTrackID(energyDeposit.TrackID())
+                    ];
+                    mSingleNeutronCaptureList[neutronIndex].edep_x.emplace_back(energyDeposit.StartX());
+                    mSingleNeutronCaptureList[neutronIndex].edep_y.emplace_back(energyDeposit.StartY());
+                    mSingleNeutronCaptureList[neutronIndex].edep_z.emplace_back(energyDeposit.StartZ());
+                    mSingleNeutronCaptureList[neutronIndex].edep_energy.emplace_back(energyDeposit.E());
+                    DetectorVolume volume = mGeometry->getVolume(
+                        particle.Vx(ii), particle.Vy(ii), particle.Vz(ii)
+                    );
+                    mSingleNeutronCaptureList[neutronIndex].edep_volume.emplace_back(volume.volume_name);
+                    mSingleNeutronCaptureList[neutronIndex].edep_material.emplace_back(volume.material_name);
+                    mSingleNeutronCaptureList[neutronIndex].edep_track_id.emplace_back(energyDeposit.TrackID());
+                    mSingleNeutronCaptureList[neutronIndex].edep_track_id.emplace_back(
+                        particleMap.GetParticlePDG(energyDeposit.TrackID())
+                    );
                 }
             }
 
