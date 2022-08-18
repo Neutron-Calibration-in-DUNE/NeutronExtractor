@@ -137,7 +137,7 @@ namespace neutron
                     mSingleNeutronCaptureList[neutronIndex].edep_volume.emplace_back(volume.volume_name);
                     mSingleNeutronCaptureList[neutronIndex].edep_material.emplace_back(volume.material_name);
                     mSingleNeutronCaptureList[neutronIndex].edep_track_id.emplace_back(energyDeposit.TrackID());
-                    mSingleNeutronCaptureList[neutronIndex].edep_track_id.emplace_back(
+                    mSingleNeutronCaptureList[neutronIndex].edep_pdg.emplace_back(
                         particleMap.GetParticlePDG(energyDeposit.TrackID())
                     );
                 }
