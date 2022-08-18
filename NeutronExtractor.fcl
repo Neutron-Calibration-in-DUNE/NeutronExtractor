@@ -9,7 +9,7 @@ NeutronExtractor:
     SimChannelProducerLabel:    "tpcrawdecoder"
     SimChannelInstanceProducerLabel:    "simpleSC"
 
-    FillNeutronCapture: true
+    FillSingleNeutronCaptures: true
 }
 
 END_PROLOG

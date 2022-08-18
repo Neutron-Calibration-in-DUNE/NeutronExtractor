@@ -57,10 +57,10 @@ namespace neutron
             fhicl::Comment("Tag of the input data product for the SimChannelInstance side of the simulation.")
         };
 
-        fhicl::Atom<bool> FillNeutronCapture
+        fhicl::Atom<bool> FillSingleNeutronCaptures
         {
-            fhicl::Name("FillNeutronCapture"),
-            fhicl::Comment("Whether to fill the neutron captures reco product.")
+            fhicl::Name("FillSingleNeutronCaptures"),
+            fhicl::Comment("Whether to fill the single neutron captures product.")
         };
     };
 
