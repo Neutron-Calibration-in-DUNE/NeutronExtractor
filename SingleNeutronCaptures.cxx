@@ -33,6 +33,8 @@ namespace neutron
         mSingleNeutronCaptureTTree->Branch("mc_daughter_track_ids", &mSingleNeutronCapture.mc_daughter_track_ids);
         mSingleNeutronCaptureTTree->Branch("mc_daughter_pdgs", &mSingleNeutronCapture.mc_daughter_pdgs);
 
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_track_ids", &mSingleNeutronCapture.mc_capture_gamma_track_ids);
+
         mSingleNeutronCaptureTTree->Branch("edep_x", &mSingleNeutronCapture.edep_x);
         mSingleNeutronCaptureTTree->Branch("edep_y", &mSingleNeutronCapture.edep_y);
         mSingleNeutronCaptureTTree->Branch("edep_z", &mSingleNeutronCapture.edep_z);
@@ -41,6 +43,8 @@ namespace neutron
         mSingleNeutronCaptureTTree->Branch("edep_material", &mSingleNeutronCapture.edep_material);
         mSingleNeutronCaptureTTree->Branch("edep_track_id", &mSingleNeutronCapture.edep_track_id);
         mSingleNeutronCaptureTTree->Branch("edep_pdg", &mSingleNeutronCapture.edep_pdg);
+        mSingleNeutronCaptureTTree->Branch("edep_capture_gamma_track_ids", &mSingleNeutronCapture.edep_capture_gamma_track_ids);
+        mSingleNeutronCaptureTTree->Branch("edep_capture_gamma_level", &mSingleNeutronCapture.edep_capture_gamma_level);
     }
 
     SingleNeutronCaptures::~SingleNeutronCaptures()
@@ -115,7 +119,15 @@ namespace neutron
                 }
                 else if (particle.PdgCode() == 22)
                 {
-                    
+                    if (
+                        particleMap.GetParticleAncestorPDG(particle.TrackId()) == 2112 &&
+                        particle.Process() == "nCapture"
+                    )
+                    {
+                        mSingleNeutronCaptureList[mSingleNeutronCaptureMap[
+                            particleMap.GetParticleAncestorTrackID(particle.TrackId())
+                        ]].mc_capture_gamma_track_ids.emplace_back(particle.TrackId());
+                    }
                 }
                 else if (particle.PdgCode() == 11)
                 {
@@ -142,6 +154,29 @@ namespace neutron
                     mSingleNeutronCaptureList[neutronIndex].edep_pdg.emplace_back(
                         particleMap.GetParticlePDG(energyDeposit.TrackID())
                     );
+                    Int_t level = 0;
+                    Int_t track_id = energyDeposit.TrackID();
+                    Int_t mother = particleMap.GetParticleParentTrackID(energyDeposit.TrackID());
+                    while (mother != 0)
+                    {
+                        level += 1;
+                        track_id = mother;
+                        for (auto gamma_id : mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_track_ids)
+                        {
+                            if (gamma_id == track_id)
+                            {
+                                mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_id.emplace_back(gamma_id);
+                                mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_level.emplace_back(level);
+                                break;
+                            }
+                        }
+                        mother = particleMap.GetParticleParentTrackID(track_id);
+                    }
+                    if (mother == 0)
+                    {
+                        mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_id.emplace_back(-1);
+                        mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_level.emplace_back(-1);
+                    }
                 }
             }
 

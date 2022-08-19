@@ -34,6 +34,8 @@ namespace neutron
         std::vector<Int_t> mc_daughter_track_ids;
         std::vector<Int_t> mc_daughter_pdgs;
 
+        std::vector<Int_t> mc_capture_gamma_track_ids;
+
         std::vector<Double_t> edep_x;
         std::vector<Double_t> edep_y;
         std::vector<Double_t> edep_z;
@@ -42,6 +44,9 @@ namespace neutron
         std::vector<std::string> edep_material;
         std::vector<Int_t> edep_track_id;
         std::vector<Int_t> edep_pdg;
+        std::vector<Int_t> edep_capture_gamma_track_id;
+        std::vector<Int_t> edep_capture_gamma_level;
+
 
         SingleNeutronCapture()
         {}
