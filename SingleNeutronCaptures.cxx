@@ -165,7 +165,7 @@ namespace neutron
                         {
                             if (gamma_id == track_id)
                             {
-                                mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_id.emplace_back(gamma_id);
+                                mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_ids.emplace_back(gamma_id);
                                 mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_level.emplace_back(level);
                                 break;
                             }
@@ -174,7 +174,7 @@ namespace neutron
                     }
                     if (mother == 0)
                     {
-                        mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_id.emplace_back(-1);
+                        mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_ids.emplace_back(-1);
                         mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_level.emplace_back(-1);
                     }
                 }
