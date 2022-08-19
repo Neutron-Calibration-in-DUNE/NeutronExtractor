@@ -135,7 +135,7 @@ namespace neutron
                     )
                     {
                         Int_t neutronIndex = mSingleNeutronCaptureMap[
-                            particleMap.GetParticleAncestorTrackID(energyDeposit.TrackID())
+                            particleMap.GetParticleAncestorTrackID(particle.TrackId())
                         ];
                         mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_track_ids.emplace_back(particle.TrackId());
                         for (size_t ii = 0; ii < particle.NumberTrajectoryPoints(); ii++)
