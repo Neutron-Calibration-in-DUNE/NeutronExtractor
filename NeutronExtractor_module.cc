@@ -53,7 +53,7 @@ namespace neutron
     // analyze function
     void NeutronExtractor::analyze(art::Event const& event)
     {
-        Int_t event_id = event.id();
+        Int_t event_id = event.id().event();
         /**
          * @details For each event, we will look through the various
          * available data products and send event info to the 
