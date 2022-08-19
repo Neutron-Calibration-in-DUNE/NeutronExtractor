@@ -157,7 +157,8 @@ namespace neutron
                     Int_t level = 0;
                     Int_t track_id = energyDeposit.TrackID();
                     Int_t mother = particleMap.GetParticleParentTrackID(energyDeposit.TrackID());
-                    while (mother != 0)
+                    bool gamma_found = false;
+                    while (mother != 0 && !gamma_found)
                     {
                         level += 1;
                         track_id = mother;
@@ -167,12 +168,12 @@ namespace neutron
                             {
                                 mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_ids.emplace_back(gamma_id);
                                 mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_level.emplace_back(level);
-                                break;
+                                gamma_found = true;
                             }
                         }
                         mother = particleMap.GetParticleParentTrackID(track_id);
                     }
-                    if (mother == 0)
+                    if (!gamma_found)
                     {
                         mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_track_ids.emplace_back(-1);
                         mSingleNeutronCaptureList[neutronIndex].edep_capture_gamma_level.emplace_back(-1);
