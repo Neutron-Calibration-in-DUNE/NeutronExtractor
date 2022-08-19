@@ -34,6 +34,16 @@ namespace neutron
         mSingleNeutronCaptureTTree->Branch("mc_daughter_pdgs", &mSingleNeutronCapture.mc_daughter_pdgs);
 
         mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_track_ids", &mSingleNeutronCapture.mc_capture_gamma_track_ids);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_energies", &mSingleNeutronCapture.mc_capture_gamma_energies);
+
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_t", &mSingleNeutronCapture.mc_capture_gamma_t);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_x", &mSingleNeutronCapture.mc_capture_gamma_x);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_y", &mSingleNeutronCapture.mc_capture_gamma_y);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_z", &mSingleNeutronCapture.mc_capture_gamma_z);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_energy", &mSingleNeutronCapture.mc_capture_gamma_energy);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_volume", &mSingleNeutronCapture.mc_capture_gamma_volume);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_material", &mSingleNeutronCapture.mc_capture_gamma_material);
+        mSingleNeutronCaptureTTree->Branch("mc_capture_gamma_track_id", &mSingleNeutronCapture.mc_capture_gamma_track_id);
 
         mSingleNeutronCaptureTTree->Branch("edep_x", &mSingleNeutronCapture.edep_x);
         mSingleNeutronCaptureTTree->Branch("edep_y", &mSingleNeutronCapture.edep_y);
@@ -124,9 +134,26 @@ namespace neutron
                         particle.Process() == "nCapture"
                     )
                     {
-                        mSingleNeutronCaptureList[mSingleNeutronCaptureMap[
-                            particleMap.GetParticleAncestorTrackID(particle.TrackId())
-                        ]].mc_capture_gamma_track_ids.emplace_back(particle.TrackId());
+                        Int_t neutronIndex = mSingleNeutronCaptureMap[
+                            particleMap.GetParticleAncestorTrackID(energyDeposit.TrackID())
+                        ];
+                        mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_track_ids.emplace_back(particle.TrackId());
+                        for (size_t ii = 0; ii < particle.NumberTrajectoryPoints(); ii++)
+                        {
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_t.emplace_back(particle.T(ii));
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_x.emplace_back(particle.Vx(ii));
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_y.emplace_back(particle.Vy(ii));
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_z.emplace_back(particle.Vz(ii));
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_energy.emplace_back(particle.E(ii));
+
+                            DetectorVolume volume = mGeometry->getVolume(
+                                particle.Vx(ii), particle.Vy(ii), particle.Vz(ii)
+                            );
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_volume.emplace_back(volume.volume_name);
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_material.emplace_back(volume.material_name);
+                            mSingleNeutronCaptureList[neutronIndex].mc_capture_gamma_track_id.emplace_back(particle.TrackId());
+                        }
+
                     }
                 }
                 else if (particle.PdgCode() == 11)

@@ -35,6 +35,16 @@ namespace neutron
         std::vector<Int_t> mc_daughter_pdgs;
 
         std::vector<Int_t> mc_capture_gamma_track_ids;
+        std::vector<Double_t> mc_capture_gamma_energies;
+
+        std::vector<Double_t> mc_capture_gamma_t;
+        std::vector<Double_t> mc_capture_gamma_x;
+        std::vector<Double_t> mc_capture_gamma_y;
+        std::vector<Double_t> mc_capture_gamma_z;
+        std::vector<Double_t> mc_capture_gamma_energy;
+        std::vector<std::string> mc_capture_gamma_volume;
+        std::vector<std::string> mc_capture_gamma_material;
+        std::vector<Int_t> mc_capture_gamma_track_id;
 
         std::vector<Double_t> edep_x;
         std::vector<Double_t> edep_y;
