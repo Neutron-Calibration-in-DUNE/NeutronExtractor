@@ -48,6 +48,7 @@ namespace neutron
     }
 
     void SingleNeutronCaptures::processEvent(
+        Int_t event_id,
         ParticleMap particleMap,
         const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles,
         const art::ValidHandle<std::vector<sim::SimEnergyDeposit>>& mcEnergyDeposits
@@ -62,6 +63,7 @@ namespace neutron
                 {
                     // set basic quantities
                     SingleNeutronCapture singleNeutronCapture(particle.NumberTrajectoryPoints());
+                    singleNeutronCapture.event = event_id;
                     singleNeutronCapture.track_id = particle.TrackId();
                     singleNeutronCapture.parent_track_id = particle.Mother();
                     singleNeutronCapture.parent_pdg = particleMap.GetParticleParentPDG(particle.TrackId());

@@ -53,6 +53,7 @@ namespace neutron
     // analyze function
     void NeutronExtractor::analyze(art::Event const& event)
     {
+        Int_t event_id = event.id();
         /**
          * @details For each event, we will look through the various
          * available data products and send event info to the 
@@ -68,9 +69,11 @@ namespace neutron
                 << " No simb::MCParticle objects in this event - "
                 << " Line " << __LINE__ << " in file " << __FILE__ << std::endl;
         }
+
         // get the list of MC particles from Geant4
         std::cout << "Collecting MC Particles..." << std::endl;
         auto mcParticles = event.getValidHandle<std::vector<simb::MCParticle>>(mParameters().LArGeantProducerLabel());
+
         // generate particle map
         std::cout << "Generating Particle Map..." << std::endl;
         mParticleMap.processEvent(mcParticles);
@@ -79,7 +82,7 @@ namespace neutron
         {
             std::cout << "Filling Single Neutron Captures..." << std::endl;
             auto mcEnergyDeposit = event.getValidHandle<std::vector<sim::SimEnergyDeposit>>(mParameters().IonAndScintProducerLabel());
-            mSingleNeutronCaptures.processEvent(mParticleMap, mcParticles, mcEnergyDeposit);
+            mSingleNeutronCaptures.processEvent(event_id, mParticleMap, mcParticles, mcEnergyDeposit);
         }
     }
     

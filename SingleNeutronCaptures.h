@@ -64,6 +64,7 @@ namespace neutron
         ~SingleNeutronCaptures();
 
         void processEvent(
+            Int_t event_id,
             ParticleMap particleMap,
             const art::ValidHandle<std::vector<simb::MCParticle>>& mcParticles,
             const art::ValidHandle<std::vector<sim::SimEnergyDeposit>>& mcEnergyDeposits
